@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Đặt thợ gia đình uy tín, nhanh chóng')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('home')}"></header>
+
+<!-- ===================================================================
+     1. KHỐI ĐẦU TRANG HERO (Hiệu ứng Ambient Sang trọng + Tìm kiếm + 8 Danh mục)
+     =================================================================== -->
+<section class="tr-hero-stage">
+
+    <!-- Họa tiết Rìa Trái Hero: Đường cong Organic + Vòng tròn sọc chéo Rosewood + Khuyên vàng Champagne + Chấm bi Slate -->
+    <svg class="edge-art-left" style="top: 20px; left: -30px; width: 235px; height: 410px;" viewBox="0 0 235 410" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="roseStripesHero" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="8" stroke="#C24D63" stroke-width="2.6"/>
+            </pattern>
+            <linearGradient id="roseCurveGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#C24D63"/>
+                <stop offset="100%" stop-color="#AB3C51"/>
+            </linearGradient>
+        </defs>
+        <!-- Lớp uốn lượn chính màu French Rosewood -->
+        <path d="M-20 15C72 10 138 68 130 162C122 254 48 325 -20 342Z" fill="url(#roseCurveGrad)"/>
+        <!-- Lớp cánh đào phụ hồng Blush đào pastel -->
+        <path d="M-20 115C40 120 82 178 72 250C62 320 8 350 -20 355Z" fill="#E87A8D" opacity="0.68"/>
+        <!-- Đĩa tròn sọc chéo Rosewood tinh tế -->
+        <circle cx="56" cy="290" r="56" fill="url(#roseStripesHero)"/>
+        <!-- Vòng khuyên viền vàng Champagne Gold thanh lịch -->
+        <circle cx="162" cy="98" r="24" stroke="#E6AF76" stroke-width="5" fill="none"/>
+        <circle cx="162" cy="98" r="4.5" fill="#E6AF76"/>
+        <!-- Lưới chấm bi Slate thanh lịch -->
+        <g fill="#2B2523" opacity="0.5">
+            <circle cx="132" cy="210" r="2.8"/><circle cx="147" cy="210" r="2.8"/><circle cx="162" cy="210" r="2.8"/>
+            <circle cx="132" cy="225" r="2.8"/><circle cx="147" cy="225" r="2.8"/><circle cx="162" cy="225" r="2.8"/>
+            <circle cx="132" cy="240" r="2.8"/><circle cx="147" cy="240" r="2.8"/><circle cx="162" cy="240" r="2.8"/>
+        </g>
+    </svg>
+
+    <!-- Họa tiết Rìa Phải Hero: Dải sóng uốn lượn Rose & Slate + Vòng tròn vàng lớn + Lưới chấm bi 4x2 + Sọc chéo Gold -->
+    <svg class="edge-art-right" style="top: 0; right: -25px; width: 350px; height: 340px;" viewBox="0 0 350 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="goldStripesHero" width="8" height="8" patternTransform="rotate(45 0 0)" patternUnits="userSpaceOnUse">
+                <line x1="0" y1="0" x2="0" y2="8" stroke="#E6AF76" stroke-width="2.5"/>
+            </pattern>
+            <linearGradient id="roseRightGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0%" stop-color="#E87A8D"/>
+                <stop offset="100%" stop-color="#C24D63"/>
+            </linearGradient>
+        </defs>
+        <!-- Lớp sóng hữu cơ bên phải -->
+        <path d="M95 0H350V230C255 235 185 180 145 115C110 58 100 16 95 0Z" fill="url(#roseRightGrad)" opacity="0.82"/>
+        <path d="M42 0H350V170C240 175 160 122 102 56C72 22 52 6 42 0Z" fill="#C24D63"/>
+        <path d="M250 95C305 85 350 128 350 190C350 252 298 272 255 240C212 210 208 105 250 95Z" fill="#E6AF76" opacity="0.88"/>
+        <!-- Vòng khuyên tròn rỗng vàng óng ánh đặc trưng của rìa TaskRabbit nhưng chuẩn tone Champagne -->
+        <circle cx="232" cy="78" r="25" stroke="#E6AF76" stroke-width="6" fill="none"/>
+        <circle cx="232" cy="78" r="5" fill="#C24D63"/>
+        <!-- Đĩa sọc chéo góc trên -->
+        <circle cx="310" cy="50" r="34" fill="url(#goldStripesHero)" opacity="0.75"/>
+        <!-- Lưới ma trận chấm bi 4x2 sắc xám than & hồng đậm -->
+        <g fill="#2B2523" opacity="0.65">
+            <circle cx="218" cy="240" r="2.8"/><circle cx="234" cy="240" r="2.8"/><circle cx="250" cy="240" r="2.8"/><circle cx="266" cy="240" r="2.8"/>
+            <circle cx="218" cy="255" r="2.8"/><circle cx="234" cy="255" r="2.8"/><circle cx="250" cy="255" r="2.8"/><circle cx="266" cy="255" r="2.8"/>
+        </g>
+    </svg>
+
+    <!-- Họa tiết vệt sáng Ambient mềm mại (Beige & Rosewood Glow) -->
+    <div class="floating-orb" style="position: absolute; top: -50px; left: -80px; width: 340px; height: 340px; border-radius: 50%; background: radial-gradient(circle, rgba(232, 122, 141, 0.16) 0%, rgba(250, 247, 242, 0) 70%); pointer-events: none; z-index: 1;"></div>
+    <div class="pulse-ambient" style="position: absolute; top: 110px; right: -70px; width: 400px; height: 400px; border-radius: 50%; background: radial-gradient(circle, rgba(230, 175, 118, 0.18) 0%, rgba(250, 247, 242, 0) 70%); pointer-events: none; z-index: 1;"></div>
+    <div style="position: absolute; bottom: -60px; left: 35%; width: 300px; height: 300px; border-radius: 50%; background: radial-gradient(circle, rgba(194, 77, 99, 0.08) 0%, rgba(250, 247, 242, 0) 70%); pointer-events: none; z-index: 1;"></div>
+
+    <div class="tr-hero-inner">
+
+        <!-- Tiêu đề chính Thuần Việt & Đầy xúc cảm -->
+        <div class="reveal-on-scroll">
+            <h1 class="tr-hero-heading">
+                <span data-i18n="hero_title_1">Đặt thợ gia đình</span><br><span style="color: #C24D63;" data-i18n="hero_title_2">uy tín & tận tâm</span>
+            </h1>
+            <p style="color: #4A4543; font-size: 1.05rem; margin-top: -16px; margin-bottom: 28px; font-weight: 500;" data-i18n="hero_subtitle">
+                Kết nối nhanh chóng với hàng nghìn thợ lành nghề đã xác thực — Nghiệm thu hài lòng mới thanh toán
+            </p>
+        </div>
+
+        <!-- Thanh tìm kiếm kiểu viên thuốc cao cấp -->
+        <form th:action="@{/explore}" method="get" class="tr-search-form reveal-on-scroll delay-1">
+            <input type="text" name="q" class="tr-search-input"
+                   placeholder="Bạn cần hỗ trợ việc gì? (VD: Lắp tủ IKEA, Dọn dẹp nhà, Khoan treo Tivi...)">
+            <button type="submit" class="tr-search-btn" title="Tìm kiếm dịch vụ">
+                <i class="bi bi-search"></i>
+            </button>
+        </form>
+
+        <!-- 8 Tab Danh mục Dịch vụ Thuần Việt -->
+        <div class="tr-cat-tabs reveal-on-scroll delay-2" id="trCategoryTabs">
+            <button type="button" class="tr-cat-tab active" onclick="selectTrCategory('assembly', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-tools"></i></span>
+                <span>Lắp ráp nội thất</span>
+            </button>
+            <button type="button" class="tr-cat-tab" onclick="selectTrCategory('mounting', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-screwdriver"></i></span>
+                <span>Khoan treo tường</span>
+            </button>
+            <button type="button" class="tr-cat-tab" onclick="selectTrCategory('moving', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-truck"></i></span>
+                <span>Chuyển nhà & Đồ</span>
+            </button>
+            <button type="button" class="tr-cat-tab" onclick="selectTrCategory('cleaning', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-stars"></i></span>
+                <span>Dọn dẹp vệ sinh</span>
+            </button>
+            <button type="button" class="tr-cat-tab" onclick="selectTrCategory('outdoor', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-tree"></i></span>
+                <span>Chăm sóc sân vườn</span>
+            </button>
+            <button type="button" class="tr-cat-tab" onclick="selectTrCategory('repairs', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-hammer"></i></span>
+                <span>Sửa điện nước</span>
+            </button>
+            <button type="button" class="tr-cat-tab" onclick="selectTrCategory('painting', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-paint-bucket"></i></span>
+                <span>Sơn sửa không gian</span>
+            </button>
+            <button type="button" class="tr-cat-tab" onclick="selectTrCategory('trending', this)">
+                <span class="tr-cat-icon-wrap"><i class="bi bi-fire"></i></span>
+                <span>Dịch vụ xu hướng</span>
+            </button>
+        </div>
+
+        <!-- Thẻ viên thuốc công việc con (Sub-task Pills) Thuần Việt -->
+        <div class="tr-subpills-wrap reveal-on-scroll delay-3" id="trSubPillsContainer">
+            <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp đồ gỗ nội thất gia đình')}" class="tr-subpill">Lắp ráp đồ gỗ nội thất</a>
+            <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp nội thất IKEA theo sơ đồ')}" class="tr-subpill">Lắp ráp đồ IKEA theo sơ đồ</a>
+            <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp nôi & giường trẻ em')}" class="tr-subpill">Lắp nôi & giường trẻ em</a>
+            <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp giá sách & kệ treo tường')}" class="tr-subpill">Lắp giá sách & kệ treo</a>
+            <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp bàn làm việc thông minh')}" class="tr-subpill">Lắp bàn làm việc thông minh</a>
+            <a th:href="@{/book-task(catName='Lắp ráp', title='Tháo lắp bàn ghế sân vườn ngoài trời')}" class="tr-subpill">Tháo lắp bàn ghế ngoài trời</a>
+        </div>
+
+        <!-- Khung giới thiệu chi tiết danh mục (Showcase Frame) Thuần Việt -->
+        <div class="tr-showcase-frame reveal-on-scroll delay-3" id="trShowcaseFrame">
+            <div class="tr-showcase-card">
+                <h2 class="tr-showcase-title" id="trShowcaseTitle">Lắp ráp Nội thất chuyên nghiệp</h2>
+                <ul class="tr-showcase-list">
+                    <li>
+                        <i class="bi bi-check-lg"></i>
+                        <span id="trShowcaseDesc1">Lắp ráp hoặc tháo dỡ đồ nội thất đóng hộp (IKEA, JYSK, Hòa Phát) chuẩn chỉ từng con ốc, không xước sàn.</span>
+                    </li>
+                    <li>
+                        <i class="bi bi-check-lg"></i>
+                        <span id="trShowcaseDesc2">Các công việc phổ biến: Bàn nâng hạ công thái học, giường ngủ thông minh, tủ quần áo 3 cánh và kệ sách.</span>
+                    </li>
+                </ul>
+                <a id="trShowcaseCta"
+                   th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp đồ nội thất IKEA & Gia đình')}"
+                   class="btn btn-primary"
+                   style="background: linear-gradient(135deg, #C24D63 0%, #D95D74 100%); border-color: #C24D63; width: 100%; border-radius: 9999px; padding: 14px 22px; font-weight: 700; color: #FFFFFF; box-shadow: 0 4px 14px rgba(194, 77, 99, 0.28);">
+                    Đặt lịch dịch vụ này ngay <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+            <div class="tr-showcase-img-box">
+                <img id="trShowcaseImg"
+                     src="https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1000&q=80"
+                     alt="Dịch vụ lắp ráp nội thất VieShift">
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===================================================================
+     2. DỊCH VỤ ĐƯỢC ĐẶT NHIỀU NHẤT (POPULAR PROJECTS)
+     =================================================================== -->
+<section class="main-wrapper tr-popular-section">
+    <div class="reveal-on-scroll" style="text-align: left; margin-bottom: 12px;">
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #2B2523;">Dịch vụ được đặt nhiều nhất</h2>
+        <p style="color: #7C7571; font-size: 0.95rem;">Bảng giá rõ ràng, thợ có mặt đúng giờ, chỉ thanh toán khi hoàn thành</p>
+    </div>
+
+    <div class="tr-popular-grid">
+        <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp nội thất gia đình')}" class="tr-project-card reveal-on-scroll delay-1">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=600&q=80" alt="Lắp ráp nội thất">
+            </div>
+            <div class="tr-project-title">Lắp ráp nội thất gia đình</div>
+            <div class="tr-project-price">Giá chỉ từ 100.000 đ</div>
+        </a>
+
+        <a th:href="@{/book-task(catName='Sửa chữa điện nước', title='Sửa chữa lặt vặt trong nhà')}" class="tr-project-card reveal-on-scroll delay-2">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80" alt="Sửa chữa nhà">
+            </div>
+            <div class="tr-project-title">Sửa chữa lặt vặt trong nhà</div>
+            <div class="tr-project-price">Giá chỉ từ 120.000 đ</div>
+        </a>
+
+        <a th:href="@{/book-task(catName='Lắp đặt', title='Khoan treo Tivi lên tường')}" class="tr-project-card reveal-on-scroll delay-3">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=600&q=80" alt="Khoan treo Tivi">
+            </div>
+            <div class="tr-project-title">Khoan treo Tivi lên tường</div>
+            <div class="tr-project-price">Giá chỉ từ 110.000 đ</div>
+        </a>
+
+        <a th:href="@{/book-task(catName='Vận chuyển', title='Hỗ trợ chuyển nhà & bốc xếp')}" class="tr-project-card reveal-on-scroll delay-4">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80" alt="Chuyển nhà">
+            </div>
+            <div class="tr-project-title">Hỗ trợ chuyển nhà & bốc xếp</div>
+            <div class="tr-project-price">Giá chỉ từ 150.000 đ</div>
+        </a>
+
+        <a th:href="@{/book-task(catName='Dọn dẹp', title='Tổng vệ sinh căn hộ & Dọn nhà')}" class="tr-project-card reveal-on-scroll delay-1">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=600&q=80" alt="Dọn dẹp nhà cửa">
+            </div>
+            <div class="tr-project-title">Tổng vệ sinh căn hộ & Dọn nhà</div>
+            <div class="tr-project-price">Giá chỉ từ 80.000 đ</div>
+        </a>
+
+        <a th:href="@{/book-task(catName='Chăm sóc sân vườn', title='Chăm sóc & Cắt tỉa sân vườn')}" class="tr-project-card reveal-on-scroll delay-2">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=600&q=80" alt="Chăm sóc sân vườn">
+            </div>
+            <div class="tr-project-title">Chăm sóc & Cắt tỉa sân vườn</div>
+            <div class="tr-project-price">Giá chỉ từ 95.000 đ</div>
+        </a>
+
+        <a th:href="@{/book-task(catName='Sửa chữa điện nước', title='Sửa chữa điện gia dụng')}" class="tr-project-card reveal-on-scroll delay-3">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=600&q=80" alt="Sửa chữa điện">
+            </div>
+            <div class="tr-project-title">Sửa chữa điện gia dụng</div>
+            <div class="tr-project-price">Giá chỉ từ 120.000 đ</div>
+        </a>
+
+        <a th:href="@{/book-task(catName='Vận chuyển', title='Khiêng vác & Bốc xếp đồ nặng')}" class="tr-project-card reveal-on-scroll delay-4">
+            <div class="tr-project-thumb">
+                <img class="tr-project-img" src="https://images.unsplash.com/photo-1580674684081-7617fbf3d745?auto=format&fit=crop&w=600&q=80" alt="Khiêng vác đồ nặng">
+            </div>
+            <div class="tr-project-title">Khiêng vác & Bốc xếp đồ nặng</div>
+            <div class="tr-project-price">Giá chỉ từ 100.000 đ</div>
+        </a>
+    </div>
+</section>
+
+<!-- ===================================================================
+     3. ĐÁNH GIÁ TỪ KHÁCH HÀNG THỰC TẾ
+     =================================================================== -->
+<section class="main-wrapper tr-reviews-section">
+    <div class="reveal-on-scroll" style="text-align: left; margin-bottom: 8px;">
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #2B2523;">
+            Khách hàng nói gì về VieShift
+        </h2>
+        <p style="color: #7C7571; font-size: 0.95rem;">Hơn 12.000+ công việc gia đình đã được thợ hoàn thành xuất sắc</p>
+    </div>
+
+    <div class="tr-review-grid">
+        <div class="tr-review-card reveal-on-scroll delay-1">
+            <div>
+                <div class="tr-review-stars">★★★★★</div>
+                <div class="tr-review-author">Anh Hoàng Tuấn · TP. Thủ Đức</div>
+                <p class="tr-review-text">
+                    "Thợ tới rất đúng giờ, có đủ máy khoan chuyên dụng và lắp ráp trọn bộ tủ quần áo IKEA 3 cánh chỉ trong hơn 2 tiếng. Cực kỳ tỉ mỉ và quét dọn sạch sẽ trước khi về."
+                </p>
+            </div>
+            <div class="tr-review-cat">Lắp ráp nội thất IKEA</div>
+        </div>
+
+        <div class="tr-review-card reveal-on-scroll delay-2">
+            <div>
+                <div class="tr-review-stars">★★★★★</div>
+                <div class="tr-review-author">Chị Thu Thảo · Quận 7, TP.HCM</div>
+                <p class="tr-review-text">
+                    "Treo chiếc Tivi 65 inch âm tường rất cân đối và giấu dây điện thẩm mỹ. Tôi rất an tâm vì chỉ thanh toán sau khi kiểm tra nghiệm thu ưng ý."
+                </p>
+            </div>
+            <div class="tr-review-cat">Khoan treo Tivi âm tường</div>
+        </div>
+
+        <div class="tr-review-card reveal-on-scroll delay-3">
+            <div>
+                <div class="tr-review-stars">★★★★★</div>
+                <div class="tr-review-author">Chị Minh Châu · Ba Đình, Hà Nội</div>
+                <p class="tr-review-text">
+                    "Dọn dẹp căn hộ 2 phòng ngủ sạch bong sáng bóng, cọ rửa nhà tắm và lau kính không một hạt bụi. Người làm rất lịch sự và nhiệt tình. Chắc chắn sẽ đặt lại hàng tuần!"
+                </p>
+            </div>
+            <div class="tr-review-cat">Vệ sinh căn hộ định kỳ</div>
+        </div>
+
+        <div class="tr-review-card reveal-on-scroll delay-1">
+            <div>
+                <div class="tr-review-stars">★★★★★</div>
+                <div class="tr-review-author">Anh Quốc Bảo · Cầu Giấy, Hà Nội</div>
+                <p class="tr-review-text">
+                    "Xử lý dứt điểm đường ống nước bồn rửa chén bị rò rỉ lâu ngày mà thợ trước không sửa được. Báo giá minh bạch từ đầu, không phát sinh thêm bất cứ khoản phí nào."
+                </p>
+            </div>
+            <div class="tr-review-cat">Sửa chữa ống nước gia đình</div>
+        </div>
+
+        <div class="tr-review-card reveal-on-scroll delay-2">
+            <div>
+                <div class="tr-review-stars">★★★★★</div>
+                <div class="tr-review-author">Anh Văn Đức · Bình Thạnh, TP.HCM</div>
+                <p class="tr-review-text">
+                    "2 bạn thợ hỗ trợ bốc vác tủ lạnh 2 cánh và chuyển đồ đạc từ tầng 3 xuống rất cẩn thận, bọc màng co kỹ lưỡng không một vết trầy xước. Cực kỳ đáng tin cậy!"
+                </p>
+            </div>
+            <div class="tr-review-cat">Chuyển nhà & Bốc vác đồ nặng</div>
+        </div>
+
+        <div class="tr-review-card reveal-on-scroll delay-3">
+            <div>
+                <div class="tr-review-stars">★★★★★</div>
+                <div class="tr-review-author">Chị Hồng Hạnh · Hải Châu, Đà Nẵng</div>
+                <p class="tr-review-text">
+                    "Sơn lại bức tường phòng khách màu pastel cực đẹp, dán băng keo cẩn thận quanh mép sàn nên không rơi một giọt sơn nào. Thợ rất có tâm!"
+                </p>
+            </div>
+            <div class="tr-review-cat">Sơn tường trang trí</div>
+        </div>
+    </div>
+
+    <!-- Huy hiệu đánh giá uy tín sang trọng -->
+    <div class="reveal-on-scroll delay-2" style="display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 36px; padding: 14px 28px; background: #FFFFFF; border-radius: 9999px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); width: fit-content; margin-left: auto; margin-right: auto;">
+        <span style="font-weight: 800; color: #2B2523; font-size: 0.95rem;">★ Đánh giá chất lượng</span>
+        <div style="background: linear-gradient(135deg, #C24D63, #E87A8D); color: #FFF; padding: 4px 12px; border-radius: 6px; font-size: 0.8rem; font-weight: 800; letter-spacing: 1px;">
+            ★★★★★
+        </div>
+        <span style="font-size: 0.9rem; color: #4A4543;">
+            Xuất sắc <strong>4.8 / 5.0</strong> dựa trên hơn <strong>12.400+ nhận xét thực tế</strong>
+        </span>
+    </div>
+</section>
+
+<!-- ===================================================================
+     4. CAM KẾT CHẤT LƯỢNG & BẢO ĐẢM HÀI LÒNG 100%
+     =================================================================== -->
+<section class="main-wrapper tr-guarantee-section reveal-on-scroll">
+    <h2 class="tr-guarantee-title">
+        Cam kết chất lượng & Bảo đảm <span>hài lòng 100%</span>
+    </h2>
+
+    <div class="tr-guarantee-grid">
+        <div class="tr-guarantee-card reveal-on-scroll delay-1">
+            <h3 class="tr-guarantee-heading">
+                <i class="bi bi-shield-check" style="color: #C24D63; font-size: 1.5rem;"></i>
+                Cam kết Hài lòng 100%
+            </h3>
+            <p class="tr-guarantee-text">
+                Nếu bạn không hài lòng về chất lượng công việc, VieShift cam kết đồng hành giải quyết thỏa đáng, bảo đảm hoàn tiền hoặc sắp xếp thợ xử lý lại miễn phí.
+            </p>
+        </div>
+
+        <div class="tr-guarantee-card reveal-on-scroll delay-2">
+            <h3 class="tr-guarantee-heading">
+                <i class="bi bi-person-check" style="color: #C24D63; font-size: 1.5rem;"></i>
+                Thợ định danh & Kiểm duyệt tay nghề
+            </h3>
+            <p class="tr-guarantee-text">
+                100% đối tác Thợ đều phải hoàn thành thủ tục định danh CCCD gắn chip, xác thực số điện thoại và được kiểm tra tay nghề thực tế trước khi nhận việc.
+            </p>
+        </div>
+
+        <div class="tr-guarantee-card reveal-on-scroll delay-3">
+            <h3 class="tr-guarantee-heading">
+                <i class="bi bi-headset" style="color: #C24D63; font-size: 1.5rem;"></i>
+                Đội ngũ hỗ trợ thường trực 24/7
+            </h3>
+            <p class="tr-guarantee-text">
+                Đội ngũ chăm sóc khách hàng luôn thường trực để giải đáp mọi thắc mắc và hỗ trợ xử lý mọi yêu cầu của bạn một cách nhanh chóng, chu đáo.
+            </p>
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     5. DẢI QUY TRÌNH HOẠT ĐỘNG (HOW IT WORKS)
+     =================================================================== -->
+<section class="tr-how-band reveal-on-scroll">
+    <div class="tr-how-inner">
+        <div>
+            <h2 class="tr-how-title">Quy trình hoạt động đơn giản</h2>
+            <div class="tr-how-steps">
+                <div class="tr-step-item">
+                    <div class="tr-step-badge">1</div>
+                    <div class="tr-step-desc">
+                        Chọn thợ theo tay nghề, giá cả và đánh giá thực tế
+                        <div style="font-size: 0.88rem; font-weight: 500; color: #7C7571; margin-top: 4px;">
+                            Xem hồ sơ, hình ảnh thực tế, nhận xét từ các khách hàng trước và chọn mức giá phù hợp với bạn.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tr-step-item">
+                    <div class="tr-step-badge">2</div>
+                    <div class="tr-step-desc">
+                        Đặt lịch linh hoạt ngay trong ngày hoặc hẹn trước
+                        <div style="font-size: 0.88rem; font-weight: 500; color: #7C7571; margin-top: 4px;">
+                            Chọn khung giờ thuận tiện nhất, thợ có thể đến tận nơi hỗ trợ chỉ sau 30-60 phút hoặc theo lịch hẹn của bạn.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tr-step-item">
+                    <div class="tr-step-badge">3</div>
+                    <div class="tr-step-desc">
+                        Trao đổi, nghiệm thu ưng ý mới thanh toán
+                        <div style="font-size: 0.88rem; font-weight: 500; color: #7C7571; margin-top: 4px;">
+                            Dễ dàng nhắn tin trao đổi chi tiết, khi thợ làm xong bạn kiểm tra hài lòng mới thanh toán và để lại đánh giá.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 32px;">
+                <a th:href="@{/book-task(catName='Lắp ráp', title='Đặt thợ gia đình')}"
+                   class="btn btn-primary"
+                   style="background: linear-gradient(135deg, #C24D63 0%, #D95D74 100%); border-color: #C24D63; border-radius: 9999px; padding: 13px 30px; font-weight: 700; color: #FFFFFF; box-shadow: 0 4px 14px rgba(194, 77, 99, 0.28);">
+                    Bắt đầu đặt việc ngay
+                </a>
+            </div>
+        </div>
+
+        <div class="tr-how-image-box">
+            <img src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80" alt="Khách hàng sử dụng VieShift đặt thợ dễ dàng">
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     6. TÌM THỢ TRỢ GIÚP NGAY HÔM NAY (TAG PILLS CLOUD)
+     =================================================================== -->
+<section class="main-wrapper tr-gethelp-section">
+    <div class="reveal-on-scroll">
+        <h2 style="font-size: 1.85rem; font-weight: 800; color: #2B2523;">Tìm thợ trợ giúp ngay hôm nay</h2>
+        <p style="color: #7C7571; font-size: 0.95rem; margin-top: 6px;">Chọn một công việc phổ biến để kết nối ngay với thợ lành nghề gần bạn</p>
+    </div>
+
+    <div class="tr-gethelp-pills reveal-on-scroll delay-1">
+        <a th:href="@{/book-task(catName='Lắp đặt', title='Khoan treo tường tổng hợp')}" class="tr-pill-outline">Khoan treo tường tổng hợp</a>
+        <a th:href="@{/book-task(catName='Lắp đặt', title='Khoan treo Tivi âm tường')}" class="tr-pill-outline">Khoan treo Tivi âm tường</a>
+        <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp đồ gỗ nội thất')}" class="tr-pill-outline">Lắp ráp đồ gỗ nội thất</a>
+        <a th:href="@{/book-task(catName='Lắp ráp', title='Lắp ráp đồ nội thất IKEA')}" class="tr-pill-outline">Lắp ráp đồ nội thất IKEA</a>
+        <a th:href="@{/book-task(catName='Vận chuyển', title='Hỗ trợ chuyển nhà trọn gói')}" class="tr-pill-outline">Hỗ trợ chuyển nhà trọn gói</a>
+        <a th:href="@{/book-task(catName='Vận chuyển', title='Bốc vác & khiêng đồ nặng')}" class="tr-pill-outline">Bốc vác & khiêng đồ nặng</a>
+        <a th:href="@{/book-task(catName='Chăm sóc sân vườn', title='Dọn cỏ & chăm sóc cây cảnh')}" class="tr-pill-outline">Dọn cỏ & chăm sóc cây cảnh</a>
+        <a th:href="@{/book-task(catName='Sửa chữa điện nước', title='Sửa chữa rò rỉ ống nước')}" class="tr-pill-outline">Sửa chữa rò rỉ ống nước</a>
+        <a th:href="@{/book-task(catName='Sửa chữa điện nước', title='Sửa chập điện & thiết bị điện')}" class="tr-pill-outline">Sửa chập điện & thiết bị điện</a>
+        <a th:href="@{/book-task(catName='Dọn dẹp', title='Tổng vệ sinh nhà cửa chuyên sâu')}" class="tr-pill-outline">Tổng vệ sinh nhà cửa chuyên sâu</a>
+        <a th:href="@{/book-task(catName='Dọn dẹp', title='Dọn dẹp căn hộ chung cư')}" class="tr-pill-outline">Dọn dẹp căn hộ chung cư</a>
+        <a th:href="@{/book-task(catName='Sửa chữa điện nước', title='Sửa khóa, bản lề & cánh tủ')}" class="tr-pill-outline">Sửa khóa, bản lề & cánh tủ</a>
+        <a th:href="@{/book-task(catName='Sửa chữa điện nước', title='Lắp đặt bóng đèn & công tắc')}" class="tr-pill-outline">Lắp đặt bóng đèn & công tắc</a>
+        <a th:href="@{/book-task(catName='Sơn sửa nhà cửa', title='Sơn tường & làm mới phòng')}" class="tr-pill-outline">Sơn tường & làm mới phòng</a>
+        <a th:href="@{/book-task(catName='Giao hàng hỏa tốc', title='Trợ lý việc vặt & chạy việc theo giờ')}" class="tr-pill-outline">Trợ lý việc vặt theo giờ</a>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+<script>
+    const TR_DATA = {
+        assembly: {
+            title: "Lắp ráp Nội thất chuyên nghiệp",
+            catName: "Lắp ráp",
+            desc1: "Lắp ráp hoặc tháo dỡ đồ nội thất đóng hộp (IKEA, JYSK, Hòa Phát) chuẩn chỉ từng con ốc, không xước sàn.",
+            desc2: "Các công việc phổ biến: Bàn nâng hạ công thái học, giường ngủ thông minh, tủ quần áo 3 cánh và kệ sách.",
+            img: "https://images.unsplash.com/photo-1581783342308-f792dbdd27c5?auto=format&fit=crop&w=1000&q=80",
+            bg: "#F7F2EB",
+            pills: [
+                "Lắp ráp đồ gỗ nội thất",
+                "Lắp ráp đồ IKEA theo sơ đồ",
+                "Lắp nôi & giường trẻ em",
+                "Lắp giá sách & kệ treo",
+                "Lắp bàn làm việc thông minh",
+                "Tháo lắp bàn ghế ngoài trời"
+            ]
+        },
+        mounting: {
+            title: "Khoan & Treo lắp tường thẩm mỹ",
+            catName: "Lắp đặt",
+            desc1: "Khoan tường treo Tivi màn hình phẳng, giá đỡ, rèm cửa, gương soi và kệ trang trí chắc chắn.",
+            desc2: "Các công việc phổ biến: Treo Tivi âm tường, lắp kệ gỗ phòng khách, treo tranh nghệ thuật và rèm cửa.",
+            img: "https://images.unsplash.com/photo-1593784991095-a205069470b6?auto=format&fit=crop&w=1000&q=80",
+            bg: "#F5F0EA",
+            pills: [
+                "Khoan treo Tivi âm tường",
+                "Treo tranh ảnh & gương decor",
+                "Lắp giá đỡ & thanh treo rèm",
+                "Lắp quạt trần & đèn chùm",
+                "Lắp rèm cuốn & rèm cửa"
+            ]
+        },
+        moving: {
+            title: "Vận chuyển & Bốc xếp an toàn",
+            catName: "Vận chuyển",
+            desc1: "Hỗ trợ đóng gói, khiêng vác đồ nặng qua cầu thang và xe tải vận chuyển sang nhà mới.",
+            desc2: "Các công việc phổ biến: Chuyển căn hộ chung cư, di dời tủ lạnh/máy giặt và sắp xếp kho hàng.",
+            img: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80",
+            bg: "#FAF4EC",
+            pills: [
+                "Hỗ trợ bốc xếp chuyển nhà",
+                "Chuyển nhà trọn gói có xe tải",
+                "Dọn dẹp đồ cũ cồng kềnh",
+                "Khiêng vác vật nặng qua cầu thang",
+                "Sắp xếp & bài trí lại nội thất"
+            ]
+        },
+        cleaning: {
+            title: "Dọn dẹp & Tổng vệ sinh nhà cửa",
+            catName: "Dọn dẹp",
+            desc1: "Lau dọn căn hộ, phòng khách, nhà bếp, nhà tắm sạch bóng với đầy đủ dụng cụ chuyên dụng.",
+            desc2: "Các công việc phổ biến: Tổng vệ sinh căn hộ cuối tuần, vệ sinh sau sửa chữa và cọ rửa nhà tắm.",
+            img: "https://images.unsplash.com/photo-1584622650111-993a426fbf0a?auto=format&fit=crop&w=1000&q=80",
+            bg: "#F4EFEA",
+            pills: [
+                "Dọn dẹp nhà cửa định kỳ",
+                "Tổng vệ sinh chuyên sâu toàn diện",
+                "Dọn nhà trước & sau khi chuyển đến",
+                "Vệ sinh căn hộ chung cư",
+                "Vệ sinh kho bãi & gara"
+            ]
+        },
+        outdoor: {
+            title: "Chăm sóc sân vườn & Cây cảnh",
+            catName: "Chăm sóc sân vườn",
+            desc1: "Cắt tỉa cây cảnh, làm sạch cỏ dại, dọn lá rụng và chăm sóc tiểu cảnh ban công/sân thượng.",
+            desc2: "Các công việc phổ biến: Cải tạo vườn ban công chung cư, cắt cỏ sân vườn và nhổ cỏ dại.",
+            img: "https://images.unsplash.com/photo-1416879595882-3373a0480b5b?auto=format&fit=crop&w=1000&q=80",
+            bg: "#F6F1EA",
+            pills: [
+                "Dọn dẹp cỏ rác sân vườn",
+                "Cắt tỉa & chăm sóc thảm cỏ",
+                "Cắt tỉa cành cây & hàng rào",
+                "Trồng hoa & nhổ cỏ dại",
+                "Cọ rửa sàn sân & ban công"
+            ]
+        },
+        repairs: {
+            title: "Sửa chữa Điện nước & Đồ gia dụng",
+            catName: "Sửa chữa điện nước",
+            desc1: "Xử lý nhanh sự cố rò rỉ nước, chập điện, thay vòi sen, sửa ổ khóa và bản lề cửa.",
+            desc2: "Các công việc phổ biến: Thay bóng đèn LED, sửa bồn rửa chén rò nước và sửa cánh tủ bếp.",
+            img: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=1000&q=80",
+            bg: "#FCECEE",
+            pills: [
+                "Khắc phục sự cố chập điện",
+                "Sửa chữa rò rỉ ống nước",
+                "Sửa chữa lặt vặt trong nhà",
+                "Sửa bản lề, ổ khóa & cánh tủ",
+                "Thay bóng đèn & công tắc điện"
+            ]
+        },
+        painting: {
+            title: "Sơn sửa & Làm mới không gian sống",
+            catName: "Sơn sửa nhà cửa",
+            desc1: "Sơn mới phòng ngủ, sơn tường tạo điểm nhấn, trám vết nứt và chống thấm chuyên nghiệp.",
+            desc2: "Các công việc phổ biến: Sơn tường phòng khách, dán giấy dán tường và sơn lại cửa gỗ.",
+            img: "https://images.unsplash.com/photo-1562259949-e8e7689d7828?auto=format&fit=crop&w=1000&q=80",
+            bg: "#F5EFF2",
+            pills: [
+                "Sơn mới phòng khách & phòng ngủ",
+                "Dán giấy dán tường trang trí",
+                "Sơn mảng tường tạo điểm nhấn",
+                "Sơn phào chân tường & len chỉ",
+                "Sơn làm mới cửa gỗ & khung cửa"
+            ]
+        },
+        trending: {
+            title: "Dịch vụ Xu hướng được ưa chuộng",
+            catName: "Giao hàng hỏa tốc",
+            desc1: "Các dịch vụ được đặt nhiều nhất tuần này: Giao hàng hỏa tốc, chăm sóc thú cưng và trợ lý việc vặt.",
+            desc2: "Các công việc phổ biến: Đặt thợ đi siêu thị hộ, giao quà tận tay và chăm thú cưng theo giờ.",
+            img: "https://images.unsplash.com/photo-1556740758-90de374c12ad?auto=format&fit=crop&w=1000&q=80",
+            bg: "#FDF5EE",
+            pills: [
+                "Trợ lý việc vặt theo giờ",
+                "Giao hàng hỏa tốc nội thành",
+                "Chăm thú cưng & dắt chó đi dạo",
+                "Xếp hàng hộ & giữ chỗ",
+                "Phụ giúp tiệc tùng & trang trí sự kiện"
+            ]
+        }
+    };
+
+    function selectTrCategory(key, btnEl) {
+        const data = TR_DATA[key];
+        if (!data) return;
+
+        document.querySelectorAll('#trCategoryTabs .tr-cat-tab').forEach(b => b.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+
+        const pillsContainer = document.getElementById('trSubPillsContainer');
+        pillsContainer.innerHTML = data.pills.map(pill => {
+            const url = `/book-task?catName=${encodeURIComponent(data.catName)}&title=${encodeURIComponent(pill)}`;
+            return `<a href="${url}" class="tr-subpill">${pill}</a>`;
+        }).join('');
+
+        document.getElementById('trShowcaseTitle').textContent = data.title;
+        document.getElementById('trShowcaseDesc1').textContent = data.desc1;
+        document.getElementById('trShowcaseDesc2').textContent = data.desc2;
+        document.getElementById('trShowcaseImg').src = data.img;
+        document.getElementById('trShowcaseFrame').style.background = data.bg;
+        document.getElementById('trShowcaseCta').href =
+            `/book-task?catName=${encodeURIComponent(data.catName)}&title=${encodeURIComponent(data.title)}`;
+    }
+</script>
+
+</body>
+</html>

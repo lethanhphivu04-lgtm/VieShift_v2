@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chúc mừng! Hồ sơ VieKer đã được phê duyệt</title>
+</head>
+<body style="margin:0;padding:32px 16px;background-color:#FAF7F2;font-family:'Helvetica Neue',Arial,sans-serif;color:#2B2523;">
+<div style="max-width:580px;margin:0 auto;background:#FFFFFF;border:1px solid #EAE2D9;border-radius:16px;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#2E7D5B 0%,#1E5B40 100%);padding:28px 32px;color:#FFFFFF;">
+        <div style="font-size:22px;font-weight:800;">VieShift <span style="color:#E6AF76;">.</span></div>
+        <div style="font-size:12px;opacity:0.9;margin-top:4px;text-transform:uppercase;">Xác thực Đối tác Thành công</div>
+    </div>
+    <div style="padding:32px;">
+        <h2 style="margin:0 0 14px;font-size:22px;color:#2B2523;">Chúc mừng <span th:text="${name}">Đối tác</span>!</h2>
+        <p style="font-size:15px;line-height:1.65;color:#574E4A;margin:0 0 18px;">
+            Hồ sơ định danh và chứng từ của bạn đã được Ban Quản Trị VieShift <strong>phê duyệt chính thức</strong>. Tài khoản của bạn đã được kích hoạt và sẵn sàng nhận đơn đặt thợ ngay hôm nay!
+        </p>
+        <div style="background:#FAF7F2;border:1px solid #EAE2D9;border-radius:12px;padding:16px 20px;margin:20px 0;font-size:14px;color:#574E4A;">
+            🔑 <strong>Thông tin đăng nhập:</strong> Hãy dùng địa chỉ email nhận thư này cùng mật khẩu bạn đã tạo khi đăng ký để đăng nhập vào Sàn VieShift.
+        </div>
+        <div style="text-align:center;margin:26px 0;">
+            <a th:href="${link}" style="display:inline-block;background:#C24D63;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:15px;padding:14px 32px;border-radius:999px;">
+                Đăng nhập &amp; Nhận việc ngay &rarr;
+            </a>
+        </div>
+    </div>
+    <div style="background:#F4EFEA;padding:16px 32px;font-size:12px;color:#8C827D;text-align:center;">
+        &copy; 2026 VieShift Marketplace Vietnam.
+    </div>
+</div>
+</body>
+</html>

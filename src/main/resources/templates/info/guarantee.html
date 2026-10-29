@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Chính sách Bảo đảm Chất lượng & Hài lòng 100% — VieShift')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('guarantee')}"></header>
+
+<!-- Hero Section Cam kết Hài lòng -->
+<section style="background: linear-gradient(135deg, #1E3A2F 0%, #2E7D5B 60%, #C24D63 100%); color: #FAF7F2; padding: 72px 24px; position: relative; overflow: hidden;">
+    <div class="main-wrapper" style="position: relative; z-index: 2; padding: 0;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(250, 247, 242, 0.16); padding: 6px 16px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #A3E4D7; margin-bottom: 18px;">
+            <i class="bi bi-shield-fill-check"></i> VieShift Happiness Pledge &bull; Bảo chứng Hài lòng 100%
+        </div>
+        <h1 style="font-size: 2.6rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.8px; margin-bottom: 16px; line-height: 1.2;">
+            An tâm Tuyệt đối trong Từng Ca Việc:<br>Nghiệm thu Ưng ý Mới Thanh toán
+        </h1>
+        <p style="font-size: 1.05rem; color: rgba(250, 247, 242, 0.9); max-width: 760px; line-height: 1.65; margin: 0 0 28px;">
+            Chúng tôi xây dựng VieShift không chỉ để kết nối công việc, mà để bảo đảm rằng mỗi khi bạn mở cửa đón một người thợ vào nhà, bạn hoàn toàn có thể an tâm về sự an toàn, chất lượng và tài sản của gia đình mình.
+        </p>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a th:href="@{/customer(tab='create')}" class="btn btn-primary" style="background: #C24D63; border-color: #C24D63; border-radius: 999px; padding: 12px 28px; font-weight: 700;">
+                Đặt thợ có Bảo đảm ngay
+            </a>
+            <a th:href="@{/terms}" class="btn btn-outline" style="border-radius: 999px; padding: 12px 28px; font-weight: 700; color: #FAF7F2; border-color: rgba(250, 247, 242, 0.4);">
+                Xem Chi tiết Quy chế Pháp lý
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- 5 Lớp Bảo vệ An tâm -->
+<main class="main-wrapper" style="padding-top: 64px; padding-bottom: 80px;">
+    
+    <div style="text-align: center; max-width: 720px; margin: 0 auto 48px;">
+        <div style="color: #2E7D5B; font-weight: 800; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+            Lá chắn an toàn cho tổ ấm
+        </div>
+        <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.6px;">
+            5 Lớp Bảo chứng Độc quyền từ VieShift
+        </h2>
+        <p style="color: var(--text-muted); font-size: 0.96rem; margin-top: 8px;">
+            Mọi đơn dịch vụ đặt qua hệ thống đều tự động được áp dụng đầy đủ 5 chính sách bảo vệ dưới đây:
+        </p>
+    </div>
+
+    <div class="grid-3" style="gap: 28px; margin-bottom: 64px;">
+        
+        <!-- 1. Escrow -->
+        <div class="card" style="padding: 32px 26px; border-radius: 20px; border-top: 4px solid #C24D63;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: #FCECEE; color: #C24D63; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-wallet2"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                1. Ví Tạm giữ Escrow
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Số tiền dịch vụ chỉ được phong tỏa tạm thời tại nền tảng. Thợ không thể tự ý lấy tiền nếu công việc chưa hoàn thành đúng thỏa thuận và chưa được bạn bấm nghiệm thu.
+            </p>
+        </div>
+
+        <!-- 2. Bảo hành 14 ngày -->
+        <div class="card" style="padding: 32px 26px; border-radius: 20px; border-top: 4px solid #2E7D5B;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: #EBF7EE; color: #2E7D5B; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-arrow-clockwise"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                2. Bảo hành Miễn phí 14 Ngày
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Nếu mối khoan bị lỏng, bản lề tủ bị lệch, hoặc vòi nước sửa xong lại rỉ trong vòng 14 ngày, thợ có trách nhiệm quay lại căn chỉnh hoàn toàn không tính phí phụ.
+            </p>
+        </div>
+
+        <!-- 3. Bảo hiểm tài sản 50 triệu -->
+        <div class="card" style="padding: 32px 26px; border-radius: 20px; border-top: 4px solid #B86B28;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: #FAF3E8; color: #B86B28; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-shield-check"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                3. Bảo hiểm Thiệt hại Tài sản
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Trong trường hợp hy hữu xảy ra va quẹt hay nứt vỡ tài sản trong quá trình bốc xếp hoặc lắp đặt, VieShift áp dụng gói hỗ trợ đền bù thiệt hại thực tế lên tới <strong>50.000.000 VNĐ</strong>.
+            </p>
+        </div>
+
+        <!-- 4. KYC 5 lớp -->
+        <div class="card" style="padding: 32px 26px; border-radius: 20px; border-top: 4px solid #5E439C;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: #F0ECF9; color: #5E439C; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-fingerprint"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                4. Thẩm định Nhân thân 5 Lớp
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                100% Đối tác VieKer đều được kiểm tra lý lịch tư pháp trong sạch, căn cước công dân gắn chip đối chiếu với cơ quan chức năng và có giấy phép lái xe hợp lệ.
+            </p>
+        </div>
+
+        <!-- 5. Xử lý khiếu nại trong 24h -->
+        <div class="card" style="padding: 32px 26px; border-radius: 20px; border-top: 4px solid #0051BA;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: #EEF4FC; color: #0051BA; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-clock-history"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                5. Xử Lý Khiếu Nại Nhanh Trong 24 Giờ
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Khi có phản ánh chưa hài lòng, Ban Quản Trị VieShift sẽ tiếp nhận ngay lập tức, kiểm tra đối chiếu hình ảnh trước/sau và đưa ra phương án xử lý thỏa đáng trong vòng 24 giờ.
+            </p>
+        </div>
+
+        <!-- 6. Đổi thợ miễn phí -->
+        <div class="card" style="padding: 32px 26px; border-radius: 20px; border-top: 4px solid #10B981;">
+            <div style="width: 48px; height: 48px; border-radius: 12px; background: #E9F7EF; color: #10B981; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-people-fill"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                6. Đổi Thợ Khác nếu Chưa Hài lòng
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Nếu thợ hiện tại không xử lý dứt điểm công việc, VieShift sẽ điều động ngay một thợ bậc cao (Master Tasker) khác tới hoàn tất công việc cho bạn mà bạn không phải trả thêm tiền.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Bảng so sánh Đặt thợ VieShift vs Gọi thợ tự do -->
+    <div class="card" style="padding: 40px; border-radius: 24px; margin-bottom: 64px;">
+        <h3 style="font-size: 1.5rem; font-weight: 800; color: var(--secondary); text-align: center; margin-bottom: 28px;">
+            So sánh: Đặt thợ qua VieShift vs. Gọi thợ tự do truyền thống
+        </h3>
+        <div class="table-responsive">
+            <table class="table" style="font-size: 0.92rem;">
+                <thead>
+                    <tr style="background: var(--surface-subtle);">
+                        <th style="width: 35%;">Tiêu chí dịch vụ</th>
+                        <th style="width: 35%; color: #C24D63; font-weight: 800;"><i class="bi bi-check-circle-fill"></i> Nền tảng VieShift</th>
+                        <th style="width: 30%; color: var(--text-light);">Thợ tự do bên ngoài</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Xác thực danh tính &amp; Nhân thân</strong></td>
+                        <td style="color: #2E7D5B; font-weight: 700;">100% duyệt CCCD + Lý lịch tư pháp</td>
+                        <td style="color: var(--text-light);">Không rõ lai lịch, dễ rủi ro an ninh</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giá cả &amp; Chi phí thi công</strong></td>
+                        <td style="color: #2E7D5B; font-weight: 700;">Niêm yết rõ ràng theo giờ/dịch vụ</td>
+                        <td style="color: var(--text-light);">Thường nói thách, phát sinh nhiều phụ phí</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Bảo đảm thanh toán (Escrow)</strong></td>
+                        <td style="color: #2E7D5B; font-weight: 700;">Nghiệm thu ưng ý mới giải ngân</td>
+                        <td style="color: var(--text-light);">Đòi ứng tiền trước, khó hoàn lại</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Chính sách Bảo hành sau làm</strong></td>
+                        <td style="color: #2E7D5B; font-weight: 700;">Bảo hành 14 ngày có nền tảng bảo lãnh</td>
+                        <td style="color: var(--text-light);">Làm xong khó gọi lại, từ chối trách nhiệm</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Giải quyết khi có hư hỏng tài sản</strong></td>
+                        <td style="color: #2E7D5B; font-weight: 700;">Bảo hiểm đền bù tới 50 triệu đồng</td>
+                        <td style="color: var(--text-light);">Chủ nhà tự chịu toàn bộ thiệt hại</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Quy trình 4 bước khi cần hỗ trợ hoặc khiếu nại -->
+    <div style="background: #FAF7F2; border: 1.5px solid var(--border); border-radius: 24px; padding: 40px; text-align: center;">
+        <h3 style="font-size: 1.6rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+            Quy trình hỗ trợ khi bạn chưa thực sự hài lòng
+        </h3>
+        <p style="font-size: 0.92rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 32px;">
+            Rất đơn giản, quyền quyết định giải ngân luôn nằm trong tay bạn:
+        </p>
+        <div class="grid-4" style="gap: 20px; text-align: left;">
+            <div style="background: #FFFFFF; padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
+                <div style="font-size: 1.2rem; font-weight: 800; color: #C24D63; margin-bottom: 6px;">Bước 1</div>
+                <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Chưa bấm Nghiệm thu</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Giữ nguyên hiện trạng để tiền tiếp tục đóng băng trong quỹ tạm giữ.</div>
+            </div>
+            <div style="background: #FFFFFF; padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
+                <div style="font-size: 1.2rem; font-weight: 800; color: #C24D63; margin-bottom: 6px;">Bước 2</div>
+                <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Bấm "Mở Khiếu nại"</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Chọn lý do và đính kèm hình ảnh chỗ chưa ưng ý trên đơn hàng.</div>
+            </div>
+            <div style="background: #FFFFFF; padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
+                <div style="font-size: 1.2rem; font-weight: 800; color: #C24D63; margin-bottom: 6px;">Bước 3</div>
+                <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Ban Quản Trị Thẩm định</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Chuyên viên VieShift gọi điện xác minh cả hai phía trong vòng 4h.</div>
+            </div>
+            <div style="background: #FFFFFF; padding: 20px; border-radius: 16px; border: 1px solid var(--border);">
+                <div style="font-size: 1.2rem; font-weight: 800; color: #C24D63; margin-bottom: 6px;">Bước 4</div>
+                <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 4px;">Hoàn tiền hoặc Sửa lại</div>
+                <div style="font-size: 0.82rem; color: var(--text-muted);">Hoàn 100% tiền về ví hoặc điều động thợ khác tới làm lại miễn phí.</div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

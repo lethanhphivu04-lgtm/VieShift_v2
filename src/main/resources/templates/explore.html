@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Khám phá Dịch vụ & Đội ngũ Thợ lành nghề')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('explore')}"></header>
+
+<main class="main-wrapper">
+
+    <!-- Header & Search Bar (Warm Beige & Rosewood) -->
+    <div class="reveal-on-scroll" style="background: var(--bg-sand); border: 1px solid var(--border); border-radius: 24px; padding: 36px 28px; margin-bottom: 36px; box-shadow: var(--shadow-sm);">
+        <div style="max-width: 720px; margin: 0 auto; text-align: center;">
+            <span class="badge badge-primary" style="margin-bottom: 12px; background: #FFFFFF; color: #C24D63; border: 1px solid #FCE8EC;">
+                <i class="bi bi-shield-check"></i> Sàn Dịch vụ & Bảo đảm Hài lòng 100%
+            </span>
+            <h1 style="font-size: 2.15rem; font-weight: 800; color: #2B2523; margin-bottom: 8px;">
+                Tìm kiếm Dịch vụ, Thợ uy tín & Việc đang mở
+            </h1>
+            <p style="color: var(--text-muted); margin-bottom: 24px;">
+                Chọn dịch vụ theo giờ, đặt đích danh Thợ 5 sao hoặc nhận các công việc được bảo đảm thanh toán
+            </p>
+
+            <form th:action="@{/explore}" method="get" class="tr-search-form" style="margin-bottom: 20px;">
+                <input type="hidden" name="catId" th:if="${selectedCatId != null}" th:value="${selectedCatId}">
+                <input type="text" name="q" th:value="${q}" class="tr-search-input"
+                       placeholder="Tìm theo tên công việc, kỹ năng Thợ, quận/huyện...">
+                <button type="submit" class="tr-search-btn">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+
+            <!-- Category Filter Pills -->
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                <a th:href="@{/explore(q=${q})}"
+                   class="tr-subpill"
+                   th:style="${selectedCatId == null ? 'background: #C24D63; color: #FFF; border-color: #C24D63; padding: 8px 18px; font-size: 0.85rem;' : 'padding: 8px 18px; font-size: 0.85rem;'}">
+                    Tất cả ngành nghề
+                </a>
+                <a th:each="cat : ${categories}"
+                   th:href="@{/explore(catId=${cat.id}, q=${q})}"
+                   class="tr-subpill"
+                   th:style="${selectedCatId != null and selectedCatId == cat.id ? 'background: #C24D63; color: #FFF; border-color: #C24D63; padding: 8px 18px; font-size: 0.85rem;' : 'padding: 8px 18px; font-size: 0.85rem;'}">
+                    <i th:class="'bi ' + ${cat.icon}"></i>
+                    <span th:text="${cat.name}">Lắp ráp</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 1. ĐỘI NGŨ THỢ ĐÃ ĐỊNH DANH TAY NGHỀ -->
+    <section class="reveal-on-scroll delay-1" style="margin-bottom: 44px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <div>
+                <h2 style="font-size: 1.45rem; font-weight: 800; color: #2B2523;">
+                    Đội ngũ Thợ sẵn sàng nhận việc (<span th:text="${verifiedViekers.size()}">3</span> Thợ)
+                </h2>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">
+                    Đặt lịch trực tiếp với Thợ đã xác thực định danh và có điểm đánh giá cao
+                </p>
+            </div>
+        </div>
+
+        <div class="tr-tasker-grid">
+            <div th:each="vp : ${verifiedViekers}" class="tr-tasker-card reveal-on-scroll delay-1">
+                <div>
+                    <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 14px;">
+                        <div style="width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #C24D63, #E87A8D); color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; font-weight: 800; box-shadow: 0 4px 12px rgba(194, 77, 99, 0.28);">
+                            <span th:text="${#strings.substring(vp.user.fullName, 0, 1)}">T</span>
+                        </div>
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                                <strong style="font-size: 1.08rem; color: #2B2523;" th:text="${vp.user.fullName}">Lê Minh Quân</strong>
+                                <span class="badge badge-success" style="font-size: 0.7rem;"><i class="bi bi-patch-check-fill"></i> Thợ xuất sắc</span>
+                            </div>
+                            <div style="font-size: 0.84rem; color: #C24D63; font-weight: 700;">
+                                ★ <span th:text="${vp.ratingAvg}">5.0</span> (<span th:text="${vp.ratingCount}">34</span> đánh giá)
+                                · <span th:text="${vp.totalJobsCompleted}">42</span> việc hoàn thành
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="font-size: 0.86rem; color: #334155; background: var(--surface-subtle); padding: 12px; border-radius: 12px; margin-bottom: 14px; border: 1px solid var(--border);">
+                        <div style="font-weight: 700; margin-bottom: 4px;">
+                            <i class="bi bi-geo-alt-fill" style="color: #C24D63;"></i>
+                            <span th:text="${vp.operatingZone}">TP.HCM</span>
+                        </div>
+                        <div th:text="${vp.skillsDescription}">Kỹ năng</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 12px;">
+                    <span style="font-size: 0.85rem; font-weight: 700; color: #2B2523;"
+                          th:text="${vp.experienceYears} + ' năm kinh nghiệm'">5 năm</span>
+                    <a th:href="@{/book-task(catId=${selectedCatId}, viekerName=${vp.user.fullName}, title='Đặt lịch dịch vụ cùng Thợ ' + ${vp.user.fullName})}"
+                       class="btn btn-primary btn-sm"
+                       style="background: linear-gradient(135deg, #C24D63, #D95D74); border-color: #C24D63; border-radius: 9999px; padding: 8px 18px; box-shadow: 0 4px 12px rgba(194, 77, 99, 0.25);">
+                        Chọn & Đặt lịch
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. VIỆC LÀM ĐANG MỞ NHẬN THỢ (OPEN TASKS) -->
+    <div class="card reveal-on-scroll delay-2">
+        <div class="card-header">
+            <h2 class="card-title">Công việc đang mở nhận Thợ (<span th:text="${openJobs.size()}">0</span> việc)</h2>
+            <a th:href="@{/book-task}" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #C24D63, #D95D74); border-color: #C24D63; border-radius: 9999px; padding: 8px 18px; box-shadow: 0 4px 12px rgba(194, 77, 99, 0.25);">
+                <i class="bi bi-plus-circle"></i> Đăng việc mới ngay
+            </a>
+        </div>
+        <div class="card-body">
+            <div th:if="${openJobs.isEmpty()}" style="text-align: center; padding: 40px; color: var(--text-muted);">
+                <i class="bi bi-inbox" style="font-size: 2.5rem; display: block; margin-bottom: 12px; color: var(--border-strong);"></i>
+                Không tìm thấy công việc đang mở nào khớp với bộ lọc hiện tại.
+            </div>
+
+            <div th:unless="${openJobs.isEmpty()}" class="table-responsive">
+                <table class="custom-table">
+                    <thead>
+                        <tr>
+                            <th>Tiêu đề công việc</th>
+                            <th>Ngành nghề</th>
+                            <th>Địa chỉ</th>
+                            <th>Thời gian bắt đầu</th>
+                            <th>Chi phí dự kiến</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="job : ${openJobs}">
+                            <td>
+                                <strong th:text="${job.title}">Dọn dẹp nhà</strong>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); max-width: 340px;" th:text="${job.description}">Mô tả</div>
+                            </td>
+                            <td>
+                                <span class="badge badge-info" th:text="${job.category.name}">Dọn nhà</span>
+                            </td>
+                            <td th:text="${job.address}">Hồ Chí Minh</td>
+                            <td th:text="${#temporals.format(job.scheduledAt, 'dd/MM/yyyy HH:mm')}">26/10/2026</td>
+                            <td>
+                                <strong style="color: #C24D63; font-size: 1.05rem;"
+                                        th:text="${#numbers.formatDecimal(job.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                                    240,000 đ
+                                </strong>
+                                <div style="font-size: 0.78rem; color: #C24D63;">
+                                    <i class="bi bi-shield-check"></i> Đảm bảo thanh toán
+                                </div>
+                            </td>
+                            <td>
+                                <a th:href="@{/vieker(tab='browse')}" class="btn btn-outline btn-sm" style="border-radius: 9999px;">
+                                    <i class="bi bi-briefcase"></i> Nhận việc ngay
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. TẤT CẢ DANH MỤC NGÀNH NGHỀ -->
+    <div class="card reveal-on-scroll delay-3" style="margin-top: 32px;">
+        <div class="card-header">
+            <h2 class="card-title">Tất cả danh mục ngành nghề niêm yết</h2>
+        </div>
+        <div class="card-body">
+            <div class="categories-grid" style="margin-top: 0;">
+                <div th:each="cat : ${categories}" class="category-card-item">
+                    <div class="category-icon-box" style="background: #FDF2F4; color: #C24D63;">
+                        <i th:class="'bi ' + ${cat.icon}"></i>
+                    </div>
+                    <div class="category-name-text" th:text="${cat.name}">Dọn dẹp</div>
+                    <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;" th:text="${cat.description}">Mô tả</div>
+                    <div class="badge badge-primary" style="margin-bottom: 12px; background: #FDF2F4; color: #C24D63; border: 1px solid #FCE8EC;"
+                         th:text="'Đơn giá: ' + ${#numbers.formatDecimal(cat.baseRate, 0, 'COMMA', 0, 'POINT')} + ' đ / ' + ${cat.unitName}">
+                        80,000 đ / giờ
+                    </div>
+                    <div>
+                        <a th:href="@{/book-task(catId=${cat.id}, title='Đặt dịch vụ ' + ${cat.name})}"
+                           class="btn btn-outline btn-sm" style="width: 100%; border-radius: 9999px; border-color: #C24D63; color: #C24D63;">
+                            Đặt dịch vụ này
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

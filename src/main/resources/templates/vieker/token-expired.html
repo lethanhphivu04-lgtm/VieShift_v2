@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Liên kết đã hết hạn — VieShift')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('become-vieker')}"></header>
+
+<main class="auth-boutique-shell" style="padding: 60px 20px;">
+    <div class="card" style="max-width: 580px; width: 100%; padding: 48px 40px; text-align: center; position: relative; z-index: 2; border-radius: 28px; box-shadow: var(--shadow-xl); margin: 0 auto;">
+        
+        <div style="width: 76px; height: 76px; border-radius: 50%; background: #FFFBEB; border: 2px solid #FDE68A; display: inline-flex; align-items: center; justify-content: center; color: #D97706; font-size: 2.2rem; margin-bottom: 20px;">
+            <i class="bi bi-clock-history"></i>
+        </div>
+
+        <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--secondary); margin-bottom: 12px; letter-spacing: -0.5px;">
+            Đường dẫn định danh đã hết hạn
+        </h1>
+
+        <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+            Vì lý do bảo mật dữ liệu cá nhân theo quy định, liên kết hoàn thiện hồ sơ đối tác VieKer chỉ có hiệu lực trong vòng <strong>24 giờ</strong>.
+        </p>
+
+        <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; font-size: 0.88rem; color: var(--text-main); margin-bottom: 28px; text-align: left;">
+            <div>Email đăng ký: <strong th:text="${profile.user.email}">user@email.com</strong></div>
+            <div style="margin-top: 4px; font-size: 0.8rem; color: var(--text-muted);">
+                Đừng lo lắng! Toàn bộ thông tin tài khoản của bạn vẫn được lưu giữ an toàn. Bạn chỉ cần nhấn nút bên dưới để nhận một liên kết mới qua email.
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+            <form th:action="@{/become-vieker/resend-email}" method="post" style="display: inline;">
+                <input type="hidden" name="token" th:value="${profile.onboardingToken}">
+                <button type="submit" class="btn btn-primary" style="border-radius: 999px; padding: 12px 28px; font-weight: 700;">
+                    <i class="bi bi-envelope-check"></i> Gửi lại liên kết mới ngay
+                </button>
+            </form>
+            <a th:href="@{/login}" class="btn btn-secondary" style="border-radius: 999px; padding: 12px 24px; text-decoration: none;">
+                Về trang Đăng nhập
+            </a>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vieshift-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vieshift_db
+      POSTGRES_USER: vieshift
+      POSTGRES_PASSWORD: vieshift123
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>VieShift - Hoàn thiện hồ sơ đối tác VieKer</title>
+</head>
+<body style="margin:0;padding:32px 16px;background-color:#FAF7F2;font-family:'Helvetica Neue',Arial,sans-serif;color:#2B2523;">
+<div style="max-width:580px;margin:0 auto;background:#FFFFFF;border:1px solid #EAE2D9;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(43,37,35,0.06);">
+    <div style="background:linear-gradient(135deg,#2B2523 0%,#453B38 55%,#C24D63 100%);padding:28px 32px;color:#FFFFFF;">
+        <div style="font-size:22px;font-weight:800;letter-spacing:-0.5px;">VieShift <span style="color:#E6AF76;">.</span></div>
+        <div style="font-size:12px;opacity:0.85;margin-top:4px;letter-spacing:0.8px;text-transform:uppercase;">Nền tảng Đối tác Dịch vụ Chuyên nghiệp</div>
+    </div>
+    <div style="padding:32px;">
+        <h2 style="margin:0 0 14px;font-size:22px;color:#2B2523;">Xin chào <span th:text="${name}">Đối tác</span>,</h2>
+        <p style="font-size:15px;line-height:1.65;color:#574E4A;margin:0 0 16px;">
+            Cảm ơn bạn đã đăng ký trở thành đối tác <strong>VieKer</strong> trên nền tảng VieShift! Để kích hoạt tài khoản và bắt đầu nhận việc, bạn vui lòng truy cập đường dẫn bên dưới để hoàn thiện hồ sơ định danh (KYC).
+        </p>
+        <div style="background:#FAF7F2;border:1px solid #EAE2D9;border-radius:12px;padding:18px 20px;margin:20px 0;">
+            <div style="font-size:13px;font-weight:700;color:#2B2523;margin-bottom:8px;">Hồ sơ cần chuẩn bị (ảnh chụp rõ nét hoặc bản PDF):</div>
+            <ul style="margin:0;padding-left:18px;font-size:13.5px;color:#574E4A;line-height:1.7;">
+                <li>Ảnh chân dung chính diện rõ mặt</li>
+                <li>Căn cước công dân (CCCD) mặt trước &amp; mặt sau</li>
+                <li>Phiếu Lý lịch tư pháp (hoặc giấy xác nhận nhân thân)</li>
+                <li>Giấy phép lái xe (Bằng lái xe)</li>
+            </ul>
+        </div>
+
+        <div style="background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:12px 16px;margin:18px 0;font-size:13px;color:#92400E;">
+            ⏱️ <strong>Thời hạn liên kết:</strong> Đường dẫn này có hiệu lực trong vòng <strong>24 giờ</strong> (hết hạn lúc <span th:text="${expireTime}">10:00 - 30/10/2026</span>) để đảm bảo bảo mật dữ liệu định danh của bạn.
+        </div>
+
+        <div style="text-align:center;margin:28px 0;">
+            <a th:href="${link}" style="display:inline-block;background:#C24D63;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:15px;padding:14px 32px;border-radius:999px;box-shadow: 0 4px 14px rgba(194, 77, 99, 0.35);">
+                Hoàn thiện hồ sơ đối tác ngay &rarr;
+            </a>
+        </div>
+        <p style="font-size:12.5px;color:#8C827D;line-height:1.6;margin:0 0 10px;">
+            Nếu nút bấm không hoạt động, hãy sao chép đường dẫn sau vào trình duyệt:<br>
+            <a th:href="${link}" th:text="${link}" style="color:#C24D63;word-break:break-all;"></a>
+        </p>
+        <p style="font-size:12.5px;color:#64748B;line-height:1.5;margin:0;">
+            💡 <em>Lưu ý: Sau khi nộp hồ sơ và được Ban Quản Trị phê duyệt, bạn sẽ dùng chính địa chỉ email này và mật khẩu đã khởi tạo để đăng nhập vào VieShift và bắt đầu nhận việc.</em>
+        </p>
+    </div>
+    <div style="background:#F4EFEA;padding:16px 32px;font-size:12px;color:#8C827D;text-align:center;">
+        &copy; 2026 VieShift Marketplace Vietnam. Mọi quyền được bảo lưu.
+    </div>
+</div>
+</body>
+</html>

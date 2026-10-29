@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Cẩm nang Mẹo vặt Gia đình & Hoạt động Cộng đồng — VieShift')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('handbook')}"></header>
+
+<!-- Hero Section Cẩm nang & Cộng đồng -->
+<section style="background: linear-gradient(135deg, #2B2523 0%, #3D312E 50%, #C24D63 100%); color: #FAF7F2; padding: 72px 24px; position: relative; overflow: hidden;">
+    <div class="main-wrapper" style="position: relative; z-index: 2; padding: 0;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(250, 247, 242, 0.14); padding: 6px 16px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #E6AF76; margin-bottom: 18px;">
+            <i class="bi bi-book-half"></i> Kiến thức Tiện ích &bull; Lan tỏa Giá trị Tích cực
+        </div>
+        <h1 style="font-size: 2.6rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.8px; margin-bottom: 16px; line-height: 1.2;">
+            Cẩm nang Mẹo vặt Gia đình &amp;<br>Nhịp sống Cộng đồng VieShift
+        </h1>
+        <p style="font-size: 1.05rem; color: rgba(250, 247, 242, 0.85); max-width: 760px; line-height: 1.65; margin: 0 0 28px;">
+            Tổng hợp các kinh nghiệm sửa chữa, mẹo vặt chăm sóc nhà cửa thiết thực từ các thợ cả lành nghề, cùng những câu chuyện truyền cảm hứng từ cộng đồng Đối tác VieKer khắp cả nước.
+        </p>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a href="#tips-section" class="btn btn-primary" style="border-radius: 999px; padding: 12px 28px; font-weight: 700;">
+                Xem Mẹo vặt Gia đình
+            </a>
+            <a href="#community-section" class="btn btn-outline" style="border-radius: 999px; padding: 12px 28px; font-weight: 700; color: #FAF7F2; border-color: rgba(250, 247, 242, 0.4);">
+                Hoạt động Cộng đồng
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Nội dung Cẩm nang & Bài viết -->
+<main class="main-wrapper" style="padding-top: 64px; padding-bottom: 80px;">
+
+    <!-- PHẦN 1: CẨM NANG MẸO VẶT GIA ĐÌNH -->
+    <div id="tips-section" style="margin-bottom: 72px;">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <span class="badge" style="background: #FCECEE; color: #C24D63; font-weight: 800; padding: 6px 14px; margin-bottom: 8px; display: inline-block;">
+                    Góc Mẹo Vặt Chủ Nhà
+                </span>
+                <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.6px; margin: 0;">
+                    Bí quyết Sửa chữa &amp; Chăm sóc Tổ ấm
+                </h2>
+            </div>
+            <div style="font-size: 0.88rem; color: var(--text-muted);">
+                Được chia sẻ bởi các Đối tác VieKer trên 10 năm kinh nghiệm
+            </div>
+        </div>
+
+        <div class="grid-3" style="gap: 28px;">
+            
+            <!-- Bài 1: Khoan tường an toàn -->
+            <div class="card" style="padding: 0; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="https://images.unsplash.com/photo-1504148455328-c376907d081c?auto=format&fit=crop&w=600&q=80"
+                     alt="Mẹo khoan tường an toàn" style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                            <span class="badge" style="background: #FAF3E8; color: #B86B28; font-size: 0.72rem;">Khoan lắp</span>
+                            <span style="font-size: 0.75rem; color: var(--text-light);">5 phút đọc</span>
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px; line-height: 1.4;">
+                            5 lưu ý sống còn khi tự khoan tường: Cách tránh dây điện &amp; ống nước âm
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                            Nguyên tắc gióng đường vuông góc từ ổ cắm điện, cách sử dụng máy dò kim loại cầm tay và nhận diện âm thanh rỗng khi khoan tường gạch bê tông.
+                        </p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" style="border-radius: 999px; align-self: flex-start;"
+                            onclick="openArticleModal('5 lưu ý sống còn khi tự khoan tường', 'Nguyên tắc vàng: Đường dây điện âm tường tại Việt Nam thông thường được thi công đi theo đường thẳng đứng vuông góc từ ổ cắm hoặc công tắc lên trần nhà. Tuyệt đối không khoan vào vùng thẳng đứng trong phạm vi 15-20cm quanh công tắc/ổ cắm. Với phòng tắm, hệ thống ống nước nóng lạnh thường đi cách mặt sàn từ 80cm - 110cm. Hãy dùng búa gõ nhẹ kiểm tra âm thanh hoặc sử dụng máy dò điện âm cầm tay trước khi bắt vít nở.')">
+                        Đọc chi tiết &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bài 2: Lắp ráp IKEA -->
+            <div class="card" style="padding: 0; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="https://images.unsplash.com/photo-1538688525198-9b88f6f53126?auto=format&fit=crop&w=600&q=80"
+                     alt="Lắp ráp đồ nội thất IKEA" style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                            <span class="badge" style="background: #FCECEE; color: #C24D63; font-size: 0.72rem;">Lắp ráp đồ gỗ</span>
+                            <span style="font-size: 0.75rem; color: var(--text-light);">4 phút đọc</span>
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px; line-height: 1.4;">
+                            Bí quyết lắp ráp đồ nội thất IKEA nhanh gấp 2 lần không lo sót phụ kiện
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                            Kỹ thuật phân loại ốc cam, chốt gỗ và ray trượt ra các khay riêng biệt trước khi bắt đầu; thứ tự lắp đặt giúp khung tủ không bị xộc xệch.
+                        </p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" style="border-radius: 999px; align-self: flex-start;"
+                            onclick="openArticleModal('Bí quyết lắp ráp đồ nội thất IKEA nhanh gấp đôi', 'Bước 1: Trải bìa carton lót sàn để chống xước gạch và bề mặt ván. Bước 2: Đếm và phân loại toàn bộ ốc liên kết, chốt gỗ, vít bản lề vào từng đĩa giấy. Bước 3: Đóng chốt gỗ nhẹ nhàng bằng búa cao su, không dùng búa sắt tránh nứt ván dăm. Bước 4: Vặn ốc cam đến điểm dừng, không siết quá lực làm toét ren ván MDF.')">
+                        Đọc chi tiết &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bài 3: Aptomat & Điện nước -->
+            <div class="card" style="padding: 0; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?auto=format&fit=crop&w=600&q=80"
+                     alt="Xử lý sự cố điện nước gia đình" style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                            <span class="badge" style="background: #EBF7EE; color: #2E7D5B; font-size: 0.72rem;">Điện nước</span>
+                            <span style="font-size: 0.75rem; color: var(--text-light);">6 phút đọc</span>
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px; line-height: 1.4;">
+                            Xử lý nhanh khi Aptomat nhảy liên tục &amp; Khóa van nước tổng khẩn cấp
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                            Quy trình cô lập từng nhánh thiết bị gia dụng để tìm ra thủ phạm gây quá tải/chập mạch và vị trí van khóa nước tổng của từng loại căn hộ.
+                        </p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" style="border-radius: 999px; align-self: flex-start;"
+                            onclick="openArticleModal('Xử lý nhanh khi Aptomat nhảy liên tục', 'Khi aptomat tổng nhảy, bước 1: ngắt tất cả aptomat nhánh nhỏ. Bước 2: gạt bật lại aptomat tổng. Bước 3: gạt bật từng aptomat nhánh lên, aptomat nhánh nào làm aptomat tổng sập chính là nhánh đang bị chập tải. Rút phích cắm tủ lạnh, ấm đun nước, lò vi sóng ở nhánh đó ra kiểm tra dây dẫn. Nếu vẫn không xử lý được, hãy đặt ngay thợ điện nước VieShift hỗ trợ trong 30 phút!')">
+                        Đọc chi tiết &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bài 4: Chuyển nhà chung cư -->
+            <div class="card" style="padding: 0; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=600&q=80"
+                     alt="Kinh nghiệm chuyển nhà căn hộ" style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                            <span class="badge" style="background: #F0ECF9; color: #5E439C; font-size: 0.72rem;">Chuyển nhà</span>
+                            <span style="font-size: 0.75rem; color: var(--text-light);">5 phút đọc</span>
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px; line-height: 1.4;">
+                            Checklist đóng gói đồ đạc thông minh khi chuyển căn hộ chung cư
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                            Đánh số thùng carton theo màu phòng, bảo quản đồ gốm sứ thủy tinh bằng màng xốp hơi, và thủ tục đăng ký thang máy hàng với ban quản lý.
+                        </p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" style="border-radius: 999px; align-self: flex-start;"
+                            onclick="openArticleModal('Checklist đóng gói đồ đạc thông minh', '1. Đăng ký trước với BQL chung cư khung giờ sử dụng thang máy hàng ít nhất 48 tiếng. 2. Đóng thùng theo phòng (Bếp, Khách, Ngủ 1, Ngủ 2) và dán nhãn 4 mặt thùng. 3. Để riêng 1 vali đồ dùng thiết yếu cho 2 ngày đầu (quần áo, bàn chải, sạc điện thoại, thuốc men, tài liệu quan trọng). 4. Đặt thợ bốc xếp VieKer để hỗ trợ khiêng đồ nặng an toàn tránh đau lưng.')">
+                        Đọc chi tiết &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bài 5: Bảo dưỡng điều hòa & điện lạnh -->
+            <div class="card" style="padding: 0; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=600&q=80"
+                     alt="Bảo dưỡng điều hòa tiết kiệm điện" style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                            <span class="badge" style="background: #FAF3E8; color: #B86B28; font-size: 0.72rem;">Điện lạnh</span>
+                            <span style="font-size: 0.75rem; color: var(--text-light);">4 phút đọc</span>
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px; line-height: 1.4;">
+                            Mẹo vệ sinh lưới lọc điều hòa định kỳ giúp tiết kiệm 25% tiền điện mỗi tháng
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                            Bụi bám trên dàn lạnh khiến quạt gió phải làm việc gấp đôi công suất. Hướng dẫn tự tháo rửa tấm lọc bụi chỉ trong 10 phút cuối tuần.
+                        </p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" style="border-radius: 999px; align-self: flex-start;"
+                            onclick="openArticleModal('Mẹo vệ sinh lưới lọc điều hòa định kỳ', 'Mỗi 2-3 tuần, hãy gạt nhẹ nắp dàn lạnh, rút 2 tấm lưới lọc bụi ra rửa dưới vòi nước sạch (không dùng nước nóng, không chà cọ bằng bàn chải cứng). Phơi khô tự nhiên trong bóng râm rồi lắp lại. Chỉ thao tác đơn giản này giúp gió thổi mạnh hơn, nhiệt độ phòng mát nhanh hơn và giảm hẳn tiền điện hàng tháng!')">
+                        Đọc chi tiết &rarr;
+                    </button>
+                </div>
+            </div>
+
+            <!-- Bài 6: Câu chuyện truyền cảm hứng VieKer -->
+            <div class="card" style="padding: 0; border-radius: 20px; overflow: hidden; display: flex; flex-direction: column;">
+                <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80"
+                     alt="Câu chuyện người thợ VieKer" style="width: 100%; height: 200px; object-fit: cover;">
+                <div style="padding: 24px; flex: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <div>
+                        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 10px;">
+                            <span class="badge" style="background: #EBF7EE; color: #2E7D5B; font-size: 0.72rem;">Câu chuyện người thợ</span>
+                            <span style="font-size: 0.75rem; color: var(--text-light);">5 phút đọc</span>
+                        </div>
+                        <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px; line-height: 1.4;">
+                            Từ thợ mộc phụ hồ đến Đối tác VieKer 5 sao thu nhập 25 triệu/tháng
+                        </h3>
+                        <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+                            Hành trình của anh Hoàng Văn Thắng tại TP.HCM: Tự chủ nhận việc gần nhà, không lo bị quỵt tiền nhờ quỹ tạm giữ Escrow và niềm vui được khách quý mến.
+                        </p>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-outline" style="border-radius: 999px; align-self: flex-start;"
+                            onclick="openArticleModal('Từ thợ mộc phụ hồ đến Đối tác VieKer 5 sao', 'Trước kia anh Thắng làm thợ tự do, tiền công bấp bênh và hay bị nợ lương. Từ ngày đăng ký làm VieKer, anh hoàn thành hơn 180 đơn lắp ráp tủ kệ với điểm tuyệt đối 5.0 sao. Anh chia sẻ: Điểm tôi ưng ý nhất ở VieShift là tiền luôn được giữ an toàn trong ví tạm giữ, làm xong khách ưng ý là nhận tiền ngay lập tức, không phải đi đòi nợ như trước.')">
+                        Đọc chi tiết &rarr;
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- PHẦN 2: TIN TỨC & HOẠT ĐỘNG CỘNG ĐỒNG VIEKER -->
+    <div id="community-section" style="background: #FAF7F2; border: 1px solid var(--border); border-radius: 24px; padding: 48px 40px;">
+        <div style="text-align: center; max-width: 720px; margin: 0 auto 40px;">
+            <span class="badge" style="background: #FAF3E8; color: #B86B28; font-weight: 800; padding: 6px 14px; margin-bottom: 8px; display: inline-block;">
+                Cộng đồng &amp; Trách nhiệm Xã hội
+            </span>
+            <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.6px; margin: 0;">
+                Hoạt động Gắn kết &bull; Tri ân Người Lao Động
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; margin-top: 8px;">
+                Tại VieShift, chúng tôi tin rằng người thợ hạnh phúc sẽ mang lại chất lượng dịch vụ tốt nhất cho mỗi gia đình Việt.
+            </p>
+        </div>
+
+        <div class="grid-3" style="gap: 24px;">
+            
+            <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 18px; padding: 24px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #FCECEE; color: #C24D63; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 16px;">
+                    <i class="bi bi-gift-fill"></i>
+                </div>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Quỹ Tương Trợ "VieKer Care"
+                </h4>
+                <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+                    Trích 1% doanh thu nền tảng để hỗ trợ bảo hiểm tai nạn nghề nghiệp và trao học bổng cho con em của các Đối tác VieKer có hoàn cảnh khó khăn.
+                </p>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 18px; padding: 24px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #EBF7EE; color: #2E7D5B; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 16px;">
+                    <i class="bi bi-award-fill"></i>
+                </div>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Lễ Vinh Danh VieKer 5 Sao
+                </h4>
+                <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+                    Chương trình định kỳ hàng quý trao tặng chứng nhận Master Tasker, bộ dụng cụ máy khoan pin cao cấp và phần thưởng tiền mặt cho thợ xuất sắc nhất.
+                </p>
+            </div>
+
+            <div style="background: #FFFFFF; border: 1px solid var(--border); border-radius: 18px; padding: 24px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #F0ECF9; color: #5E439C; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; margin-bottom: 16px;">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <h4 style="font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Khóa Đào Tạo Văn Hóa Phục Vụ
+                </h4>
+                <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+                    Các lớp tập huấn miễn phí về quy tắc giao tiếp lịch sự, giữ gìn vệ sinh nơi ở của khách và ứng xử chuẩn mực trong các khu căn hộ cao cấp.
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+</main>
+
+<!-- Modal Xem Chi tiết Bài viết -->
+<div id="articleModal" class="modal-backdrop" onclick="if(event.target===this) this.classList.remove('active')">
+    <div class="modal-dialog" style="max-width: 620px;">
+        <div class="modal-header">
+            <h3 class="modal-title" id="articleModalTitle" style="font-size: 1.25rem; font-weight: 800; color: var(--secondary);">Tiêu đề bài viết</h3>
+            <button type="button" class="modal-close" onclick="document.getElementById('articleModal').classList.remove('active')">&times;</button>
+        </div>
+        <div class="modal-body" style="font-size: 0.95rem; line-height: 1.7; color: var(--text-main); white-space: pre-line;" id="articleModalContent">
+            Nội dung bài viết...
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+            <a th:href="@{/customer(tab='create')}" class="btn btn-primary btn-sm" style="border-radius: 999px;">
+                <i class="bi bi-tools"></i> Cần thợ trợ giúp ngay? Đặt thợ
+            </a>
+            <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('articleModal').classList.remove('active')">
+                Đóng
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+<script>
+    function openArticleModal(title, content) {
+        document.getElementById('articleModalTitle').innerText = title;
+        document.getElementById('articleModalContent').innerText = content;
+        document.getElementById('articleModal').classList.add('active');
+    }
+</script>
+
+</body>
+</html>

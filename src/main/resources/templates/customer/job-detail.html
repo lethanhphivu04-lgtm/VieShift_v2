@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Chi tiết Công việc #' + ${job.id})}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('dashboard')}"></header>
+
+<main class="main-wrapper">
+
+    <!-- Thông báo -->
+    <div th:if="${successMessage}" class="alert-box alert-success">
+        <span><i class="bi bi-check-circle-fill"></i> <span th:text="${successMessage}"></span></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert-box alert-error">
+        <span><i class="bi bi-exclamation-triangle-fill"></i> <span th:text="${errorMessage}"></span></span>
+    </div>
+
+    <!-- Header điều hướng -->
+    <div style="margin-bottom: 24px;">
+        <a th:href="@{/customer(tab='jobs')}" style="color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 600;">
+            <i class="bi bi-arrow-left"></i> Quay lại danh sách công việc
+        </a>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 28px;">
+
+        <!-- Cột trái: Thông tin công việc & Hành động chính -->
+        <div>
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <span th:class="'badge ' + ${job.status.badgeClass}" style="font-size: 0.85rem;" th:text="${job.status.displayName}">
+                            Đang tìm thợ
+                        </span>
+                        <h2 style="font-size: 1.5rem; font-weight: 800; margin-top: 8px;" th:text="${job.title}">
+                            Tiêu đề công việc
+                        </h2>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 0.8rem; color: var(--text-muted);">Mã công việc</div>
+                        <strong style="font-size: 1.1rem; color: var(--text-main);" th:text="'#' + ${job.id}">#1</strong>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 8px;">Mô tả chi tiết:</h4>
+                    <p style="color: var(--text-muted); font-size: 0.95rem; white-space: pre-line; line-height: 1.7;" th:text="${job.description}">
+                        Mô tả công việc...
+                    </p>
+
+                    <hr style="border: none; border-top: 1px solid var(--border); margin: 24px 0;">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 18px;">
+                        <div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);"><i class="bi bi-geo-alt"></i> Địa chỉ thực hiện:</div>
+                            <strong style="font-size: 0.95rem;" th:text="${job.address}">Hồ Chí Minh</strong>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);"><i class="bi bi-clock"></i> Thời gian bắt đầu:</div>
+                            <strong style="font-size: 0.95rem;" th:text="${#temporals.format(job.scheduledAt, 'dd/MM/yyyy HH:mm')}">26/10/2026</strong>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);"><i class="bi bi-tag"></i> Danh mục ngành nghề:</div>
+                            <span class="badge badge-info" th:text="${job.category.name}">Dọn dẹp</span>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted);"><i class="bi bi-calendar-check"></i> Ngày tạo yêu cầu:</div>
+                            <span th:text="${#temporals.format(job.createdAt, 'dd/MM/yyyy HH:mm')}">26/10/2026</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Khối Nghiệm thu & Hành động xử lý -->
+            <div class="card" style="border: 2px solid var(--primary-glow);">
+                <div class="card-header">
+                    <h3 class="card-title"><i class="bi bi-gear-fill" style="color: var(--primary);"></i> Thao tác xử lý công việc</h3>
+                </div>
+                <div class="card-body">
+
+                    <!-- Trạng thái OPEN: Quét Radar tìm Đối tác VieKer & Cho phép hủy -->
+                    <div th:if="${job.status.name() == 'OPEN'}">
+                        
+                        <!-- WIDGET RADAR QUÉT ĐỐI TÁC VIEKER LÂN CẬN -->
+                        <div class="radar-scanner-card" style="background: linear-gradient(145deg, #0B132B, #1C2541); border: 1px solid #3A506B; border-radius: 16px; padding: 22px; color: #FFFFFF; margin-bottom: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.25);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+                                <div>
+                                    <div style="display: flex; align-items: center; gap: 8px;">
+                                        <span class="radar-live-badge" style="background: rgba(16, 185, 129, 0.2); color: #34D399; border: 1px solid #059669; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span style="width: 7px; height: 7px; border-radius: 50%; background: #10B981; animation: pulse 1.5s infinite;"></span>
+                                            VỆ TINH ĐANG QUÉT TRỰC TUYẾN
+                                        </span>
+                                        <span id="radarRadiusIndicator" style="font-size: 0.8rem; color: #94A3B8; font-family: monospace;">5 km</span>
+                                    </div>
+                                    <h3 style="font-size: 1.15rem; font-weight: 800; color: #FFFFFF; margin-top: 6px;">
+                                        Tìm kiếm Đối tác VieKer trong phạm vi
+                                    </h3>
+                                    <p style="font-size: 0.84rem; color: #94A3B8; margin-top: 2px;">
+                                        Hệ thống đang phát tín hiệu công việc tới các đối tác VieKer đủ chuyên môn gần nhất.
+                                    </p>
+                                </div>
+
+                                <!-- Bộ nút chọn bán kính quét -->
+                                <div style="display: flex; gap: 6px; background: rgba(255,255,255,0.06); padding: 4px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <button type="button" class="radar-radius-btn" data-radius="3" onclick="loadNearbyViekers(3)">3 km</button>
+                                    <button type="button" class="radar-radius-btn active" data-radius="5" onclick="loadNearbyViekers(5)">5 km</button>
+                                    <button type="button" class="radar-radius-btn" data-radius="10" onclick="loadNearbyViekers(10)">10 km</button>
+                                    <button type="button" class="radar-radius-btn" data-radius="15" onclick="loadNearbyViekers(15)">15 km</button>
+                                </div>
+                            </div>
+
+                            <!-- Khối hiển thị Radar xoay xoay & Kết quả tìm thấy -->
+                            <div style="display: grid; grid-template-columns: 210px 1fr; gap: 20px; align-items: center;">
+                                
+                                <!-- Màn hình Radar xoay xoay -->
+                                <div style="display: flex; justify-content: center; align-items: center;">
+                                    <div class="radar-screen-box" style="position: relative; width: 190px; height: 190px; border-radius: 50%; background: radial-gradient(circle, #0B253A 0%, #061424 100%); border: 2px solid #059669; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); overflow: hidden;">
+                                        <!-- Vòng cự ly đồng tâm -->
+                                        <div style="position: absolute; inset: 25px; border-radius: 50%; border: 1px dashed rgba(16, 185, 129, 0.35);"></div>
+                                        <div style="position: absolute; inset: 55px; border-radius: 50%; border: 1px dashed rgba(16, 185, 129, 0.25);"></div>
+                                        <div style="position: absolute; inset: 75px; border-radius: 50%; border: 1px dashed rgba(16, 185, 129, 0.15);"></div>
+                                        
+                                        <!-- Trục tọa độ ngang & dọc -->
+                                        <div style="position: absolute; top: 0; bottom: 0; left: 50%; width: 1px; background: rgba(16, 185, 129, 0.2);"></div>
+                                        <div style="position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: rgba(16, 185, 129, 0.2);"></div>
+
+                                        <!-- Tia quét xoay 360 độ (Radar Sweep Beam) -->
+                                        <div class="radar-sweep-beam" style="position: absolute; inset: 0; border-radius: 50%; background: conic-gradient(from 0deg at 50% 50%, rgba(16, 185, 129, 0.45) 0deg, rgba(16, 185, 129, 0) 65deg); animation: radarSweep 3.2s infinite linear; pointer-events: none;"></div>
+
+                                        <!-- Điểm trung tâm (Vị trí Khách hàng) -->
+                                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 12px; height: 12px; border-radius: 50%; background: #3B82F6; box-shadow: 0 0 10px #3B82F6; z-index: 5;" title="Vị trí nhà bạn"></div>
+
+                                        <!-- Các điểm chấm Blips Đối tác VieKer tìm thấy -->
+                                        <div id="radarBlipDots" style="position: absolute; inset: 0; pointer-events: none; z-index: 4;">
+                                            <!-- Dynamically injected via JS -->
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Danh sách kết quả & Đề xuất mở rộng bán kính -->
+                                <div>
+                                    <!-- Banner Cảnh báo / Đề xuất mở rộng bán kính -->
+                                    <div id="radarRecommendationAlert" style="display: none; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.4); border-radius: 10px; padding: 12px 16px; margin-bottom: 12px;">
+                                        <div style="display: flex; align-items: flex-start; gap: 10px;">
+                                            <i class="bi bi-broadcast-pin" style="color: #FBBF24; font-size: 1.2rem; margin-top: 2px;"></i>
+                                            <div style="flex: 1;">
+                                                <div id="radarAlertText" style="font-size: 0.85rem; color: #FDE68A; line-height: 1.5;">
+                                                    Chưa tìm thấy đối tác trong bán kính này.
+                                                </div>
+                                                <button type="button" id="radarExpandBtn" class="btn btn-sm" style="margin-top: 8px; background: #F59E0B; color: #000; font-weight: 800; border: none; border-radius: 6px; padding: 5px 12px; font-size: 0.8rem; cursor: pointer;">
+                                                    <i class="bi bi-arrows-angle-expand"></i> Tăng bán kính lên 10 km ngay
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Danh sách các đối tác phù hợp tìm thấy -->
+                                    <div style="font-size: 0.82rem; color: #94A3B8; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;">
+                                        <span>Đối tác VieKer sẵn sàng nhận việc: <strong id="radarCountDetected" style="color: #34D399;">0</strong></span>
+                                        <span style="font-size: 0.74rem; color: #64748B;">Cập nhật tức thời</span>
+                                    </div>
+
+                                    <div id="radarDetectedList" style="display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto; padding-right: 4px;">
+                                        <div style="text-align: center; padding: 24px; color: #64748B; font-size: 0.85rem;">
+                                            <i class="bi bi-arrow-repeat" style="animation: spin 1s infinite linear;"></i> Đang quét radar vệ tinh...
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; padding: 14px 18px; background: var(--surface-subtle); border-radius: var(--radius-md); border: 1px solid var(--border);">
+                            <div>
+                                <strong style="font-size: 0.92rem; color: var(--text-main);">Không còn nhu cầu hoặc muốn chỉnh sửa lại yêu cầu?</strong>
+                                <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 2px;">Bạn có thể hủy công việc bất cứ lúc nào, 100% số tiền bảo đảm sẽ hoàn về ví ngay tức thì.</div>
+                            </div>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="document.getElementById('cancelJobModal').style.display='flex'">
+                                <i class="bi bi-x-circle"></i> Hủy việc & Hoàn tiền
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái ACCEPTED hoặc IN_PROGRESS -->
+                    <div th:if="${job.status.name() == 'ACCEPTED' || job.status.name() == 'IN_PROGRESS'}">
+                        <div style="background: var(--primary-light); padding: 14px 18px; border-radius: var(--radius-md); margin-bottom: 16px; color: var(--primary-dark); font-size: 0.92rem;">
+                            <i class="bi bi-info-circle-fill"></i> Đối tác VieKer đang trong quá trình chuẩn bị hoặc thực hiện công việc. Vui lòng chờ đối tác báo cáo hoàn thành để tiến hành nghiệm thu.
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" onclick="document.getElementById('disputeModal').style.display='flex'">
+                            <i class="bi bi-exclamation-octagon"></i> Khiếu nại sự cố
+                        </button>
+                    </div>
+
+                    <!-- Trạng thái PENDING_REVIEW: Đối tác đã báo xong -> Khách nghiệm thu -->
+                    <div th:if="${job.status.name() == 'PENDING_REVIEW'}">
+                        <div style="background: #FEF3C7; border: 1px solid #FDE68A; padding: 16px 20px; border-radius: var(--radius-md); margin-bottom: 20px;">
+                            <h4 style="color: var(--accent-dark); font-weight: 800; font-size: 1.05rem;">
+                                <i class="bi bi-bell-fill"></i> Đối tác VieKer đã báo cáo hoàn thành công việc!
+                            </h4>
+                            <p style="color: #78350F; font-size: 0.92rem; margin-top: 6px;">
+                                Vui lòng kiểm tra kỹ kết quả trước khi bấm Nghiệm thu. Khi bạn xác nhận, tiền công sẽ được chuyển cho đối tác.
+                            </p>
+                        </div>
+
+                        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+                            <button type="button" class="btn btn-success btn-lg" onclick="document.getElementById('approveModal').style.display='flex'">
+                                <i class="bi bi-check2-circle"></i> Nghiệm thu & Thanh toán cho Đối tác VieKer
+                            </button>
+
+                            <button type="button" class="btn btn-danger" onclick="document.getElementById('disputeModal').style.display='flex'">
+                                <i class="bi bi-exclamation-octagon"></i> Không hài lòng & Gửi khiếu nại
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái COMPLETED: Đã xong -> Viết đánh giá -->
+                    <div th:if="${job.status.name() == 'COMPLETED'}">
+                        <div style="background: var(--success-light); border: 1px solid #A7F3D0; padding: 14px 18px; border-radius: var(--radius-md); color: #065F46; font-size: 0.92rem; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+                            <span><i class="bi bi-check-circle-fill"></i> Công việc đã nghiệm thu và hoàn tất thanh toán thành công!</span>
+                            <a th:href="@{/customer/jobs/{id}/invoice(id=${job.id})}" target="_blank" class="btn btn-sm" style="background: #FFFFFF; color: #065F46; border: 1px solid #A7F3D0; font-weight: 700; border-radius: 8px;">
+                                <i class="bi bi-file-earmark-text-fill"></i> Xem / In Phiếu Nghiệm Thu (PDF)
+                            </a>
+                        </div>
+
+                        <!-- Nếu đã đánh giá rồi -->
+                        <div th:if="${review != null}" style="background: var(--surface-subtle); padding: 18px; border-radius: var(--radius-md);">
+                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                                <div style="color: var(--accent); font-size: 1.1rem;">
+                                    <i th:each="i : ${#numbers.sequence(1, review.rating)}" class="bi bi-star-fill"></i>
+                                </div>
+                                <strong th:text="${review.rating} + ' / 5 sao'">5 / 5 sao</strong>
+                            </div>
+                            <p style="color: var(--text-muted); font-size: 0.92rem;" th:text="${review.comment}">Nhận xét...</p>
+                        </div>
+
+                        <!-- Nếu chưa đánh giá -->
+                        <div th:if="${review == null}">
+                            <h4 style="font-size: 1rem; font-weight: 700; margin-bottom: 12px;">Đánh giá chất lượng dịch vụ của Thợ</h4>
+                            <form th:action="@{/customer/jobs/{id}/review(id=${job.id})}" th:object="${reviewRequest}" method="post">
+                                <div class="form-group">
+                                    <label class="form-label">Chọn số sao đánh giá</label>
+                                    <select th:field="*{rating}" class="form-select" style="max-width: 200px;">
+                                        <option value="5">⭐⭐⭐⭐⭐ 5 sao (Xuất sắc)</option>
+                                        <option value="4">⭐⭐⭐⭐ 4 sao (Tốt)</option>
+                                        <option value="3">⭐⭐⭐ 3 sao (Bình thường)</option>
+                                        <option value="2">⭐⭐ 2 sao (Chưa đạt)</option>
+                                        <option value="1">⭐ 1 sao (Rất tệ)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="reviewComment">Nhận xét chi tiết</label>
+                                    <textarea id="reviewComment" th:field="*{comment}" class="form-control"
+                                              placeholder="Chia sẻ trải nghiệm làm việc với thợ..."></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-send"></i> Gửi đánh giá
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái DISPUTED -->
+                    <div th:if="${job.status.name() == 'DISPUTED'}">
+                        <div style="background: var(--danger-light); border: 1px solid #FECACA; padding: 18px; border-radius: var(--radius-md); color: #991B1B;">
+                            <h4 style="font-weight: 800; font-size: 1.05rem;"><i class="bi bi-shield-slash"></i> Hồ sơ khiếu nại đang được xử lý</h4>
+                            <p style="font-size: 0.92rem; margin-top: 6px;">
+                                Khoản tiền thanh toán đang được tạm giữ an toàn. Bộ phận Hỗ trợ VieShift đang liên hệ hai bên để giải quyết khiếu nại và xử lý hoàn tiền thỏa đáng.
+                            </p>
+                            <div th:if="${dispute != null}" style="margin-top: 12px; font-size: 0.88rem; background: rgba(255,255,255,0.7); padding: 12px; border-radius: var(--radius-sm);">
+                                <div style="margin-bottom: 6px;"><strong>Lý do khiếu nại:</strong> <span th:text="${dispute.reason}">Lý do</span></div>
+                                <div style="margin-bottom: 8px;"><strong>Nội dung:</strong> <span th:text="${dispute.evidenceText}">Bằng chứng</span></div>
+                                <div th:if="${dispute.attachmentPath != null}" style="border-top: 1px dashed #FCA5A5; padding-top: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+                                    <span><i class="bi bi-paperclip"></i> <strong>Tệp bằng chứng:</strong> <span th:text="${dispute.attachmentOriginalName}">hinh_anh.jpg</span></span>
+                                    <a th:href="@{/customer/disputes/{id}/attachment(id=${dispute.id})}" target="_blank" class="btn btn-outline btn-sm" style="background: #FFFFFF; font-size: 0.8rem; padding: 4px 10px; border-radius: 6px;">
+                                        <i class="bi bi-box-arrow-up-right"></i> Xem / Tải về
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái RESOLVED -->
+                    <div th:if="${job.status.name() == 'RESOLVED'}">
+                        <div style="background: var(--info-light); border: 1px solid #BFDBFE; padding: 18px; border-radius: var(--radius-md); color: #1E40AF;">
+                            <h4 style="font-weight: 800; font-size: 1.05rem;"><i class="bi bi-check-circle-fill"></i> Khiếu nại đã được xử lý xong</h4>
+                            <div th:if="${dispute != null}" style="margin-top: 10px; font-size: 0.9rem;">
+                                <div><strong>Kết quả giải quyết:</strong> <span th:text="${dispute.adminResolutionNote}">Ghi chú</span></div>
+                                <div style="margin-top: 4px;">
+                                    <strong>Số tiền hoàn cho bạn:</strong>
+                                    <span style="color: var(--success); font-weight: 800;" th:text="${#numbers.formatDecimal(dispute.customerRefundAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột phải: Thông tin Thanh toán & Thông tin Thợ -->
+        <div>
+            <!-- Thẻ Bảo đảm Thanh toán -->
+            <div class="card" style="border: 2px solid #FDE68A; background: #FFFDF7;">
+                <div class="card-header" style="background: #FEF3C7;">
+                    <h3 class="card-title" style="color: var(--accent-dark); font-size: 1rem;">
+                        <i class="bi bi-shield-check"></i> Bảo đảm Thanh toán An toàn
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Tổng giá trị bảo đảm:</div>
+                    <div style="font-size: 1.75rem; font-weight: 800; color: var(--primary); margin: 4px 0 14px;"
+                         th:text="${#numbers.formatDecimal(job.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                        200,000 đ
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 6px;">
+                        <span>Phí dịch vụ nền tảng (10%):</span>
+                        <span th:text="${#numbers.formatDecimal(job.platformFee, 0, 'COMMA', 0, 'POINT')} + ' đ'">20,000 đ</span>
+                    </div>
+
+                    <div style="font-size: 0.85rem; color: var(--text-muted); display: flex; justify-content: space-between; margin-bottom: 14px;">
+                        <span>Thực nhận của Đối tác VieKer (Net):</span>
+                        <strong style="color: var(--text-main);" th:text="${#numbers.formatDecimal(job.netAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">180,000 đ</strong>
+                    </div>
+
+                    <div style="background: #FEF3C7; padding: 10px 12px; border-radius: var(--radius-sm); font-size: 0.8rem; color: #78350F; line-height: 1.5;">
+                        <i class="bi bi-check2-shield"></i> Tiền của bạn đang được khóa an toàn. Đối tác VieKer không thể rút tiền trước khi bạn nghiệm thu.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thẻ Thông tin Đối tác VieKer -->
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="card-title" style="font-size: 1rem;">
+                        <i class="bi bi-person-badge"></i> Đối tác VieKer tiếp nhận
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div th:if="${job.vieker != null}">
+                        <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 16px;">
+                            <div class="user-avatar-pill" style="width: 48px; height: 48px; font-size: 1.3rem;">
+                                <i class="bi bi-person-fill"></i>
+                            </div>
+                            <div>
+                                <strong style="font-size: 1.1rem; display: block;" th:text="${job.vieker.fullName}">Hoàng Văn Thợ</strong>
+                                <span class="badge badge-success"><i class="bi bi-patch-check-fill"></i> Đã xác thực định danh</span>
+                            </div>
+                        </div>
+
+                        <div style="font-size: 0.88rem; color: var(--text-muted); display: flex; flex-direction: column; gap: 8px;">
+                            <div>
+                                <i class="bi bi-telephone-fill" style="color: var(--primary);"></i>
+                                Số điện thoại: <strong style="color: var(--text-main);" th:text="${job.vieker.phone}">0987654321</strong>
+                            </div>
+                            <div>
+                                <i class="bi bi-envelope-fill"></i>
+                                Email: <span th:text="${job.vieker.email}">tho@vieshift.vn</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div th:if="${job.vieker == null}" style="text-align: center; padding: 20px 10px; color: var(--text-muted);">
+                        <i class="bi bi-hourglass-top" style="font-size: 2rem; display: block; margin-bottom: 8px; color: var(--border-strong);"></i>
+                        Đang đợi thợ phù hợp nhận việc...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Thẻ Bản Đồ Vị Trí Công Việc (Leaflet OpenStreetMap) -->
+            <div class="card">
+                <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                    <h3 class="card-title" style="font-size: 1rem;">
+                        <i class="bi bi-geo-alt-fill" style="color: #EF4444;"></i> Vị trí thi công
+                    </h3>
+                    <a th:href="'https://www.google.com/maps/search/?api=1&query=' + ${#uris.escapePath(job.address)}" target="_blank"
+                       style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none;">
+                        Chỉ đường <i class="bi bi-box-arrow-up-right"></i>
+                    </a>
+                </div>
+                <div class="card-body" style="padding: 16px;">
+                    <div id="jobDetailMap" style="height: 190px; width: 100%; border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px; z-index: 1;"></div>
+                    <div style="font-size: 0.84rem; color: var(--text-body); display: flex; align-items: flex-start; gap: 6px;">
+                        <i class="bi bi-pin-map" style="color: var(--primary); margin-top: 2px;"></i>
+                        <span th:text="${job.address}">123 Nguyễn Huệ, Q.1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Khung Chat Trực Tiếp Khách - Đối tác VieKer -->
+            <div th:if="${job.vieker != null}" class="card" id="chatContainerCard">
+                <div class="card-header" style="background: linear-gradient(135deg, var(--surface), var(--surface-subtle)); display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <span style="position: relative; display: inline-flex;">
+                            <i class="bi bi-chat-dots-fill" style="color: var(--primary); font-size: 1.15rem;"></i>
+                            <span style="position: absolute; top: -2px; right: -2px; width: 8px; height: 8px; border-radius: 50%; background: #10B981;"></span>
+                        </span>
+                        <div>
+                            <h3 class="card-title" style="font-size: 0.95rem; margin: 0;">Trao đổi với Đối tác</h3>
+                            <span style="font-size: 0.74rem; color: #059669; font-weight: 700; display: inline-flex; align-items: center; gap: 4px;">
+                                <span style="width: 6px; height: 6px; border-radius: 50%; background: #10B981; animation: pulse 1.5s infinite;"></span> Đang trực tuyến
+                            </span>
+                        </div>
+                    </div>
+                    <div>
+                        <a th:if="${job.vieker != null && job.vieker.phone != null}" th:href="'tel:' + ${job.vieker.phone}"
+                           class="btn btn-outline btn-sm" style="padding: 4px 10px; font-size: 0.78rem; font-weight: 700; color: #0284C7; border-color: #38BDF8; background: #F0F9FF; display: inline-flex; align-items: center; gap: 4px;"
+                           title="Gọi điện thoại trực tiếp cho đối tác">
+                            <i class="bi bi-telephone-fill"></i> Gọi nhanh
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body" style="padding: 14px;">
+                    <!-- Vùng tin nhắn -->
+                    <div id="chatMessagesBox" style="height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; padding: 10px; background: var(--surface-subtle); border-radius: 10px; border: 1px solid var(--border); margin-bottom: 10px;">
+                        <div id="chatLoadingNotice" style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin-top: 100px;">
+                            <i class="bi bi-arrow-repeat" style="animation: spin 1s infinite linear;"></i> Đang kết nối trò chuyện...
+                        </div>
+                    </div>
+
+                    <!-- Gợi ý câu trả lời nhanh (Quick replies) -->
+                    <div style="margin-bottom: 8px;">
+                        <div style="font-size: 0.72rem; color: var(--text-muted); margin-bottom: 4px; font-weight: 600;">
+                            <i class="bi bi-lightning-charge-fill" style="color: #F59E0B;"></i> Gợi ý tin nhắn nhanh:
+                        </div>
+                        <div style="display: flex; gap: 6px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none;">
+                            <button type="button" class="btn btn-outline btn-sm quick-chip" style="white-space: nowrap; font-size: 0.74rem; padding: 3px 8px; border-radius: 12px; background: #FFF;" onclick="applyQuickChat('👋 Chào bạn, khi nào bạn có thể qua bắt đầu?')">👋 Khi nào qua?</button>
+                            <button type="button" class="btn btn-outline btn-sm quick-chip" style="white-space: nowrap; font-size: 0.74rem; padding: 3px 8px; border-radius: 12px; background: #FFF;" onclick="applyQuickChat('🧰 Bạn vui lòng mang theo đầy đủ dụng cụ đồ nghề nhé!')">🧰 Mang đủ đồ nghề</button>
+                            <button type="button" class="btn btn-outline btn-sm quick-chip" style="white-space: nowrap; font-size: 0.74rem; padding: 3px 8px; border-radius: 12px; background: #FFF;" onclick="applyQuickChat('📍 Nhà mình trong ngõ, khi tới nơi bạn alo mình ra đón nhé.')">📍 Tới ngõ alo mình</button>
+                            <button type="button" class="btn btn-outline btn-sm quick-chip" style="white-space: nowrap; font-size: 0.74rem; padding: 3px 8px; border-radius: 12px; background: #FFF;" onclick="applyQuickChat('⏱️ Bạn dự kiến công việc này làm trong bao lâu hoàn tất?')">⏱️ Dự kiến bao lâu?</button>
+                        </div>
+                    </div>
+
+                    <!-- Vùng nhập tin nhắn -->
+                    <form id="chatSendForm" onsubmit="handleSendChatMessage(event)" style="display: flex; flex-direction: column; gap: 8px;">
+                        <div style="display: flex; gap: 6px; align-items: center;">
+                            <input type="text" id="chatInputText" class="form-control" style="font-size: 0.88rem; padding: 8px 12px;" placeholder="Nhập tin nhắn..." autocomplete="off">
+                            <label class="btn btn-outline btn-sm" style="padding: 8px 12px; cursor: pointer; margin: 0;" title="Gửi ảnh">
+                                <i class="bi bi-image"></i>
+                                <input type="file" id="chatInputImage" accept="image/*" style="display: none;" onchange="previewChatImage(this)">
+                            </label>
+                            <button type="submit" class="btn btn-primary btn-sm" style="padding: 8px 14px;" title="Gửi tin nhắn">
+                                <i class="bi bi-send-fill"></i>
+                            </button>
+                        </div>
+                        <div id="chatImagePreviewTag" style="display: none; align-items: center; justify-content: space-between; background: #E0F2FE; color: #0369A1; padding: 4px 10px; border-radius: 6px; font-size: 0.78rem;">
+                            <span><i class="bi bi-paperclip"></i> <span id="chatImageFileName">anh.jpg</span></span>
+                            <button type="button" onclick="cancelChatImage()" style="background: none; border: none; cursor: pointer; color: #0369A1;">&times;</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</main>
+
+<!-- Modal Khiếu nại (Dispute Modal) -->
+<div id="disputeModal" class="modal-overlay" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-header">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--danger);">
+                <i class="bi bi-exclamation-octagon"></i> Mở khiếu nại công việc / Yêu cầu hoàn tiền
+            </h3>
+            <button type="button" style="border: none; background: transparent; font-size: 1.4rem; cursor: pointer;"
+                    onclick="document.getElementById('disputeModal').style.display='none'">&times;</button>
+        </div>
+        <form th:action="@{/customer/jobs/{id}/dispute(id=${job.id})}" th:object="${disputeRequest}" method="post" enctype="multipart/form-data">
+            <input type="hidden" name="jobId" th:value="${job.id}">
+            <div class="modal-body">
+                <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 16px;">
+                    Khi bạn mở khiếu nại, khoản tiền thanh toán sẽ được giữ an toàn ngay lập tức. Ban Quản Trị VieShift sẽ trực tiếp kiểm tra và hỗ trợ giải quyết công bằng.
+                </p>
+
+                <div class="form-group">
+                    <label class="form-label" for="disputeReason">Lý do khiếu nại *</label>
+                    <select id="disputeReason" th:field="*{reason}" class="form-select" required>
+                        <option value="">-- Chọn lý do --</option>
+                        <option value="Thợ không đến điểm làm">Thợ không đến điểm làm (Bùng việc)</option>
+                        <option value="Chất lượng không đạt cam kết">Chất lượng làm việc quá ẩu / không đạt yêu cầu</option>
+                        <option value="Thợ bỏ dở giữa chừng">Thợ bỏ về giữa chừng chưa làm xong</option>
+                        <option value="Làm hỏng hóc đồ đạc">Làm hỏng hóc đồ đạc / thiết bị gia đình</option>
+                        <option value="Khác">Lý do khác</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="disputeEvidence">Mô tả chi tiết bằng chứng *</label>
+                    <textarea id="disputeEvidence" th:field="*{evidenceText}" class="form-control"
+                              placeholder="Trình bày cụ thể sự việc, thời gian, thỏa thuận ban đầu..." required></textarea>
+                </div>
+
+                <div class="form-group" style="margin-top: 14px;">
+                    <label class="form-label" for="disputeAttachment" style="font-weight: 700;">
+                        <i class="bi bi-paperclip"></i> Đính kèm tệp bằng chứng (Ảnh lỗi, tài liệu, biên nhận)
+                    </label>
+                    <input type="file" id="disputeAttachment" name="attachment" accept="image/*,.pdf,.doc,.docx" class="form-control" style="padding: 8px;">
+                    <div class="form-hint">Hỗ trợ hình ảnh chụp hiện trường (PNG, JPG, WEBP) hoặc tệp PDF/DOCX (Tối đa 10MB).</div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('disputeModal').style.display='none'">Hủy bỏ</button>
+                <button type="submit" class="btn btn-danger">Gửi khiếu nại ngay</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Nghiệm thu, Tip & Đánh giá (Approve Modal - Thay thế hoàn toàn localhost alert) -->
+<div id="approveModal" class="modal-overlay" style="display: none;">
+    <div class="modal-dialog" style="max-width: 580px;">
+        <div class="modal-header" style="background: linear-gradient(135deg, #FAF7F2, #F5EFEB); border-bottom: 1px solid #EFE9E1;">
+            <div>
+                <h3 style="font-size: 1.2rem; font-weight: 800; color: #2B2523; margin: 0; display: flex; align-items: center; gap: 8px;">
+                    <i class="bi bi-patch-check-fill" style="color: #10B981;"></i> Nghiệm thu & Thanh toán dịch vụ
+                </h3>
+                <p style="margin: 4px 0 0; font-size: 0.85rem; color: #78716C;">
+                    Xác nhận hoàn thành dịch vụ và giải ngân tiền công cho Thợ
+                </p>
+            </div>
+            <button type="button" style="border: none; background: transparent; font-size: 1.4rem; cursor: pointer; color: #78716C;"
+                    onclick="document.getElementById('approveModal').style.display='none'">&times;</button>
+        </div>
+
+        <form th:action="@{/customer/jobs/{id}/approve(id=${job.id})}" method="post">
+            <div class="modal-body" style="padding: 24px;">
+
+                <!-- 1. Tóm tắt tiền công theo hợp đồng -->
+                <div style="background: #F8F5F0; border-radius: 12px; padding: 16px; margin-bottom: 20px; border: 1px solid #EFE9E1; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <div style="font-size: 0.8rem; color: #78716C; text-transform: uppercase; font-weight: 700;">Tiền công nghiệm thu</div>
+                        <div style="font-size: 0.9rem; color: #2B2523; font-weight: 600;" th:text="'Đối tác: ' + (${job.vieker != null ? job.vieker.fullName : 'Đối tác VieKer'})">Đối tác VieKer</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <span style="font-size: 1.35rem; font-weight: 800; color: #C24D63;"
+                              th:text="${#numbers.formatDecimal(job.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">240,000 đ</span>
+                        <div style="font-size: 0.72rem; color: #059669; font-weight: 700;"><i class="bi bi-shield-check"></i> Đã bảo đảm an toàn</div>
+                    </div>
+                </div>
+
+                <!-- 2. Phần Tặng tiền boa (Tip) -->
+                <div style="margin-bottom: 22px; padding-bottom: 20px; border-bottom: 1px dashed #E5DCCE;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <label class="form-label" style="font-weight: 800; color: #2B2523; margin: 0; display: flex; align-items: center; gap: 6px;">
+                            <i class="bi bi-gift-fill" style="color: #E6AF76;"></i> Tiền boa khích lệ Đối tác VieKer (Tùy chọn)
+                        </label>
+                        <span th:if="${wallet != null}" style="font-size: 0.78rem; color: #78716C;">
+                            Số dư ví: <strong style="color: #2B2523;" th:text="${#numbers.formatDecimal(wallet.balance, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</strong>
+                        </span>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-bottom: 10px;">
+                        <button type="button" class="btn btn-outline btn-sm tip-btn" style="background: var(--primary); color: #FFFFFF; border-color: var(--primary);" onclick="setTipAmount(0, this)">0 đ (Không)</button>
+                        <button type="button" class="btn btn-outline btn-sm tip-btn" onclick="setTipAmount(20000, this)">+20.000 đ</button>
+                        <button type="button" class="btn btn-outline btn-sm tip-btn" onclick="setTipAmount(50000, this)">+50.000 đ</button>
+                        <button type="button" class="btn btn-outline btn-sm tip-btn" onclick="setTipAmount(100000, this)">+100.000 đ</button>
+                    </div>
+
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 0.85rem; color: #78716C; white-space: nowrap;">Hoặc số khác:</span>
+                        <input type="number" id="tipAmountInput" name="tipAmount" value="0" min="0" step="10000" class="form-control" style="font-weight: 700; color: #C24D63;" placeholder="0">
+                        <span style="font-weight: 700; font-size: 0.9rem; color: #78716C;">VNĐ</span>
+                    </div>
+                    <div class="form-hint" style="margin-top: 6px; font-size: 0.78rem; color: #059669;">
+                        <i class="bi bi-check-circle"></i> 100% tiền boa được gửi trọn vẹn đến Đối tác VieKer mà không thu phí sàn.
+                    </div>
+                </div>
+
+                <!-- 3. Phần Đánh giá chất lượng dịch vụ (Review) -->
+                <div>
+                    <label class="form-label" style="font-weight: 800; color: #2B2523; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                        <span><i class="bi bi-star-fill" style="color: #E6AF76;"></i> Đánh giá chất lượng Đối tác VieKer</span>
+                        <span id="starRatingLabel" style="font-size: 0.85rem; font-weight: 700; color: #E6AF76;">5 sao (Xuất sắc)</span>
+                    </label>
+
+                    <input type="hidden" id="ratingInput" name="rating" value="5">
+
+                    <div id="starContainer" style="display: flex; gap: 10px; font-size: 1.8rem; cursor: pointer; color: #E6AF76; margin-bottom: 12px;">
+                        <i class="bi bi-star-fill star-item" data-val="1" onclick="selectStar(1)"></i>
+                        <i class="bi bi-star-fill star-item" data-val="2" onclick="selectStar(2)"></i>
+                        <i class="bi bi-star-fill star-item" data-val="3" onclick="selectStar(3)"></i>
+                        <i class="bi bi-star-fill star-item" data-val="4" onclick="selectStar(4)"></i>
+                        <i class="bi bi-star-fill star-item" data-val="5" onclick="selectStar(5)"></i>
+                    </div>
+
+                    <div class="form-group" style="margin: 0;">
+                        <label class="form-label" for="reviewCommentModal" style="font-size: 0.85rem; color: #78716C;">Nhận xét chi tiết (Tùy chọn):</label>
+                        <textarea id="reviewCommentModal" name="comment" class="form-control" rows="2"
+                                  placeholder="Chia sẻ trải nghiệm làm việc cùng thợ để giúp cộng đồng VieShift...">Dịch vụ rất tốt, thợ nhiệt tình chuyên nghiệp!</textarea>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="modal-footer" style="background: #FAF7F2; border-top: 1px solid #EFE9E1; display: flex; justify-content: space-between;">
+                <button type="button" class="btn btn-outline" onclick="document.getElementById('approveModal').style.display='none'">
+                    Đóng lại
+                </button>
+                <button type="submit" class="btn btn-success" style="padding: 10px 24px; font-weight: 800; border-radius: 10px; box-shadow: 0 4px 12px rgba(16,185,129,0.25);">
+                    <i class="bi bi-check2-circle"></i> Xác nhận Nghiệm thu & Thanh toán
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal Xác nhận Hủy việc (Cancel Modal - Thay thế confirm) -->
+<div id="cancelJobModal" class="modal-overlay" style="display: none;">
+    <div class="modal-dialog" style="max-width: 480px;">
+        <div class="modal-header" style="background: #FEF2F2; border-bottom: 1px solid #FEE2E2;">
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: #DC2626; margin: 0; display: flex; align-items: center; gap: 8px;">
+                <i class="bi bi-exclamation-triangle-fill"></i> Xác nhận Hủy công việc
+            </h3>
+            <button type="button" style="border: none; background: transparent; font-size: 1.4rem; cursor: pointer; color: #991B1B;"
+                    onclick="document.getElementById('cancelJobModal').style.display='none'">&times;</button>
+        </div>
+        <div class="modal-body" style="padding: 24px;">
+            <p style="font-size: 0.95rem; color: #4B5563; line-height: 1.6; margin-bottom: 16px;">
+                Bạn có chắc chắn muốn hủy công việc này?
+            </p>
+            <div style="background: #F8FAFC; border: 1px solid #E2E8F0; padding: 14px 16px; border-radius: 12px; font-size: 0.88rem; color: #334155;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span>Mã đơn:</span> <strong th:text="'#' + ${job.id}">#1</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                    <span>Khoản tiền hoàn trả ví:</span>
+                    <strong style="color: #10B981;" th:text="${#numbers.formatDecimal(job.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">100,000 đ</strong>
+                </div>
+            </div>
+            <p style="font-size: 0.82rem; color: #64748B; margin-top: 12px;">
+                <i class="bi bi-info-circle"></i> Tiền bảo đảm sẽ được hoàn trả 100% vào Ví của bạn ngay sau khi xác nhận.
+            </p>
+        </div>
+        <div class="modal-footer" style="background: #FAF7F2; border-top: 1px solid #EFE9E1; display: flex; justify-content: flex-end; gap: 12px;">
+            <button type="button" class="btn btn-outline" onclick="document.getElementById('cancelJobModal').style.display='none'">
+                Giữ lại công việc
+            </button>
+            <form th:action="@{/customer/jobs/{id}/cancel(id=${job.id})}" method="post" style="margin: 0;">
+                <button type="submit" class="btn btn-danger" style="padding: 10px 20px; font-weight: 700; border-radius: 10px;">
+                    <i class="bi bi-x-circle"></i> Đồng ý Hủy
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    function setTipAmount(amt, btn) {
+        var input = document.getElementById('tipAmountInput');
+        if (input) {
+            input.value = amt;
+        }
+        document.querySelectorAll('.tip-btn').forEach(function(b) {
+            b.style.background = '';
+            b.style.color = '';
+            b.style.borderColor = '';
+        });
+        if (btn) {
+            btn.style.background = 'var(--primary)';
+            btn.style.color = '#FFFFFF';
+            btn.style.borderColor = 'var(--primary)';
+        }
+    }
+
+    var starLabels = {
+        1: '1 sao (Rất tệ)',
+        2: '2 sao (Chưa đạt)',
+        3: '3 sao (Bình thường)',
+        4: '4 sao (Tốt)',
+        5: '5 sao (Xuất sắc)'
+    };
+
+    function selectStar(val) {
+        var input = document.getElementById('ratingInput');
+        if (input) {
+            input.value = val;
+        }
+        var label = document.getElementById('starRatingLabel');
+        if (label) {
+            label.innerText = starLabels[val] || (val + ' sao');
+        }
+        var stars = document.querySelectorAll('.star-item');
+        stars.forEach(function(s) {
+            var starVal = parseInt(s.getAttribute('data-val'));
+            if (starVal <= val) {
+                s.className = 'bi bi-star-fill star-item';
+            } else {
+                s.className = 'bi bi-star star-item';
+            }
+        });
+    }
+
+    // ==========================================
+    // 1. LEAFLET INTERACTIVE MAP
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', function() {
+        var mapEl = document.getElementById('jobDetailMap');
+        if (mapEl && typeof L !== 'undefined') {
+            var addr = /*[[${job.address}]]*/ 'TP. Hồ Chí Minh';
+            var defaultLat = 10.7769, defaultLng = 106.7009;
+
+            if (addr.indexOf('Hà Nội') !== -1 || addr.indexOf('HN') !== -1) {
+                defaultLat = 21.0285; defaultLng = 105.8542;
+            } else if (addr.indexOf('Đà Nẵng') !== -1 || addr.indexOf('DN') !== -1) {
+                defaultLat = 16.0544; defaultLng = 108.2022;
+            }
+
+            var map = L.map('jobDetailMap').setView([defaultLat, defaultLng], 14);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            var customIcon = L.divIcon({
+                className: 'custom-map-marker',
+                html: '<div style="background: #C24D63; color: #FFFFFF; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(194,77,99,0.5); border: 2.5px solid #FFFFFF;"><i class="bi bi-geo-alt-fill" style="font-size: 1rem;"></i></div>',
+                iconSize: [32, 32],
+                iconAnchor: [16, 32]
+            });
+
+            var marker = L.marker([defaultLat, defaultLng], { icon: customIcon }).addTo(map);
+            marker.bindPopup('<strong>' + (/*[[${job.title}]]*/ 'Công việc') + '</strong><br>' + addr).openPopup();
+        }
+    });
+
+    // ==========================================
+    // 2. REAL-TIME IN-APP CHAT ENGINE
+    // ==========================================
+    var currentJobId = /*[[${job.id}]]*/ 0;
+    var chatPollInterval = null;
+
+    function formatChatTime(dateStr) {
+        return dateStr || '';
+    }
+
+    function loadChatMessages() {
+        if (!currentJobId) return;
+        fetch('/api/chat/' + currentJobId + '/messages')
+            .then(function(res) { return res.json(); })
+            .then(function(data) {
+                if (data && data.messages) {
+                    renderChatMessages(data.messages, data.currentUserId);
+                }
+            })
+            .catch(function(err) {
+                console.warn('Lỗi tải tin nhắn chat:', err);
+            });
+    }
+
+    function renderChatMessages(messages, currentUserId) {
+        var box = document.getElementById('chatMessagesBox');
+        if (!box) return;
+
+        var notice = document.getElementById('chatLoadingNotice');
+        if (notice) notice.remove();
+
+        if (messages.length === 0) {
+            box.innerHTML = '<div style="text-align: center; color: var(--text-muted); font-size: 0.82rem; margin-top: 80px;"><i class="bi bi-chat-heart" style="font-size: 1.8rem; display: block; margin-bottom: 6px; color: var(--primary);"></i>Hãy gửi lời chào hoặc dặn dò thợ về công việc nhé!</div>';
+            return;
+        }
+
+        var isScrolledToBottom = box.scrollHeight - box.clientHeight <= box.scrollTop + 50;
+
+        box.innerHTML = '';
+        messages.forEach(function(m) {
+            var msgDiv = document.createElement('div');
+            msgDiv.style.display = 'flex';
+            msgDiv.style.flexDirection = 'column';
+            msgDiv.style.alignItems = m.isMe ? 'flex-end' : 'flex-start';
+            msgDiv.style.marginBottom = '6px';
+
+            var bubble = document.createElement('div');
+            bubble.style.maxWidth = '85%';
+            bubble.style.padding = '8px 12px';
+            bubble.style.borderRadius = '12px';
+            bubble.style.fontSize = '0.88rem';
+            bubble.style.lineHeight = '1.4';
+            bubble.style.wordBreak = 'break-word';
+
+            if (m.isMe) {
+                bubble.style.background = 'var(--primary)';
+                bubble.style.color = '#FFFFFF';
+                bubble.style.borderBottomRightRadius = '2px';
+            } else {
+                bubble.style.background = 'var(--surface)';
+                bubble.style.color = 'var(--text-main)';
+                bubble.style.border = '1px solid var(--border)';
+                bubble.style.borderBottomLeftRadius = '2px';
+            }
+
+            if (m.attachmentUrl) {
+                var img = document.createElement('img');
+                img.src = m.attachmentUrl;
+                img.style.maxWidth = '100%';
+                img.style.maxHeight = '140px';
+                img.style.borderRadius = '8px';
+                img.style.marginBottom = m.content ? '6px' : '0';
+                img.style.display = 'block';
+                img.style.cursor = 'pointer';
+                img.onclick = function() { window.open(m.attachmentUrl, '_blank'); };
+                bubble.appendChild(img);
+            }
+
+            if (m.content) {
+                var textSpan = document.createElement('div');
+                textSpan.textContent = m.content;
+                bubble.appendChild(textSpan);
+            }
+
+            var timeMeta = document.createElement('div');
+            timeMeta.style.fontSize = '0.7rem';
+            timeMeta.style.color = m.isMe ? 'rgba(255,255,255,0.8)' : 'var(--text-muted)';
+            timeMeta.style.marginTop = '3px';
+            timeMeta.style.textAlign = m.isMe ? 'right' : 'left';
+            timeMeta.textContent = (m.isMe ? '' : m.senderName + ' · ') + m.createdAt;
+            bubble.appendChild(timeMeta);
+
+            msgDiv.appendChild(bubble);
+            box.appendChild(msgDiv);
+        });
+
+        if (isScrolledToBottom) {
+            box.scrollTop = box.scrollHeight;
+        }
+    }
+
+    function handleSendChatMessage(e) {
+        e.preventDefault();
+        var input = document.getElementById('chatInputText');
+        var fileInput = document.getElementById('chatInputImage');
+        var content = input ? input.value.trim() : '';
+        var file = fileInput && fileInput.files ? fileInput.files[0] : null;
+
+        if (!content && !file) return;
+
+        var formData = new FormData();
+        if (content) formData.append('content', content);
+        if (file) formData.append('image', file);
+
+        if (input) input.value = '';
+        cancelChatImage();
+
+        fetch('/api/chat/' + currentJobId + '/send', {
+            method: 'POST',
+            body: formData
+        })
+        .then(function(res) { return res.json(); })
+        .then(function(msg) {
+            loadChatMessages();
+            var box = document.getElementById('chatMessagesBox');
+            if (box) setTimeout(function() { box.scrollTop = box.scrollHeight; }, 100);
+        })
+        .catch(function(err) {
+            alert('Lỗi gửi tin nhắn: ' + err.message);
+        });
+    }
+
+    function previewChatImage(input) {
+        if (input.files && input.files[0]) {
+            var tag = document.getElementById('chatImagePreviewTag');
+            var name = document.getElementById('chatImageFileName');
+            if (tag && name) {
+                name.textContent = input.files[0].name;
+                tag.style.display = 'flex';
+            }
+        }
+    }
+
+    function cancelChatImage() {
+        var input = document.getElementById('chatInputImage');
+        var tag = document.getElementById('chatImagePreviewTag');
+        if (input) input.value = '';
+        if (tag) tag.style.display = 'none';
+    }
+
+    function applyQuickChat(text) {
+        var input = document.getElementById('chatInputText');
+        if (input) {
+            input.value = text;
+            input.focus();
+        }
+    }
+</script>
+
+<style>
+@keyframes radarSweep {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+@keyframes pulseDot {
+    0% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.7; }
+    50% { transform: translate(-50%, -50%) scale(1.3); opacity: 1; }
+    100% { transform: translate(-50%, -50%) scale(0.85); opacity: 0.7; }
+}
+.radar-radius-btn {
+    border: none;
+    background: transparent;
+    color: #94A3B8;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.radar-radius-btn.active, .radar-radius-btn:hover {
+    background: #059669;
+    color: #FFFFFF;
+}
+.quick-chip {
+    transition: all 0.2s;
+    cursor: pointer;
+}
+.quick-chip:hover {
+    background: #FEF3C7 !important;
+    border-color: #F59E0B !important;
+    color: #92400E !important;
+}
+</style>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
+    var currentJobCategoryId = /*[[${job.category.id}]]*/ 1;
+    var currentJobAddress = /*[[${job.address}]]*/ '';
+    var currentRadarRadius = 5.0;
+
+    function loadNearbyViekers(radius) {
+        if (radius) currentRadarRadius = radius;
+        document.querySelectorAll('.radar-radius-btn').forEach(function(btn) {
+            if (parseFloat(btn.getAttribute('data-radius')) === parseFloat(currentRadarRadius)) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        var indicator = document.getElementById('radarRadiusIndicator');
+        if (indicator) indicator.textContent = currentRadarRadius + ' km';
+
+        fetch('/api/viekers/nearby?categoryId=' + currentJobCategoryId + '&radiusKm=' + currentRadarRadius + '&address=' + encodeURIComponent(currentJobAddress))
+            .then(function(r) { return r.json(); })
+            .then(function(data) {
+                renderRadarData(data);
+            })
+            .catch(function(err) {
+                console.error('Radar error:', err);
+            });
+    }
+
+    function renderRadarData(data) {
+        var countEl = document.getElementById('radarCountDetected');
+        if (countEl) countEl.textContent = data.count || 0;
+
+        var listEl = document.getElementById('radarDetectedList');
+        var blipsEl = document.getElementById('radarBlipDots');
+        var alertEl = document.getElementById('radarRecommendationAlert');
+        var alertTextEl = document.getElementById('radarAlertText');
+        var expandBtn = document.getElementById('radarExpandBtn');
+
+        if (blipsEl) blipsEl.innerHTML = '';
+
+        if (data.hasRecommendation && alertEl && alertTextEl) {
+            alertEl.style.display = 'block';
+            alertTextEl.innerHTML = '<strong><i class="bi bi-broadcast"></i> Gợi ý VieShift:</strong> ' + data.recommendationMessage;
+            if (expandBtn) {
+                expandBtn.onclick = function() {
+                    loadNearbyViekers(data.suggestedRadius);
+                };
+                expandBtn.innerHTML = '<i class="bi bi-arrows-angle-expand"></i> Mở rộng bán kính lên ' + data.suggestedRadius + ' km ngay';
+            }
+        } else if (alertEl) {
+            alertEl.style.display = 'none';
+        }
+
+        if (!data.viekers || data.viekers.length === 0) {
+            if (listEl) {
+                listEl.innerHTML = '<div style="text-align: center; padding: 20px; color: #94A3B8; font-size: 0.85rem;"><i class="bi bi-geo-alt-fill" style="color: #F59E0B; font-size: 1.5rem; display: block; margin-bottom: 6px;"></i>Chưa có đối tác trong phạm vi ' + currentRadarRadius + ' km.<br>Bấm nút đề xuất ở trên để mở rộng bán kính!</div>';
+            }
+            return;
+        }
+
+        if (listEl) {
+            listEl.innerHTML = '';
+            data.viekers.forEach(function(v, idx) {
+                var item = document.createElement('div');
+                item.style.cssText = 'background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px; padding: 8px 12px; display: flex; align-items: center; justify-content: space-between;';
+                item.innerHTML = '<div style="display: flex; align-items: center; gap: 10px;">' +
+                    '<div style="width: 32px; height: 32px; border-radius: 50%; background: #059669; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem;">' + (v.fullName ? v.fullName.charAt(0) : 'V') + '</div>' +
+                    '<div>' +
+                        '<div style="font-size: 0.88rem; font-weight: 700; color: #FFFFFF;">' + v.fullName + ' <span class="badge" style="background: rgba(16,185,129,0.2); color: #34D399; font-size: 0.68rem; padding: 2px 6px;">' + v.primaryCategory + '</span></div>' +
+                        '<div style="font-size: 0.74rem; color: #94A3B8;">⭐ ' + v.ratingAvg + ' (' + v.ratingCount + ' đánh giá) • ' + v.jobsCompleted + ' đơn</div>' +
+                    '</div>' +
+                '</div>' +
+                '<div style="text-align: right;">' +
+                    '<span style="font-size: 0.82rem; font-weight: 800; color: #38BDF8; font-family: monospace;">~' + v.distanceKm + ' km</span>' +
+                    '<div style="font-size: 0.68rem; color: #34D399;"><i class="bi bi-check-circle-fill"></i> Sẵn sàng</div>' +
+                '</div>';
+                listEl.appendChild(item);
+
+                if (blipsEl) {
+                    var blip = document.createElement('div');
+                    var ratio = Math.min(v.distanceKm / currentRadarRadius, 0.88);
+                    var angle = (idx * 137.5 + 45) * (Math.PI / 180);
+                    var r = ratio * 85;
+                    var x = 95 + r * Math.cos(angle);
+                    var y = 95 + r * Math.sin(angle);
+
+                    blip.style.cssText = 'position: absolute; left: ' + x + 'px; top: ' + y + 'px; width: 10px; height: 10px; border-radius: 50%; background: #34D399; box-shadow: 0 0 8px #34D399; animation: pulseDot 2s infinite; cursor: pointer;';
+                    blip.title = v.fullName + ' (~' + v.distanceKm + ' km)';
+                    blipsEl.appendChild(blip);
+                }
+            });
+        }
+    }
+
+    // Tự động khởi động Chat & Radar
+    document.addEventListener('DOMContentLoaded', function() {
+        var chatCard = document.getElementById('chatContainerCard');
+        if (chatCard) {
+            loadChatMessages();
+            chatPollInterval = setInterval(loadChatMessages, 3500);
+        }
+
+        var radarScreen = document.querySelector('.radar-screen-box');
+        if (radarScreen) {
+            loadNearbyViekers(5.0);
+        }
+    });
+/*]]>*/
+</script>
+</script>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Đăng nhập hệ thống')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('login')}"></header>
+
+<main class="auth-boutique-shell">
+
+    <!-- Họa tiết nghệ thuật rìa trái -->
+    <svg class="edge-art-left" viewBox="0 0 280 620" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="opacity: 0.7;">
+        <circle cx="30" cy="140" r="145" stroke="#E87A8D" stroke-width="1.3" stroke-dasharray="7 7" opacity="0.45"/>
+        <path d="M-20 80 C85 130, 120 260, 45 360 C-10 430, 65 510, 145 580" stroke="#C24D63" stroke-width="1.8" opacity="0.28" fill="none"/>
+        <g class="edge-sparkle" transform="translate(115, 110)">
+            <path d="M12 0 L15 9 L24 12 L15 15 L12 24 L9 15 L0 12 L9 9 Z" fill="#C24D63" opacity="0.45"/>
+        </g>
+        <g class="edge-float-reverse" transform="translate(55, 420)">
+            <rect x="0" y="0" width="44" height="44" rx="12" fill="#FAF7F2" stroke="#D9CFC5" stroke-width="1.4"/>
+            <path d="M14 22 L20 28 L31 16" stroke="#C24D63" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+    </svg>
+
+    <!-- Họa tiết nghệ thuật rìa phải -->
+    <svg class="edge-art-right" viewBox="0 0 280 620" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="opacity: 0.7;">
+        <circle cx="250" cy="200" r="160" stroke="#E6AF76" stroke-width="1.3" stroke-dasharray="6 8" opacity="0.45"/>
+        <path d="M300 90 C190 160, 165 290, 235 400 C285 480, 200 545, 120 600" stroke="#2B2523" stroke-width="1.5" opacity="0.2" fill="none"/>
+        <g class="edge-sparkle" transform="translate(135, 150)">
+            <path d="M10 0 L12.5 7.5 L20 10 L12.5 12.5 L10 20 L7.5 12.5 L0 10 L7.5 7.5 Z" fill="#E6AF76" opacity="0.6"/>
+        </g>
+    </svg>
+
+    <div class="auth-split-container">
+        <!-- Cột Trái: Editorial Boutique Brand Showcase -->
+        <div class="auth-editorial-panel">
+            <div>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(250, 247, 242, 0.12); border: 1px solid rgba(250, 247, 242, 0.22); padding: 6px 14px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #F5D0D8;">
+                    <i class="bi bi-shield-check"></i> Bảo chứng Dịch vụ Gia đình
+                </div>
+                <h2 style="font-size: 2rem; font-weight: 800; color: #FFFFFF; line-height: 1.22; margin-top: 20px; letter-spacing: -0.6px;">
+                    Chào mừng bạn trở lại với <span style="color: #E6AF76;">VieShift.</span>
+                </h2>
+                <p style="font-size: 0.93rem; color: rgba(250, 247, 242, 0.82); line-height: 1.65; margin-top: 14px;">
+                    Nền tảng kết nối Khách hàng với đội ngũ Đối tác VieKer lành nghề, đã được thẩm định danh tính (KYC 5 lớp) và bảo vệ thanh toán qua ví tạm giữ Escrow 100%.
+                </p>
+
+                <div style="margin-top: 32px; display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(230, 175, 118, 0.18); color: #E6AF76; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-patch-check-fill"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #FFFFFF;">100% Đối tác VieKer xác thực</div>
+                            <div style="font-size: 0.8rem; color: rgba(250, 247, 242, 0.72);">CCCD 2 mặt, Lý lịch tư pháp &amp; Bằng lái xe được duyệt bởi Ban Quản Trị.</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(232, 122, 141, 0.22); color: #F5B7C2; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-safe2-fill"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #FFFFFF;">Thanh toán Tạm giữ An toàn</div>
+                            <div style="font-size: 0.8rem; color: rgba(250, 247, 242, 0.72);">Chỉ giải ngân cho thợ sau khi bạn nghiệm thu hài lòng kết quả công việc.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Khối chuyển hướng dành cho Đối tác VieKer -->
+            <div style="margin-top: 36px; padding-top: 24px; border-top: 1px solid rgba(250, 247, 242, 0.16);">
+                <div style="font-size: 0.82rem; color: rgba(250, 247, 242, 0.78); margin-bottom: 10px;">
+                    Bạn là thợ lành nghề muốn gia tăng thu nhập?
+                </div>
+                <a th:href="@{/become-vieker}" style="display: inline-flex; align-items: center; gap: 8px; color: #E6AF76; font-weight: 700; font-size: 0.9rem; text-decoration: none;">
+                    Đăng ký trở thành Đối tác VieKer <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Cột Phải: Form Đăng nhập & Google OAuth2 -->
+        <div class="auth-form-panel">
+            <div style="margin-bottom: 24px;">
+                <h1 style="font-size: 1.65rem; font-weight: 800; color: var(--secondary); margin-bottom: 6px;">Đăng nhập tài khoản</h1>
+                <p style="font-size: 0.9rem; color: var(--text-muted);">
+                    Nhập thông tin tài khoản hoặc đăng nhập nhanh bằng Google
+                </p>
+            </div>
+
+            <!-- Thông báo lỗi / thành công -->
+            <div th:if="${param.error}" class="alert alert-danger" style="margin-bottom: 18px;">
+                <i class="bi bi-exclamation-octagon-fill"></i>
+                <div>Email hoặc mật khẩu không chính xác, hoặc tài khoản đã bị tạm khóa.</div>
+            </div>
+
+            <!-- Thông báo lỗi riêng cho Đăng nhập Google (OAuth2) -->
+            <div th:if="${param.oauth2_error != null or oauth2Error != null}" class="alert alert-warning" style="margin-bottom: 18px; border-left: 4px solid #F59E0B; background: #FFFBEB; color: #92400E; padding: 14px 16px; border-radius: 10px;">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                    <i class="bi bi-exclamation-triangle-fill" style="font-size: 1.25rem; color: #D97706; flex-shrink: 0; margin-top: 2px;"></i>
+                    <div style="font-size: 0.88rem; line-height: 1.5;">
+                        <strong style="color: #78350F; font-size: 0.95rem; display: block; margin-bottom: 4px;">Đăng nhập Google chưa thành công</strong>
+                        <div th:if="${oauth2Error}" th:text="${oauth2Error}" style="font-family: monospace; font-size: 0.78rem; background: rgba(0,0,0,0.06); padding: 4px 8px; border-radius: 6px; margin-bottom: 6px; word-break: break-all;"></div>
+                        <div>Nguyên nhân phổ biến:</div>
+                        <ul style="margin: 4px 0 0 16px; padding: 0;">
+                            <li>Chưa thêm <code>http://localhost:8080/login/oauth2/code/google</code> vào mục <em>Clients &gt; Authorized redirect URIs</em> trên Google Cloud Console.</li>
+                            <li>Tài khoản chưa được thêm vào danh sách <strong>Test users</strong> (hoặc chưa bấm <em>Publish App</em>) trong mục <em>Audience</em> trên Google Cloud Console.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div th:if="${param.logout}" class="alert alert-info" style="margin-bottom: 18px;">
+                <i class="bi bi-check-circle-fill"></i>
+                <div>Bạn đã đăng xuất khỏi hệ thống an toàn.</div>
+            </div>
+
+            <div th:if="${successMessage}" class="alert alert-success" style="margin-bottom: 18px;">
+                <i class="bi bi-check-circle-fill"></i>
+                <div th:text="${successMessage}"></div>
+            </div>
+
+            <div th:if="${googleNotice}" class="alert alert-warning" style="margin-bottom: 18px;">
+                <i class="bi bi-info-circle-fill"></i>
+                <div th:text="${googleNotice}"></div>
+            </div>
+
+            <!-- Nút Đăng nhập bằng Google (OAuth2) -->
+            <a th:href="@{/oauth2/authorization/google}" class="btn-google-oauth">
+                <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                <span>Tiếp tục với tài khoản Google</span>
+            </a>
+
+            <div class="auth-divider">hoặc đăng nhập bằng email</div>
+
+            <!-- Form đăng nhập chính -->
+            <form th:action="@{/login}" method="post">
+                <div class="form-group">
+                    <label class="form-label" for="email">Địa chỉ Email</label>
+                    <input type="email" id="email" name="email" class="form-control"
+                           placeholder="ten.cua.ban@email.com" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label class="form-label" for="password" style="margin-bottom: 0;">Mật khẩu</label>
+                    </div>
+                    <input type="password" id="password" name="password" class="form-control"
+                           placeholder="••••••••" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 8px; border-radius: 999px;">
+                    <i class="bi bi-box-arrow-in-right"></i> Đăng nhập vào VieShift
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text-muted);">
+                Chưa có tài khoản Khách hàng?
+                <a th:href="@{/register}" style="color: var(--primary); font-weight: 700; text-decoration: none;">Đăng ký miễn phí ngay</a>
+            </div>
+
+            <!-- Điều khoản pháp lý -->
+            <div style="text-align: center; margin-top: 14px; font-size: 0.78rem; color: var(--text-light); line-height: 1.5;">
+                Bằng việc đăng nhập, bạn đồng ý tuân thủ
+                <a th:href="@{/terms}" style="color: var(--text-muted); text-decoration: underline;">Điều khoản sử dụng dịch vụ</a>
+                và
+                <a th:href="@{/privacy}" style="color: var(--text-muted); text-decoration: underline;">Chính sách bảo mật dữ liệu</a>
+                của VieShift.
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

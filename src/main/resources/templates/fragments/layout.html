@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+
+<!-- Head Fragment -->
+<head th:fragment="htmlHeader(pageTitle)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${pageTitle} + ' — VieShift'">VieShift — Nền tảng Đặt thợ gia đình & Dịch vụ việc làm uy tín</title>
+    <link rel="stylesheet" th:href="@{/css/vieshift.css}">
+    <!-- Leaflet CSS & JS for Interactive OpenStreetMap -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Early theme & language init script to avoid flash of unstyled theme -->
+    <script>
+        (function() {
+            var savedTheme = localStorage.getItem('vieshift_theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+            var savedLang = localStorage.getItem('vieshift_lang');
+            if (savedLang) {
+                document.documentElement.setAttribute('lang', savedLang);
+            }
+        })();
+    </script>
+</head>
+
+<body>
+
+<!-- Navbar Fragment (Thực tế, Chuyên nghiệp & Thuần Việt) -->
+<header th:fragment="navbar(activeItem)" class="tr-navbar">
+    <!-- Thanh đo tiến trình cuộn trang (Top Scroll Progress Bar) -->
+    <div id="scrollProgressBar" class="scroll-progress-bar"></div>
+
+    <div class="navbar-container">
+        <!-- Logo VieShift Mới (Biểu tượng Chữ V Bảo chứng Rosewood & Pearl) -->
+        <a th:href="@{/}" class="tr-brand" style="display: flex; align-items: center; gap: 11px; text-decoration: none;">
+            <svg width="38" height="38" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect width="40" height="40" rx="10" fill="url(#vieshiftGrad)"/>
+                <path d="M10.5 16.5L18.5 27L29.5 11" stroke="#FFFFFF" stroke-width="3.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="29.5" cy="11" r="2.5" fill="#E6AF76"/>
+                <defs>
+                    <linearGradient id="vieshiftGrad" x1="0" y1="0" x2="40" y2="40" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#C24D63"/>
+                        <stop offset="1" stop-color="#E87A8D"/>
+                    </linearGradient>
+                </defs>
+            </svg>
+            <span style="font-size: 1.55rem; font-weight: 800; letter-spacing: -0.5px; color: #C24D63;">Vie<span style="color: #2B2523;">Shift</span></span>
+        </a>
+
+        <!-- Menu điều hướng chính -->
+        <nav style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
+
+            <a th:href="@{/explore}" class="nav-link-item"
+               style="color: #4A4543; font-weight: 700; font-size: 0.95rem;"
+               th:classappend="${activeItem == 'explore' ? 'active' : ''}">
+                Khám phá dịch vụ
+            </a>
+
+            <!-- Khi CHƯA ĐĂNG NHẬP -->
+            <div sec:authorize="!isAuthenticated()" style="display: flex; gap: 16px; align-items: center;">
+                <a th:href="@{/become-vieker}" class="tr-become-btn">
+                    Trở thành Đối tác VieKer
+                </a>
+                <a th:href="@{/login}" style="text-decoration: none; color: #4A4543; font-weight: 700; font-size: 0.95rem;">
+                    Đăng nhập
+                </a>
+                <a th:href="@{/register}" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #C24D63, #D95D74); border-color: #C24D63; border-radius: 9999px; padding: 8px 18px; box-shadow: 0 4px 12px rgba(194,77,99,0.25);">
+                    Đăng ký Khách hàng
+                </a>
+            </div>
+
+            <!-- Khi ĐÃ ĐĂNG NHẬP (VAI TRÒ KHÁCH HÀNG) -->
+            <div sec:authorize="hasRole('CUSTOMER')" style="display: flex; gap: 16px; align-items: center;">
+                <a th:href="@{/customer(tab='jobs')}" class="nav-link-item"
+                   style="color: #4A4543; font-weight: 700; font-size: 0.93rem;"
+                   th:classappend="${activeItem == 'jobs' ? 'active' : ''}">
+                    Đơn của tôi
+                </a>
+
+                <a th:href="@{/customer(tab='create')}" class="btn btn-primary btn-sm" style="background: linear-gradient(135deg, #C24D63, #D95D74); border-color: #C24D63; border-radius: 9999px; padding: 8px 18px; box-shadow: 0 4px 12px rgba(194,77,99,0.25);">
+                    <i class="bi bi-plus-circle" style="margin-right: 5px;"></i> Đặt việc mới
+                </a>
+
+                <a th:href="@{/customer(tab='profile')}" class="user-profile-menu" style="text-decoration: none; color: inherit;" title="Thông tin tài khoản">
+                    <div class="user-avatar-pill" style="background: #C24D63;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.82rem; font-weight: 700;" sec:authentication="name">khachhang@vieshift.vn</div>
+                        <span class="user-role-tag role-customer">Khách hàng</span>
+                    </div>
+                </a>
+
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-outline btn-sm" title="Đăng xuất khỏi hệ thống">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Khi ĐÃ ĐĂNG NHẬP (VAI TRÒ THỢ / VIEKER) -->
+            <div sec:authorize="hasRole('VIEKER')" style="display: flex; gap: 16px; align-items: center;">
+                <a th:href="@{/vieker(tab='marketplace')}" class="nav-link-item" style="color: #4A4543; font-weight: 700; font-size: 0.93rem;">
+                    Sàn nhận việc
+                </a>
+                <a th:href="@{/vieker(tab='my-jobs')}" class="nav-link-item" style="color: #4A4543; font-weight: 700; font-size: 0.93rem;">
+                    Việc đang làm
+                </a>
+                <a th:href="@{/vieker(tab='wallet')}" class="btn btn-outline btn-sm" style="border-radius: 9999px;">
+                    <i class="bi bi-wallet2" style="margin-right: 4px;"></i> Ví thu nhập
+                </a>
+
+                <a th:href="@{/vieker}" class="user-profile-menu" style="text-decoration: none; color: inherit;" title="Hồ sơ đối tác">
+                    <div class="user-avatar-pill" style="background: #C2864C;">
+                        <i class="bi bi-person-fill"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.82rem; font-weight: 700;" sec:authentication="name">tho@vieshift.vn</div>
+                        <span class="user-role-tag role-vieker">Đối tác VieKer</span>
+                    </div>
+                </a>
+
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-outline btn-sm" title="Đăng xuất khỏi hệ thống">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Khi ĐÃ ĐĂNG NHẬP (VAI TRÒ QUẢN TRỊ VIÊN) -->
+            <div sec:authorize="hasRole('ADMIN')" style="display: flex; gap: 16px; align-items: center;">
+                <a th:href="@{/admin}" class="btn btn-primary btn-sm" style="background: #2B2523; border-color: #2B2523; border-radius: 9999px; padding: 8px 18px; color: #FAF7F2;">
+                    <i class="bi bi-speedometer2" style="margin-right: 5px;"></i> Quản trị sàn
+                </a>
+
+                <a th:href="@{/admin}" class="user-profile-menu" style="text-decoration: none; color: inherit;" title="Quản trị viên">
+                    <div class="user-avatar-pill" style="background: #2B2523;">
+                        <i class="bi bi-shield-lock-fill"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.82rem; font-weight: 700;" sec:authentication="name">admin@vieshift.vn</div>
+                        <span class="user-role-tag role-admin">Quản trị viên</span>
+                    </div>
+                </a>
+
+                <form th:action="@{/logout}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-outline btn-sm" title="Đăng xuất khỏi hệ thống">
+                        <i class="bi bi-box-arrow-right"></i>
+                    </button>
+                </form>
+            </div>
+
+            <!-- Cụm điều khiển Theme Sáng/Tối & Bộ chọn Ngôn ngữ & Chuông Thông Báo -->
+            <div class="header-controls">
+
+                <!-- Chuông Thông Báo (Chỉ hiện khi đã đăng nhập) -->
+                <div sec:authorize="isAuthenticated()" class="notif-dropdown-wrapper" style="position: relative;">
+                    <button type="button" id="notifBellBtn" class="theme-toggle-btn notif-bell-btn" title="Thông báo hệ thống">
+                        <i class="bi bi-bell-fill" style="color: var(--text-main);"></i>
+                        <span id="notifUnreadBadge" class="notif-badge" style="display: none;">0</span>
+                    </button>
+
+                    <div id="notifDropdownMenu" class="notif-dropdown-menu" style="display: none;">
+                        <div class="notif-menu-header">
+                            <span style="font-weight: 800; font-size: 0.95rem; color: var(--text-main);">Thông báo</span>
+                            <button type="button" onclick="markAllNotificationsRead()" class="btn-read-all">
+                                Đã đọc tất cả
+                            </button>
+                        </div>
+                        <div id="notifListContainer" class="notif-list-container">
+                            <div style="text-align: center; padding: 28px 10px; color: var(--text-muted); font-size: 0.85rem;">
+                                Đang tải thông báo...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Nút chuyển Theme Sáng / Tối -->
+                <button type="button" id="themeToggleBtn" class="theme-toggle-btn" title="Chuyển chế độ Sáng / Tối" aria-label="Toggle Theme">
+                    <i class="bi bi-moon-stars-fill theme-icon-dark"></i>
+                    <i class="bi bi-sun-fill theme-icon-light" style="display: none; color: #F59E0B;"></i>
+                </button>
+
+                <!-- Bộ chọn Ngôn ngữ (Language Dropdown) -->
+                <div class="lang-dropdown-wrapper">
+                    <button type="button" id="langDropdownBtn" class="lang-selector-btn" aria-expanded="false" title="Chọn ngôn ngữ hiển thị">
+                        <span class="lang-flag" id="currentLangFlag">🇻🇳</span>
+                        <span class="lang-label" id="currentLangLabel">Tiếng Việt</span>
+                        <i class="bi bi-chevron-down" style="font-size: 0.72rem; margin-left: 2px;"></i>
+                    </button>
+
+                    <div id="langDropdownMenu" class="lang-dropdown-menu" style="display: none;">
+                        <div class="lang-menu-header">Ngôn ngữ / Language</div>
+                        <button type="button" class="lang-option active" data-lang="vi">
+                            <span class="flag">🇻🇳</span>
+                            <span class="name">Tiếng Việt</span>
+                            <i class="bi bi-check-lg check-icon"></i>
+                        </button>
+                        <button type="button" class="lang-option" data-lang="en">
+                            <span class="flag">🇺🇸</span>
+                            <span class="name">English</span>
+                            <i class="bi bi-check-lg check-icon"></i>
+                        </button>
+                        <button type="button" class="lang-option" data-lang="ja">
+                            <span class="flag">🇯🇵</span>
+                            <span class="name">日本語</span>
+                            <i class="bi bi-check-lg check-icon"></i>
+                        </button>
+                        <button type="button" class="lang-option" data-lang="ko">
+                            <span class="flag">🇰🇷</span>
+                            <span class="name">한국어</span>
+                            <i class="bi bi-check-lg check-icon"></i>
+                        </button>
+                        <button type="button" class="lang-option" data-lang="zh">
+                            <span class="flag">🇨🇳</span>
+                            <span class="name">中文 (简体)</span>
+                            <i class="bi bi-check-lg check-icon"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </nav>
+    </div>
+</header>
+
+<!-- Footer Thuần Việt -->
+<footer th:fragment="footer" class="tr-footer-dark">
+    <div class="tr-footer-inner">
+
+        <!-- Mạng xã hội -->
+        <div class="tr-footer-socials">
+            <span style="color: #E2E8F0; font-size: 0.88rem; font-weight: 600; margin-right: 8px; align-self: center;">Theo dõi VieShift:</span>
+            <a href="#" class="tr-social-icon" title="Facebook"><i class="bi bi-facebook"></i></a>
+            <a href="#" class="tr-social-icon" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a href="#" class="tr-social-icon" title="TikTok"><i class="bi bi-tiktok"></i></a>
+            <a href="#" class="tr-social-icon" title="LinkedIn"><i class="bi bi-linkedin"></i></a>
+            <a href="#" class="tr-social-icon" title="YouTube"><i class="bi bi-youtube"></i></a>
+        </div>
+
+        <!-- 4 Cột Liên kết Thuần Việt -->
+        <div class="tr-footer-cols">
+            <div class="tr-footer-col">
+                <h4>Khám phá dịch vụ</h4>
+                <ul class="tr-footer-links">
+                    <li><a th:href="@{/become-vieker}">Đăng ký trở thành Đối tác VieKer</a></li>
+                    <li><a th:href="@{/explore}">Dịch vụ theo khu vực (TP.HCM, Hà Nội...)</a></li>
+                    <li><a th:href="@{/explore}">Tất cả danh mục công việc</a></li>
+                    <li><a th:href="@{/explore}">Đội ngũ thợ xuất sắc 5 sao</a></li>
+                    <li><a th:href="@{/guarantee}">Chính sách bảo đảm chất lượng</a></li>
+                </ul>
+            </div>
+
+            <div class="tr-footer-col">
+                <h4>Về VieShift</h4>
+                <ul class="tr-footer-links">
+                    <li><a th:href="@{/about}">Giới thiệu nền tảng VieShift</a></li>
+                    <li><a th:href="@{/become-vieker}">Cơ hội hợp tác VieKer độc lập</a></li>
+                    <li><a th:href="@{/partners}">Đối tác cung ứng (IKEA, JYSK, Hafele, Vinhomes)</a></li>
+                    <li><a th:href="@{/handbook}">Tin tức & Hoạt động cộng đồng</a></li>
+                    <li><a th:href="@{/handbook}">Cẩm nang mẹo vặt gia đình</a></li>
+                </ul>
+            </div>
+
+            <div class="tr-footer-col">
+                <h4>Hỗ trợ & Pháp lý</h4>
+                <ul class="tr-footer-links">
+                    <li><a th:href="@{/terms}">Điều khoản sử dụng dịch vụ</a></li>
+                    <li><a th:href="@{/privacy}">Chính sách bảo mật dữ liệu cá nhân</a></li>
+                    <li><a th:href="@{/terms#escrow}">Quy chế Thanh toán Tạm giữ (Escrow)</a></li>
+                    <li><a th:href="@{/terms#vieker}">Tiêu chuẩn Đối tác VieKer (KYC)</a></li>
+                    <li><a th:href="@{/terms#dispute}">Cơ chế Giải quyết Khiếu nại</a></li>
+                </ul>
+            </div>
+
+            <div class="tr-footer-col">
+                <h4>Tải ứng dụng VieShift</h4>
+                <p style="font-size: 0.85rem; color: #CBD5E1; margin-bottom: 14px;">
+                    Đặt thợ nhanh chóng, theo dõi thợ di chuyển theo thời gian thực và thanh toán an toàn ngay trên điện thoại.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 8px;">
+                    <a th:href="@{/mobile-app}" style="display: inline-flex; align-items: center; gap: 10px; background: #1E293B; border: 1px solid #475569; padding: 8px 16px; border-radius: 8px; color: #FFFFFF; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="bi bi-apple" style="font-size: 1.4rem;"></i>
+                        <div style="text-align: left; line-height: 1.2;">
+                            <div style="font-size: 0.65rem; text-transform: uppercase;">Tải về trên</div>
+                            <strong style="font-size: 0.9rem;">App Store</strong>
+                        </div>
+                    </a>
+                    <a th:href="@{/mobile-app}" style="display: inline-flex; align-items: center; gap: 10px; background: #1E293B; border: 1px solid #475569; padding: 8px 16px; border-radius: 8px; color: #FFFFFF; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                        <i class="bi bi-google-play" style="font-size: 1.3rem;"></i>
+                        <div style="text-align: left; line-height: 1.2;">
+                            <div style="font-size: 0.65rem; text-transform: uppercase;">Khám phá trên</div>
+                            <strong style="font-size: 0.9rem;">Google Play</strong>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="tr-footer-bottom">
+            <div>
+                © 2026 VieShift. Nền tảng Đặt thợ gia đình & Dịch vụ việc làm linh hoạt hàng đầu Việt Nam.
+            </div>
+            <div style="display: flex; gap: 18px;">
+                <a th:href="@{/terms}" style="color: #94A3B8; text-decoration: none;">Điều khoản Dịch vụ</a>
+                <a th:href="@{/privacy}" style="color: #94A3B8; text-decoration: none;">Bảo mật Dữ liệu (NĐ 13/2023)</a>
+                <a th:href="@{/terms#escrow}" style="color: #94A3B8; text-decoration: none;">Quy chế Hoạt động Sàn TMĐT</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nút nổi trợ giúp góc trái dưới -->
+    <div class="tr-floating-widgets">
+        <a th:href="@{/explore}" class="tr-shield-fab" title="Cam kết Hài lòng 100%">
+            <i class="bi bi-shield-fill-check"></i>
+        </a>
+        <a th:href="@{/explore}" class="tr-help-fab">
+            <i class="bi bi-question-circle"></i> Trợ giúp
+        </a>
+    </div>
+
+    <!-- Nút cuộn lên đầu trang (Back to Top FAB) -->
+    <button id="backToTopBtn" class="back-to-top-fab" title="Lên đầu trang" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+        <i class="bi bi-arrow-up"></i>
+    </button>
+
+    <!-- Global Interactive Scroll & Motion Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Top Scroll Progress Bar
+            const progressBar = document.getElementById('scrollProgressBar');
+            const navbar = document.querySelector('.tr-navbar');
+            const backToTopBtn = document.getElementById('backToTopBtn');
+
+            function handleScroll() {
+                const scrollTop = window.scrollY || document.documentElement.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+                const scrollPercent = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+                
+                if (progressBar) {
+                    progressBar.style.width = scrollPercent + '%';
+                }
+
+                // Sticky Frosted Navbar shadow effect on scroll
+                if (navbar) {
+                    if (scrollTop > 20) {
+                        navbar.classList.add('scrolled');
+                    } else {
+                        navbar.classList.remove('scrolled');
+                    }
+                }
+
+                // Back to Top button visibility
+                if (backToTopBtn) {
+                    if (scrollTop > 320) {
+                        backToTopBtn.classList.add('is-visible');
+                    } else {
+                        backToTopBtn.classList.remove('is-visible');
+                    }
+                }
+            }
+
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            handleScroll();
+
+            // 2. IntersectionObserver for Reveal on Scroll Elements
+            const revealElements = document.querySelectorAll('.reveal-on-scroll');
+            if ('IntersectionObserver' in window) {
+                const observer = new IntersectionObserver((entries, obs) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('is-revealed');
+                            obs.unobserve(entry.target);
+                        }
+                    });
+                }, {
+                    threshold: 0.12,
+                    rootMargin: '0px 0px -30px 0px'
+                });
+
+                revealElements.forEach(el => observer.observe(el));
+            } else {
+                revealElements.forEach(el => el.classList.add('is-revealed'));
+            }
+        });
+    </script>
+
+    <!-- Hidden Google Translate Element Container -->
+    <div id="vieshift_google_translate_hidden" style="display:none;"></div>
+
+    <!-- Theme & Multi-Language JavaScript Engine -->
+    <script th:src="@{/js/vieshift-theme-lang.js}"></script>
+</footer>
+
+</body>
+</html>
