@@ -158,7 +158,7 @@ public class VnPayServiceImpl implements VnPayService {
                     "Chữ ký bảo mật không khớp hoặc giao dịch không hợp lệ", payDate);
         }
 
-        PaymentTransaction transaction = paymentTransactionRepository.findByTxnRef(txnRef).orElse(null);
+        PaymentTransaction transaction = paymentTransactionRepository.findByTxnRefForUpdate(txnRef).orElse(null);
         if (transaction == null) {
             log.warn("Không tìm thấy giao dịch với mã txnRef={}", txnRef);
             return new PaymentResult(false, txnRef, amount, orderInfo, bankCode, transactionNo,
@@ -227,7 +227,7 @@ public class VnPayServiceImpl implements VnPayService {
             return response;
         }
 
-        PaymentTransaction transaction = paymentTransactionRepository.findByTxnRef(txnRef).orElse(null);
+        PaymentTransaction transaction = paymentTransactionRepository.findByTxnRefForUpdate(txnRef).orElse(null);
         if (transaction == null) {
             response.put("RspCode", "01");
             response.put("Message", "Order not found");

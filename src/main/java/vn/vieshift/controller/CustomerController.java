@@ -397,22 +397,6 @@ public class CustomerController {
         return "redirect:/customer/jobs/" + jobId;
     }
 
-    @PostMapping("/wallet/deposit")
-    public String handleDeposit(@Valid @ModelAttribute("depositRequest") DepositRequest request,
-                                BindingResult bindingResult,
-                                Authentication auth,
-                                RedirectAttributes redirectAttributes) {
-        if (bindingResult.hasErrors()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Số tiền nạp tối thiểu là 20.000 đ");
-            return "redirect:/customer?tab=wallet";
-        }
-
-        User customer = getCurrentCustomer(auth);
-        walletService.deposit(customer.getId(), request);
-        redirectAttributes.addFlashAttribute("successMessage", "Nạp tiền thành công! Số dư ví đã được cập nhật.");
-        return "redirect:/customer?tab=wallet";
-    }
-
     @PostMapping("/wallet/withdraw")
     public String handleWithdraw(@Valid @ModelAttribute("withdrawRequest") WithdrawRequest request,
                                  BindingResult bindingResult,

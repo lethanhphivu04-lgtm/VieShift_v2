@@ -115,7 +115,7 @@ public class SecurityConfig {
                                                    WalletRepository walletRepository,
                                                    PasswordEncoder passwordEncoder) throws Exception {
         http
-                .csrf(csrf -> csrf.disable())
+                .csrf(csrf -> csrf.ignoringRequestMatchers("/api/**", "/payment/**"))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
@@ -139,7 +139,7 @@ public class SecurityConfig {
                                 "/css/**",
                                 "/js/**",
                                 "/images/**",
-                                "/uploads/**",
+                                "/uploads/chat/**",
                                 "/api/viekers/**",
                                 "/api/vouchers/**",
                                 "/error"

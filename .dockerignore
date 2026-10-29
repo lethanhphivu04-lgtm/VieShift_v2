@@ -1,0 +1,7 @@
+target/
+uploads/
+.git/
+.vscode/
+.env
+*.docx
+

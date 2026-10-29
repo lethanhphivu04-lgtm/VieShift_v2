@@ -24,8 +24,8 @@ public class WalletServiceImpl implements WalletService {
     private final UserRepository userRepository;
 
     public WalletServiceImpl(WalletRepository walletRepository,
-                             WalletTransactionRepository transactionRepository,
-                             UserRepository userRepository) {
+            WalletTransactionRepository transactionRepository,
+            UserRepository userRepository) {
         this.walletRepository = walletRepository;
         this.transactionRepository = transactionRepository;
         this.userRepository = userRepository;
@@ -40,6 +40,12 @@ public class WalletServiceImpl implements WalletService {
                 });
     }
 
+    private Wallet getOrCreateWalletForUpdate(User user) {
+        return walletRepository.findByUserIdForUpdate(user.getId())
+                .or(() -> walletRepository.findByUserId(user.getId()))
+                .orElseGet(() -> walletRepository.save(new Wallet(user)));
+    }
+
     @Override
     @Transactional(readOnly = true)
     public Wallet getWalletByUserId(Long userId) {
@@ -51,7 +57,7 @@ public class WalletServiceImpl implements WalletService {
     public Wallet deposit(Long userId, DepositRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng ID: " + userId));
-        Wallet wallet = getOrCreateWallet(user);
+        Wallet wallet = getOrCreateWalletForUpdate(user);
 
         BigDecimal amount = request.getAmount();
         wallet.addBalance(amount);
@@ -64,8 +70,7 @@ public class WalletServiceImpl implements WalletService {
                 amount,
                 TransactionType.DEPOSIT,
                 wallet.getBalance(),
-                desc
-        );
+                desc);
         transactionRepository.save(tx);
 
         return wallet;
@@ -75,7 +80,7 @@ public class WalletServiceImpl implements WalletService {
     public Wallet deposit(Long userId, BigDecimal amount, String description) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng ID: " + userId));
-        Wallet wallet = getOrCreateWallet(user);
+        Wallet wallet = getOrCreateWalletForUpdate(user);
 
         wallet.addBalance(amount);
         walletRepository.save(wallet);
@@ -87,8 +92,7 @@ public class WalletServiceImpl implements WalletService {
                 amount,
                 TransactionType.DEPOSIT,
                 wallet.getBalance(),
-                desc
-        );
+                desc);
         transactionRepository.save(tx);
 
         return wallet;
@@ -98,7 +102,7 @@ public class WalletServiceImpl implements WalletService {
     public Wallet withdraw(Long userId, WithdrawRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy người dùng ID: " + userId));
-        Wallet wallet = getOrCreateWallet(user);
+        Wallet wallet = getOrCreateWalletForUpdate(user);
 
         BigDecimal amount = request.getAmount();
         if (!wallet.canAfford(amount)) {
@@ -108,15 +112,15 @@ public class WalletServiceImpl implements WalletService {
         wallet.subtractBalance(amount);
         walletRepository.save(wallet);
 
-        String desc = "Rút tiền về NH " + request.getBankName() + " - STK: " + request.getAccountNumber() + " (" + request.getAccountHolder() + ")";
+        String desc = "Rút tiền về NH " + request.getBankName() + " - STK: " + request.getAccountNumber() + " ("
+                + request.getAccountHolder() + ")";
         WalletTransaction tx = new WalletTransaction(
                 wallet,
                 null,
                 amount,
                 TransactionType.WITHDRAW,
                 wallet.getBalance(),
-                desc
-        );
+                desc);
         transactionRepository.save(tx);
 
         return wallet;
@@ -126,21 +130,11 @@ public class WalletServiceImpl implements WalletService {
     public void holdEscrow(Long customerId, Job job, BigDecimal amount) {
         User customer = userRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy khách hàng ID: " + customerId));
-        Wallet wallet = getOrCreateWallet(customer);
+        Wallet wallet = getOrCreateWalletForUpdate(customer);
 
-        // Ưu tiên trải nghiệm người dùng: Nếu số dư ví chưa nạp sẵn, tự động cấp nguồn thanh toán để khách đặt việc liền mạch
         if (!wallet.canAfford(amount)) {
-            BigDecimal missing = amount.subtract(wallet.getBalance());
-            wallet.addBalance(missing);
-            walletRepository.save(wallet);
-            transactionRepository.save(new WalletTransaction(
-                    wallet,
-                    job,
-                    missing,
-                    TransactionType.DEPOSIT,
-                    wallet.getBalance(),
-                    "Nạp tiền thanh toán bảo đảm cho đơn #" + job.getId()
-            ));
+            throw new InsufficientBalanceException(
+                    "Số dư khả dụng không đủ để ký quỹ đơn #" + job.getId() + ". Vui lòng nạp thêm tiền.");
         }
 
         wallet.hold(amount);
@@ -153,8 +147,7 @@ public class WalletServiceImpl implements WalletService {
                 amount,
                 TransactionType.ESCROW_HOLD,
                 wallet.getBalance(),
-                desc
-        );
+                desc);
         transactionRepository.save(tx);
     }
 
@@ -167,8 +160,8 @@ public class WalletServiceImpl implements WalletService {
             throw new IllegalStateException("Công việc #" + job.getId() + " chưa có thợ nhận, không thể giải ngân");
         }
 
-        Wallet customerWallet = getOrCreateWallet(customer);
-        Wallet viekerWallet = getOrCreateWallet(vieker);
+        Wallet customerWallet = getOrCreateWalletForUpdate(customer);
+        Wallet viekerWallet = getOrCreateWalletForUpdate(vieker);
 
         // 1. Giải phóng số tiền bị khóa trong ví Khách hàng
         customerWallet.releaseHold(job.getPrice());
@@ -179,15 +172,15 @@ public class WalletServiceImpl implements WalletService {
         walletRepository.save(viekerWallet);
 
         // 3. Ghi nhận lịch sử cho Thợ
-        String viekerDesc = "Nhận thanh toán hoàn thành việc #" + job.getId() + " [" + job.getTitle() + "] (sau trừ phí sàn " + platformFee + " đ)";
+        String viekerDesc = "Nhận thanh toán hoàn thành việc #" + job.getId() + " [" + job.getTitle()
+                + "] (sau trừ phí sàn " + platformFee + " đ)";
         WalletTransaction viekerTx = new WalletTransaction(
                 viekerWallet,
                 job,
                 netAmount,
                 TransactionType.ESCROW_RELEASE,
                 viekerWallet.getBalance(),
-                viekerDesc
-        );
+                viekerDesc);
         transactionRepository.save(viekerTx);
 
         // 4. Ghi nhận giao dịch phí dịch vụ sàn
@@ -198,8 +191,7 @@ public class WalletServiceImpl implements WalletService {
                     platformFee,
                     TransactionType.PLATFORM_FEE,
                     customerWallet.getBalance(),
-                    "Phí dịch vụ nền tảng VieShift 10% cho công việc #" + job.getId()
-            );
+                    "Phí dịch vụ nền tảng VieShift 10% cho công việc #" + job.getId());
             transactionRepository.save(feeTx);
         }
     }
@@ -215,11 +207,12 @@ public class WalletServiceImpl implements WalletService {
         User vieker = userRepository.findById(viekerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy thợ ID: " + viekerId));
 
-        Wallet customerWallet = getOrCreateWallet(customer);
-        Wallet viekerWallet = getOrCreateWallet(vieker);
+        Wallet customerWallet = getOrCreateWalletForUpdate(customer);
+        Wallet viekerWallet = getOrCreateWalletForUpdate(vieker);
 
         if (!customerWallet.canAfford(tipAmount)) {
-            throw new InsufficientBalanceException("Số dư ví khả dụng không đủ để gửi tiền boa " + tipAmount + " đ. Vui lòng nạp thêm tiền.");
+            throw new InsufficientBalanceException(
+                    "Số dư ví khả dụng không đủ để gửi tiền boa " + tipAmount + " đ. Vui lòng nạp thêm tiền.");
         }
 
         // 1. Trừ tiền khả dụng của khách
@@ -237,8 +230,7 @@ public class WalletServiceImpl implements WalletService {
                 tipAmount,
                 TransactionType.TIP_SENT,
                 customerWallet.getBalance(),
-                "Tặng tiền boa cho thợ " + vieker.getFullName() + " - Đơn #" + job.getId()
-        );
+                "Tặng tiền boa cho thợ " + vieker.getFullName() + " - Đơn #" + job.getId());
         transactionRepository.save(customerTx);
 
         // 4. Ghi lịch sử giao dịch cho Thợ
@@ -248,15 +240,14 @@ public class WalletServiceImpl implements WalletService {
                 tipAmount,
                 TransactionType.TIP_RECEIVED,
                 viekerWallet.getBalance(),
-                "Nhận tiền boa từ khách " + customer.getFullName() + " - Đơn #" + job.getId()
-        );
+                "Nhận tiền boa từ khách " + customer.getFullName() + " - Đơn #" + job.getId());
         transactionRepository.save(viekerTx);
     }
 
     @Override
     public void refundEscrowToCustomer(Job job, BigDecimal amount) {
         User customer = job.getCustomer();
-        Wallet customerWallet = getOrCreateWallet(customer);
+        Wallet customerWallet = getOrCreateWalletForUpdate(customer);
 
         customerWallet.refundHold(amount);
         walletRepository.save(customerWallet);
@@ -268,8 +259,7 @@ public class WalletServiceImpl implements WalletService {
                 amount,
                 TransactionType.ESCROW_REFUND,
                 customerWallet.getBalance(),
-                desc
-        );
+                desc);
         transactionRepository.save(tx);
     }
 
@@ -278,7 +268,7 @@ public class WalletServiceImpl implements WalletService {
         User customer = job.getCustomer();
         User vieker = job.getVieker();
 
-        Wallet customerWallet = getOrCreateWallet(customer);
+        Wallet customerWallet = getOrCreateWalletForUpdate(customer);
         customerWallet.releaseHold(job.getPrice());
         walletRepository.save(customerWallet);
 
@@ -292,13 +282,12 @@ public class WalletServiceImpl implements WalletService {
                     customerRefund,
                     TransactionType.ESCROW_REFUND,
                     customerWallet.getBalance(),
-                    "Hoàn tiền giải quyết khiếu nại công việc #" + job.getId()
-            );
+                    "Hoàn tiền giải quyết khiếu nại công việc #" + job.getId());
             transactionRepository.save(refundTx);
         }
 
         if (vieker != null && viekerPayout != null && viekerPayout.compareTo(BigDecimal.ZERO) > 0) {
-            Wallet viekerWallet = getOrCreateWallet(vieker);
+            Wallet viekerWallet = getOrCreateWalletForUpdate(vieker);
             viekerWallet.addBalance(viekerPayout);
             walletRepository.save(viekerWallet);
 
@@ -308,8 +297,7 @@ public class WalletServiceImpl implements WalletService {
                     viekerPayout,
                     TransactionType.ESCROW_RELEASE,
                     viekerWallet.getBalance(),
-                    "Giải ngân giải quyết khiếu nại công việc #" + job.getId()
-            );
+                    "Giải ngân giải quyết khiếu nại công việc #" + job.getId());
             transactionRepository.save(payoutTx);
         }
     }

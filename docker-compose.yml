@@ -8,9 +8,30 @@ services:
       POSTGRES_USER: vieshift
       POSTGRES_PASSWORD: vieshift123
     ports:
-      - "5432:5432"
+      - "5433:5432" # 5433 để không đụng PostgreSQL cài sẵn trên máy (5432)
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vieshift -d vieshift_db"]
+      interval: 5s
+      retries: 10
+
+  app:
+    build: .
+    container_name: vieshift-app
+    restart: unless-stopped
+    env_file: .env # Google / Mail / VNPay keys
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/vieshift_db
+      SPRING_DATASOURCE_USERNAME: vieshift
+      SPRING_DATASOURCE_PASSWORD: vieshift123
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./uploads:/app/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:

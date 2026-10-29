@@ -126,8 +126,8 @@ class JobAndEscrowServiceTest {
     }
 
     @Test
-    @DisplayName("2. Đăng việc khi ví khách hàng chưa nạp đủ số dư: Hệ thống tự động cấp nguồn thanh toán Escrow liền mạch")
-    void testCreateJob_AutoFundsWhenInsufficientBalance() {
+    @DisplayName("2. Đăng việc khi ví khách hàng không đủ số dư: Ném lỗi InsufficientBalanceException")
+    void testCreateJob_FailsWhenInsufficientBalance() {
         customerWallet.setBalance(BigDecimal.valueOf(50000)); // Chỉ có 50k
 
         CreateJobRequest request = new CreateJobRequest();
@@ -140,16 +140,9 @@ class JobAndEscrowServiceTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(customer));
         when(categoryRepository.findById(5L)).thenReturn(Optional.of(category));
         when(walletRepository.findByUserId(1L)).thenReturn(Optional.of(customerWallet));
-        when(jobRepository.save(any(Job.class))).thenAnswer(invocation -> {
-            Job j = invocation.getArgument(0);
-            j.setId(89L);
-            return j;
-        });
+        when(jobRepository.save(any(Job.class))).thenAnswer(i -> i.getArgument(0));
 
-        Job created = jobService.createJob(1L, request);
-        assertNotNull(created);
-        assertEquals(JobStatus.OPEN, created.getStatus());
-        assertEquals(new BigDecimal("200000"), customerWallet.getHeldAmount());
+        assertThrows(InsufficientBalanceException.class, () -> jobService.createJob(1L, request));
     }
 
     @Test
@@ -163,7 +156,7 @@ class JobAndEscrowServiceTest {
 
         when(userRepository.findById(2L)).thenReturn(Optional.of(vieker));
         when(profileRepository.findByUserId(2L)).thenReturn(Optional.of(viekerProfile));
-        when(jobRepository.findById(90L)).thenReturn(Optional.of(job));
+        when(jobRepository.findByIdForUpdate(90L)).thenReturn(Optional.of(job));
         when(jobRepository.save(any(Job.class))).thenAnswer(i -> i.getArgument(0));
 
         Job accepted = jobService.acceptJob(2L, 90L);
@@ -200,7 +193,7 @@ class JobAndEscrowServiceTest {
 
         customerWallet.setHeldAmount(BigDecimal.valueOf(200000)); // Đang giữ 200k trong Escrow
 
-        when(jobRepository.findById(92L)).thenReturn(Optional.of(job));
+        when(jobRepository.findByIdForUpdate(92L)).thenReturn(Optional.of(job));
         when(jobRepository.save(any(Job.class))).thenAnswer(i -> i.getArgument(0));
         when(walletRepository.findByUserId(1L)).thenReturn(Optional.of(customerWallet));
         when(walletRepository.findByUserId(2L)).thenReturn(Optional.of(viekerWallet));
@@ -229,7 +222,7 @@ class JobAndEscrowServiceTest {
         customerWallet.setBalance(BigDecimal.valueOf(300000));
         customerWallet.setHeldAmount(BigDecimal.valueOf(200000));
 
-        when(jobRepository.findById(93L)).thenReturn(Optional.of(job));
+        when(jobRepository.findByIdForUpdate(93L)).thenReturn(Optional.of(job));
         when(jobRepository.save(any(Job.class))).thenAnswer(i -> i.getArgument(0));
         when(walletRepository.findByUserId(1L)).thenReturn(Optional.of(customerWallet));
 

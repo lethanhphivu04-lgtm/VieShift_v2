@@ -38,12 +38,12 @@ public class JobServiceImpl implements JobService {
     private int platformFeePercent;
 
     public JobServiceImpl(JobRepository jobRepository,
-                          JobCategoryRepository categoryRepository,
-                          UserRepository userRepository,
-                          ViekerProfileRepository profileRepository,
-                          WalletService walletService,
-                          vn.vieshift.service.NotificationService notificationService,
-                          vn.vieshift.service.VoucherService voucherService) {
+            JobCategoryRepository categoryRepository,
+            UserRepository userRepository,
+            ViekerProfileRepository profileRepository,
+            WalletService walletService,
+            vn.vieshift.service.NotificationService notificationService,
+            vn.vieshift.service.VoucherService voucherService) {
         this.jobRepository = jobRepository;
         this.categoryRepository = categoryRepository;
         this.userRepository = userRepository;
@@ -63,16 +63,19 @@ public class JobServiceImpl implements JobService {
         }
 
         JobCategory category = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy danh mục dịch vụ ID: " + request.getCategoryId()));
+                .orElseThrow(() -> new ResourceNotFoundException(
+                        "Không tìm thấy danh mục dịch vụ ID: " + request.getCategoryId()));
 
         // 1. Tính toán giá dịch vụ gốc dựa trên danh mục & thời lượng/quãng đường
-        BigDecimal originalPrice = calculateEstimatedPrice(category.getId(), request.getDurationHours(), request.getDistanceKm());
+        BigDecimal originalPrice = calculateEstimatedPrice(category.getId(), request.getDurationHours(),
+                request.getDistanceKm());
 
         // 2. Kiểm tra và áp dụng Voucher ưu đãi (nếu có)
         BigDecimal discountAmount = BigDecimal.ZERO;
         String appliedVoucherCode = null;
         if (request.getVoucherCode() != null && !request.getVoucherCode().isBlank()) {
-            Optional<Voucher> voucherOpt = voucherService.validateVoucher(request.getVoucherCode().trim(), originalPrice);
+            Optional<Voucher> voucherOpt = voucherService.validateVoucher(request.getVoucherCode().trim(),
+                    originalPrice);
             if (voucherOpt.isPresent()) {
                 Voucher voucher = voucherOpt.get();
                 discountAmount = voucher.calculateDiscount(originalPrice);
@@ -86,8 +89,10 @@ public class JobServiceImpl implements JobService {
             finalPrice = BigDecimal.ZERO;
         }
 
-        // 3. Tính phí nền tảng & tiền thực nhận của Đối tác VieKer (bảo vệ quyền lợi đối tác dựa trên giá gốc)
-        BigDecimal feeRate = BigDecimal.valueOf(platformFeePercent).divide(BigDecimal.valueOf(100), 2, RoundingMode.HALF_UP);
+        // 3. Tính phí nền tảng & tiền thực nhận của Đối tác VieKer (bảo vệ quyền lợi
+        // đối tác dựa trên giá gốc)
+        BigDecimal feeRate = BigDecimal.valueOf(platformFeePercent).divide(BigDecimal.valueOf(100), 2,
+                RoundingMode.HALF_UP);
         BigDecimal platformFee = originalPrice.multiply(feeRate).setScale(0, RoundingMode.HALF_UP);
         BigDecimal netAmount = originalPrice.subtract(platformFee);
 
@@ -103,15 +108,15 @@ public class JobServiceImpl implements JobService {
                 request.getDistanceKm(),
                 finalPrice,
                 platformFee,
-                netAmount
-        );
+                netAmount);
         job.setOriginalPrice(originalPrice);
         job.setDiscountAmount(discountAmount);
         job.setVoucherCode(appliedVoucherCode);
         job.setNotes(request.getNotes());
         Job savedJob = jobRepository.save(job);
 
-        // 5. Ký quỹ Escrow: Tự động khóa số tiền thực thanh toán trong ví của khách hàng
+        // 5. Ký quỹ Escrow: Tự động khóa số tiền thực thanh toán trong ví của khách
+        // hàng
         walletService.holdEscrow(customerId, savedJob, finalPrice);
 
         // 6. Gửi thông báo đến các Đối tác VieKer trong hệ thống
@@ -121,9 +126,9 @@ public class JobServiceImpl implements JobService {
                     "Khách hàng cần đặt: " + savedJob.getTitle() + " tại " + savedJob.getAddress(),
                     "/vieker?tab=marketplace",
                     savedJob.getCategory().getId(),
-                    savedJob.getAddress()
-            );
-        } catch (Exception ignored) {}
+                    savedJob.getAddress());
+        } catch (Exception ignored) {
+        }
 
         return savedJob;
     }
@@ -181,7 +186,8 @@ public class JobServiceImpl implements JobService {
             throw new ProfileNotQualifiedException("Hồ sơ định danh của bạn đang chờ phê duyệt hoặc chưa đạt yêu cầu");
         }
 
-        Job job = getJobById(jobId);
+        Job job = jobRepository.findByIdForUpdate(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công việc ID: " + jobId));
         if (job.getStatus() != JobStatus.OPEN) {
             throw new InvalidJobStateException("Công việc này không còn ở trạng thái mở nhận việc");
         }
@@ -193,9 +199,10 @@ public class JobServiceImpl implements JobService {
         // Kiểm tra phạm vi dịch vụ / chuyên môn của Đối tác VieKer
         String jobCategoryName = job.getCategory() != null ? job.getCategory().getName() : "";
         if (!profile.canPerformCategory(jobCategoryName)) {
-            String approvedCats = profile.getAllApprovedCategories().isEmpty() ? "Chưa có" : String.join(", ", profile.getAllApprovedCategories());
-            throw new ProfileNotQualifiedException("Công việc này thuộc chuyên môn '" + jobCategoryName 
-                    + "'. Bạn chỉ được nhận việc thuộc các chuyên môn đã đăng ký và được duyệt: [" + approvedCats 
+            String approvedCats = profile.getAllApprovedCategories().isEmpty() ? "Chưa có"
+                    : String.join(", ", profile.getAllApprovedCategories());
+            throw new ProfileNotQualifiedException("Công việc này thuộc chuyên môn '" + jobCategoryName
+                    + "'. Bạn chỉ được nhận việc thuộc các chuyên môn đã đăng ký và được duyệt: [" + approvedCats
                     + "]. Vui lòng gửi yêu cầu mở rộng chuyên môn trong hồ sơ để nhận việc!");
         }
 
@@ -209,16 +216,17 @@ public class JobServiceImpl implements JobService {
                     "Thợ đã nhận việc: " + job.getTitle(),
                     "Đối tác " + vieker.getFullName() + " đã nhận công việc #" + job.getId() + " của bạn.",
                     "/customer/jobs/" + job.getId(),
-                    NotificationType.JOB_ACCEPTED
-            );
-        } catch (Exception ignored) {}
+                    NotificationType.JOB_ACCEPTED);
+        } catch (Exception ignored) {
+        }
 
         return saved;
     }
 
     @Override
     public Job startJob(Long viekerId, Long jobId) {
-        Job job = getJobById(jobId);
+        Job job = jobRepository.findByIdForUpdate(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công việc ID: " + jobId));
         if (job.getVieker() == null || !job.getVieker().getId().equals(viekerId)) {
             throw new UnauthorizedActionException("Bạn không phải thợ được phân công cho việc này");
         }
@@ -231,7 +239,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Job reportCompleteJob(Long viekerId, Long jobId) {
-        Job job = getJobById(jobId);
+        Job job = jobRepository.findByIdForUpdate(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công việc ID: " + jobId));
         if (job.getVieker() == null || !job.getVieker().getId().equals(viekerId)) {
             throw new UnauthorizedActionException("Bạn không phải thợ được phân công cho việc này");
         }
@@ -245,18 +254,20 @@ public class JobServiceImpl implements JobService {
             notificationService.notifyUser(
                     job.getCustomer(),
                     "Thợ đã báo hoàn thành công việc",
-                    "Đối tác " + (job.getVieker() != null ? job.getVieker().getFullName() : "Thợ") + " đã báo cáo hoàn tất việc #" + job.getId() + ". Vui lòng nghiệm thu.",
+                    "Đối tác " + (job.getVieker() != null ? job.getVieker().getFullName() : "Thợ")
+                            + " đã báo cáo hoàn tất việc #" + job.getId() + ". Vui lòng nghiệm thu.",
                     "/customer/jobs/" + job.getId(),
-                    NotificationType.JOB_COMPLETED
-            );
-        } catch (Exception ignored) {}
+                    NotificationType.JOB_COMPLETED);
+        } catch (Exception ignored) {
+        }
 
         return saved;
     }
 
     @Override
     public Job approveAndPayJob(Long customerId, Long jobId) {
-        Job job = getJobById(jobId);
+        Job job = jobRepository.findByIdForUpdate(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công việc ID: " + jobId));
         if (!job.getCustomer().getId().equals(customerId)) {
             throw new UnauthorizedActionException("Chỉ khách hàng tạo việc mới có quyền nghiệm thu và thanh toán");
         }
@@ -283,11 +294,12 @@ public class JobServiceImpl implements JobService {
                 notificationService.notifyUser(
                         job.getVieker(),
                         "Khách hàng đã nghiệm thu công việc #" + job.getId(),
-                        "Khách hàng " + job.getCustomer().getFullName() + " đã nghiệm thu công việc '" + job.getTitle() + "'. Tiền công đã được cộng vào ví của bạn.",
+                        "Khách hàng " + job.getCustomer().getFullName() + " đã nghiệm thu công việc '" + job.getTitle()
+                                + "'. Tiền công đã được cộng vào ví của bạn.",
                         "/vieker?tab=wallet",
-                        NotificationType.JOB_APPROVED
-                );
-            } catch (Exception ignored) {}
+                        NotificationType.JOB_APPROVED);
+            } catch (Exception ignored) {
+            }
         }
 
         return completedJob;
@@ -295,7 +307,8 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public Job cancelJob(Long customerId, Long jobId) {
-        Job job = getJobById(jobId);
+        Job job = jobRepository.findByIdForUpdate(jobId)
+                .orElseThrow(() -> new ResourceNotFoundException("Không tìm thấy công việc ID: " + jobId));
         if (!job.getCustomer().getId().equals(customerId)) {
             throw new UnauthorizedActionException("Chỉ khách hàng tạo việc mới có quyền hủy công việc");
         }
@@ -316,9 +329,9 @@ public class JobServiceImpl implements JobService {
                         "Công việc đã bị hủy",
                         "Công việc #" + job.getId() + " (" + job.getTitle() + ") đã bị hủy bởi khách hàng.",
                         "/vieker?tab=my-jobs",
-                        NotificationType.JOB_CANCELLED
-                );
-            } catch (Exception ignored) {}
+                        NotificationType.JOB_CANCELLED);
+            } catch (Exception ignored) {
+            }
         }
 
         return cancelledJob;
