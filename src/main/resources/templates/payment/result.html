@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Kết quả thanh toán VNPAY')}"></head>
+<body style="background: #FAF7F2; min-height: 100vh; display: flex; flex-direction: column;">
+
+<header th:replace="~{fragments/layout :: navbar('dashboard')}"></header>
+
+<main class="main-wrapper" style="flex: 1; padding: 48px 16px; max-width: 780px; margin: 0 auto; width: 100%;">
+
+    <!-- Card Kết quả Chính -->
+    <div style="background: #FFFFFF; border-radius: 20px; box-shadow: 0 10px 30px rgba(43,37,35,0.06); border: 1px solid #EFE9E1; overflow: hidden;">
+
+        <!-- Banner Header theo Trạng thái -->
+        <div th:if="${result.success}"
+             style="background: linear-gradient(135deg, #10B981, #059669); color: #FFFFFF; padding: 36px 28px; text-align: center; position: relative;">
+            <div style="width: 76px; height: 76px; margin: 0 auto 16px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+                <i class="bi bi-check-lg" style="font-size: 2.8rem; color: #FFFFFF; line-height: 1;"></i>
+            </div>
+            <h1 style="font-size: 1.65rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px;">Thanh toán Thành Công!</h1>
+            <p style="font-size: 0.95rem; opacity: 0.95; max-width: 480px; margin: 0 auto;">
+                Giao dịch nạp tiền qua cổng VNPAY đã được ghi nhận và nạp trực tiếp vào Ví tài khoản của bạn.
+            </p>
+        </div>
+
+        <div th:if="${!result.success and result.responseCode == '24'}"
+             style="background: linear-gradient(135deg, #F59E0B, #D97706); color: #FFFFFF; padding: 36px 28px; text-align: center; position: relative;">
+            <div style="width: 76px; height: 76px; margin: 0 auto 16px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+                <i class="bi bi-x-lg" style="font-size: 2.5rem; color: #FFFFFF; line-height: 1;"></i>
+            </div>
+            <h1 style="font-size: 1.65rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px;">Giao dịch đã bị Hủy</h1>
+            <p style="font-size: 0.95rem; opacity: 0.95; max-width: 480px; margin: 0 auto;">
+                Bạn đã thao tác hủy bỏ phiên thanh toán trên cổng VNPAY. Ví của bạn chưa bị trừ tiền.
+            </p>
+        </div>
+
+        <div th:if="${!result.success and result.responseCode != '24'}"
+             style="background: linear-gradient(135deg, #C24D63, #A83B50); color: #FFFFFF; padding: 36px 28px; text-align: center; position: relative;">
+            <div style="width: 76px; height: 76px; margin: 0 auto 16px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px);">
+                <i class="bi bi-exclamation-triangle" style="font-size: 2.5rem; color: #FFFFFF; line-height: 1;"></i>
+            </div>
+            <h1 style="font-size: 1.65rem; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px;">Thanh toán Không Thành Công</h1>
+            <p style="font-size: 0.95rem; opacity: 0.95; max-width: 480px; margin: 0 auto;" th:text="${result.message}">
+                Đã xảy ra lỗi trong quá trình xử lý giao dịch tại cổng VNPAY.
+            </p>
+        </div>
+
+        <!-- Thông tin số dư ví mới nếu có -->
+        <div th:if="${wallet != null and result.success}"
+             style="background: #F8F5F0; border-bottom: 1px dashed #E5DCCE; padding: 20px 32px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <div style="width: 44px; height: 44px; border-radius: 12px; background: #C24D63; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 1.25rem;">
+                    <i class="bi bi-wallet2"></i>
+                </div>
+                <div>
+                    <div style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: #78716C; font-weight: 700;">Số dư khả dụng hiện tại</div>
+                    <div style="font-size: 1.25rem; font-weight: 800; color: #2B2523;">
+                        <span th:text="${#numbers.formatDecimal(wallet.balance, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 0.82rem; color: #059669; background: #D1FAE5; padding: 6px 14px; border-radius: 9999px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="bi bi-shield-check"></i> Đã được bảo chứng an toàn
+            </div>
+        </div>
+
+        <!-- Bảng Chi tiết Giao dịch -->
+        <div style="padding: 32px;">
+            <h2 style="font-size: 1.05rem; font-weight: 800; color: #2B2523; margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+                <i class="bi bi-receipt-cutoff" style="color: #C24D63;"></i> Chi tiết biên lai điện tử
+            </h2>
+
+            <div style="display: flex; flex-direction: column; gap: 14px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F3EDE5; padding-bottom: 10px;">
+                    <span style="color: #78716C; font-size: 0.92rem;">Số tiền thanh toán:</span>
+                    <span style="font-size: 1.25rem; font-weight: 800; color: #C24D63;"
+                          th:text="${#numbers.formatDecimal(result.amount, 0, 'COMMA', 0, 'POINT')} + ' đ'">0 đ</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F3EDE5; padding-bottom: 10px;">
+                    <span style="color: #78716C; font-size: 0.92rem;">Mã tham chiếu đơn (TxnRef):</span>
+                    <span style="font-size: 0.92rem; font-weight: 700; color: #2B2523; font-family: monospace;" th:text="${result.txnRef}">---</span>
+                </div>
+
+                <div th:if="${result.transactionNo != null and !result.transactionNo.isEmpty()}"
+                     style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F3EDE5; padding-bottom: 10px;">
+                    <span style="color: #78716C; font-size: 0.92rem;">Mã giao dịch VNPAY:</span>
+                    <span style="font-size: 0.92rem; font-weight: 700; color: #2B2523; font-family: monospace;" th:text="${result.transactionNo}">---</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F3EDE5; padding-bottom: 10px;">
+                    <span style="color: #78716C; font-size: 0.92rem;">Ngân hàng thanh toán:</span>
+                    <span style="font-size: 0.92rem; font-weight: 700; color: #2B2523;"
+                          th:text="${result.bankCode != null and !result.bankCode.isEmpty() ? result.bankCode : 'VNPAY Gateway'}">NCB</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F3EDE5; padding-bottom: 10px;">
+                    <span style="color: #78716C; font-size: 0.92rem;">Nội dung giao dịch:</span>
+                    <span style="font-size: 0.92rem; font-weight: 600; color: #2B2523; max-width: 380px; text-align: right;" th:text="${result.orderInfo}">Nạp tiền ví VieShift</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #F3EDE5; padding-bottom: 10px;">
+                    <span style="color: #78716C; font-size: 0.92rem;">Thời gian giao dịch:</span>
+                    <span style="font-size: 0.92rem; font-weight: 600; color: #2B2523;"
+                          th:text="${#temporals.format(result.payDate, 'HH:mm:ss - dd/MM/yyyy')}">---</span>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #78716C; font-size: 0.92rem;">Trạng thái chi tiết:</span>
+                    <span th:if="${result.success}" style="font-size: 0.92rem; font-weight: 700; color: #10B981;">
+                        <i class="bi bi-patch-check-fill"></i> Thành công (Mã 00)
+                    </span>
+                    <span th:if="${!result.success}" style="font-size: 0.92rem; font-weight: 700; color: #C24D63;" th:text="${result.message}">
+                        Không thành công
+                    </span>
+                </div>
+            </div>
+
+            <!-- Nút Hành động điều hướng -->
+            <div style="margin-top: 36px; display: flex; gap: 14px; flex-wrap: wrap;">
+                <a th:href="@{/customer(tab='wallet')}"
+                   class="btn btn-primary"
+                   style="flex: 1; min-width: 200px; text-align: center; justify-content: center; background: #C24D63; border-color: #C24D63; padding: 12px 24px; font-weight: 700; border-radius: 12px; box-shadow: 0 4px 14px rgba(194,77,99,0.25);">
+                    <i class="bi bi-wallet2" style="margin-right: 6px;"></i> Quay lại Ví tài khoản
+                </a>
+
+                <a th:if="${result.success}" th:href="@{/customer(tab='create')}"
+                   class="btn btn-outline"
+                   style="flex: 1; min-width: 200px; text-align: center; justify-content: center; padding: 12px 24px; font-weight: 700; border-radius: 12px;">
+                    <i class="bi bi-calendar-check" style="margin-right: 6px;"></i> Đặt dịch vụ ngay
+                </a>
+
+                <a th:if="${!result.success}" th:href="@{/customer(tab='wallet')}"
+                   class="btn btn-outline"
+                   style="flex: 1; min-width: 200px; text-align: center; justify-content: center; padding: 12px 24px; font-weight: 700; border-radius: 12px;">
+                    <i class="bi bi-arrow-repeat" style="margin-right: 6px;"></i> Thử nạp lại
+                </a>
+            </div>
+
+            <!-- Ghi chú Hỗ trợ -->
+            <div style="margin-top: 24px; padding: 14px 18px; background: #FAF7F2; border-radius: 12px; border: 1px solid #EFE9E1; display: flex; align-items: flex-start; gap: 12px; font-size: 0.85rem; color: #78716C;">
+                <i class="bi bi-info-circle-fill" style="color: #C24D63; font-size: 1.1rem; margin-top: 1px;"></i>
+                <div>
+                    Cần trợ giúp về giao dịch này? Vui lòng liên hệ Bộ phận Chăm sóc Khách hàng VieShift qua Hotline <strong>1900 8888</strong> hoặc gửi email tới <strong>cskh@vieshift.vn</strong> và cung cấp mã đơn hàng <code><span th:text="${result.txnRef}"></span></code>.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

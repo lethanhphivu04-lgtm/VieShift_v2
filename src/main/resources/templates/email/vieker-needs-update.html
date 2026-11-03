@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>VieShift - Yêu cầu bổ sung thông tin hồ sơ</title>
+</head>
+<body style="margin:0;padding:32px 16px;background-color:#FAF7F2;font-family:'Helvetica Neue',Arial,sans-serif;color:#2B2523;">
+<div style="max-width:580px;margin:0 auto;background:#FFFFFF;border:1px solid #EAE2D9;border-radius:16px;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#B86B28 0%,#8E4F18 100%);padding:28px 32px;color:#FFFFFF;">
+        <div style="font-size:22px;font-weight:800;">VieShift <span style="color:#FAF7F2;">.</span></div>
+        <div style="font-size:12px;opacity:0.9;margin-top:4px;text-transform:uppercase;">Yêu cầu bổ sung &amp; cập nhật hồ sơ</div>
+    </div>
+    <div style="padding:32px;">
+        <h2 style="margin:0 0 14px;font-size:21px;color:#2B2523;">Xin chào <span th:text="${name}">Đối tác</span>,</h2>
+        <p style="font-size:15px;line-height:1.65;color:#574E4A;margin:0 0 16px;">
+            Sau khi kiểm tra hồ sơ đối tác VieKer của bạn, Ban Quản Trị đề nghị bạn cập nhật hoặc tải lại các mục sau để hoàn tất thủ tục phê duyệt:
+        </p>
+        <div th:if="${docs != null and !docs.isEmpty()}" style="background:#FDF4EB;border:1px solid #F2D8BE;border-radius:12px;padding:16px 20px;margin-bottom:16px;">
+            <div style="font-size:13px;font-weight:700;color:#8E4F18;margin-bottom:8px;">Giấy tờ cần tải lại:</div>
+            <ul style="margin:0;padding-left:18px;font-size:14px;color:#2B2523;line-height:1.7;">
+                <li th:each="d : ${docs}" th:text="${d}">Giấy tờ</li>
+            </ul>
+        </div>
+        <div th:if="${note != null and !note.isEmpty()}" style="background:#FAF7F2;border-left:4px solid #C24D63;padding:14px 18px;border-radius:8px;margin-bottom:20px;">
+            <div style="font-size:12px;font-weight:700;color:#8C827D;text-transform:uppercase;margin-bottom:4px;">Ghi chú từ Ban Quản Trị:</div>
+            <div style="font-size:14px;color:#2B2523;" th:text="${note}">Ghi chú</div>
+        </div>
+        <div style="text-align:center;margin:26px 0;">
+            <a th:href="${link}" style="display:inline-block;background:#C24D63;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:15px;padding:14px 32px;border-radius:999px;">
+                Cập nhật bổ sung hồ sơ ngay &rarr;
+            </a>
+        </div>
+    </div>
+    <div style="background:#F4EFEA;padding:16px 32px;font-size:12px;color:#8C827D;text-align:center;">
+        &copy; 2026 VieShift Marketplace Vietnam.
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>VieShift - Kết quả xét duyệt hồ sơ đối tác</title>
+</head>
+<body style="margin:0;padding:32px 16px;background-color:#FAF7F2;font-family:'Helvetica Neue',Arial,sans-serif;color:#2B2523;">
+<div style="max-width:580px;margin:0 auto;background:#FFFFFF;border:1px solid #EAE2D9;border-radius:16px;overflow:hidden;">
+    <div style="background:#2B2523;padding:28px 32px;color:#FFFFFF;">
+        <div style="font-size:22px;font-weight:800;">VieShift <span style="color:#C24D63;">.</span></div>
+        <div style="font-size:12px;opacity:0.85;margin-top:4px;text-transform:uppercase;">Thông báo Kết quả Thẩm định Hồ sơ</div>
+    </div>
+    <div style="padding:32px;">
+        <h2 style="margin:0 0 14px;font-size:21px;color:#2B2523;">Xin chào <span th:text="${name}">Đối tác</span>,</h2>
+        <p style="font-size:15px;line-height:1.65;color:#574E4A;margin:0 0 16px;">
+            Cảm ơn bạn đã quan tâm và gửi hồ sơ đăng ký trở thành đối tác VieKer. Rất tiếc, hiện tại Ban Quản Trị chưa thể phê duyệt hồ sơ của bạn với lý do sau:
+        </p>
+        <div style="background:#FCECEE;border:1px solid #F5C6CD;border-radius:12px;padding:16px 20px;margin-bottom:20px;color:#8D2638;font-size:14.5px;" th:text="${reason}">
+            Lý do từ chối
+        </div>
+        <p style="font-size:13.5px;color:#8C827D;line-height:1.6;margin:0;">
+            Nếu bạn có thắc mắc hoặc cần hỗ trợ thêm, vui lòng liên hệ Bộ phận Hỗ trợ Đối tác VieShift qua email <a href="mailto:support@vieshift.vn" style="color:#C24D63;">support@vieshift.vn</a>.
+        </p>
+    </div>
+    <div style="background:#F4EFEA;padding:16px 32px;font-size:12px;color:#8C827D;text-align:center;">
+        &copy; 2026 VieShift Marketplace Vietnam.
+    </div>
+</div>
+</body>
+</html>

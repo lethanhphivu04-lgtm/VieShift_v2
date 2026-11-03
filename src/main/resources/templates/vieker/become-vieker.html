@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Trở thành Đối tác VieKer — Kiếm thu nhập theo cách của bạn')}"></head>
+<body style="background: var(--bg-app); overflow-x: hidden;">
+
+<header th:replace="~{fragments/layout :: navbar('become-vieker')}"></header>
+
+<!-- ===================================================================
+     1. HERO SECTION: ƯỚC TÍNH THU NHẬP & FORM ĐĂNG KÝ THÔNG MINH
+     =================================================================== -->
+<section class="vieker-hero-section" style="position: relative; overflow: hidden; padding: 60px 0 80px; background: linear-gradient(180deg, #FAF7F2 0%, #F4EFEA 100%); border-bottom: 1px solid var(--border);">
+
+    <!-- Họa tiết trang trí rìa (được giữ trong vùng chứa overflow: hidden) -->
+    <svg viewBox="0 0 280 620" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+         style="position: absolute; left: -40px; top: 20px; width: 220px; opacity: 0.55; pointer-events: none; z-index: 1;">
+        <circle cx="30" cy="140" r="145" stroke="#E87A8D" stroke-width="1.3" stroke-dasharray="7 7" opacity="0.45"/>
+        <path d="M-20 80 C85 130, 120 260, 45 360 C-10 430, 65 510, 145 580" stroke="#C24D63" stroke-width="1.8" opacity="0.28" fill="none"/>
+    </svg>
+
+    <svg viewBox="0 0 280 620" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
+         style="position: absolute; right: -40px; top: 40px; width: 220px; opacity: 0.55; pointer-events: none; z-index: 1;">
+        <circle cx="250" cy="200" r="160" stroke="#E6AF76" stroke-width="1.3" stroke-dasharray="6 8" opacity="0.45"/>
+        <path d="M300 90 C190 160, 165 290, 235 400 C285 480, 200 545, 120 600" stroke="#2B2523" stroke-width="1.5" opacity="0.2" fill="none"/>
+    </svg>
+
+    <div class="main-wrapper" style="padding: 0 24px; position: relative; z-index: 2;">
+        <div style="display: grid; grid-template-columns: 1fr 1.05fr; gap: 48px; align-items: start;">
+            
+            <!-- Cột Trái: Hình ảnh Đối tác VieKer chuyên nghiệp & Quyền lợi -->
+            <div class="vieker-hero-photo-wrap" style="position: relative; border-radius: 28px; overflow: hidden; box-shadow: 0 24px 50px rgba(43, 37, 35, 0.12); border: 6px solid #FFFFFF;">
+                <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=1100&q=85"
+                     alt="Đối tác VieKer chuyên nghiệp trên nền tảng VieShift"
+                     style="width: 100%; height: 580px; object-fit: cover; display: block;">
+                
+                <div style="position: absolute; bottom: 20px; left: 20px; right: 20px; background: rgba(43, 37, 35, 0.9); backdrop-filter: blur(12px); color: #FAF7F2; padding: 20px 24px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; border: 1px solid rgba(250, 247, 242, 0.18);">
+                    <div>
+                        <div style="font-size: 0.78rem; color: #E6AF76; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px;">
+                            <i class="bi bi-patch-check-fill"></i> Cộng đồng Đối tác VieKer Độc Lập
+                        </div>
+                        <div style="font-size: 1rem; font-weight: 700; color: #FFFFFF; margin-top: 3px;">
+                            Tự chủ thời gian &bull; Nhận 90% giá trị hợp đồng
+                        </div>
+                    </div>
+                    <div style="background: #C24D63; color: #FFFFFF; font-weight: 800; font-size: 0.85rem; padding: 8px 16px; border-radius: 999px; white-space: nowrap;">
+                        4.9 ★ Uy tín
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột Phải: Thẻ tương tác 2 trong 1 (Ước tính thu nhập <-> Form đăng ký) -->
+            <div class="card" style="background: #FFFFFF; border-radius: 28px; padding: 36px 40px; border: 1px solid var(--border); box-shadow: 0 20px 50px rgba(43, 37, 35, 0.08);">
+                
+                <!-- ==================== GIAO DIỆN 1: ƯỚC TÍNH THU NHẬP (MẶC ĐỊNH) ==================== -->
+                <div id="viewEstimator" th:style="${openModal ? 'display: none;' : 'display: block;'}">
+                    <div style="display: inline-flex; align-items: center; gap: 6px; background: #FCECEE; color: #C24D63; padding: 5px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 14px;">
+                        <i class="bi bi-stars"></i> Cổng Đăng ký Đối tác VieKer
+                    </div>
+                    
+                    <h1 style="font-size: 2.15rem; font-weight: 800; color: var(--secondary); line-height: 1.2; letter-spacing: -0.7px; margin-bottom: 10px;">
+                        Kiếm thu nhập theo cách của bạn
+                    </h1>
+                    
+                    <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6;">
+                        Chọn khu vực hoạt động và kỹ năng sở trường để xem mức thu nhập thực tế bạn có thể nhận được khi gia nhập VieShift.
+                    </p>
+
+                    <!-- Chọn Khu vực -->
+                    <div class="form-group" style="margin-bottom: 18px;">
+                        <label class="form-label" for="estArea" style="font-weight: 700;">1. Chọn khu vực bạn muốn nhận việc</label>
+                        <select id="estArea" class="form-select" onchange="updateEstimatedRate()">
+                            <option value="TP. Hồ Chí Minh" data-mult="1.0">TP. Hồ Chí Minh</option>
+                            <option value="Hà Nội" data-mult="1.0">Hà Nội</option>
+                            <option value="Đà Nẵng" data-mult="0.92">Đà Nẵng</option>
+                            <option value="Bình Dương" data-mult="0.95">Bình Dương</option>
+                            <option value="Đồng Nai" data-mult="0.92">Đồng Nai</option>
+                            <option value="Hải Phòng" data-mult="0.92">Hải Phòng</option>
+                            <option value="Cần Thơ" data-mult="0.88">Cần Thơ</option>
+                            <option value="Nha Trang" data-mult="0.90">Nha Trang - Khánh Hòa</option>
+                        </select>
+                    </div>
+
+                    <!-- Chọn Danh mục kỹ năng -->
+                    <div class="form-group" style="margin-bottom: 22px;">
+                        <label class="form-label" for="estCategory" style="font-weight: 700;">2. Chọn kỹ năng chính của bạn</label>
+                        <select id="estCategory" class="form-select" onchange="updateEstimatedRate()">
+                            <option value="Lắp ráp nội thất" data-rate="185000">Lắp ráp đồ nội thất &amp; IKEA</option>
+                            <option value="Sửa chữa điện nước" data-rate="210000">Sửa chữa Điện nước &amp; Thiết bị gia dụng</option>
+                            <option value="Khoan treo & Lắp đặt" data-rate="190000">Khoan treo Tivi, Tranh ảnh &amp; Kệ tường</option>
+                            <option value="Hỗ trợ chuyển nhà" data-rate="220000">Hỗ trợ chuyển nhà &amp; Bốc xếp đồ nặng</option>
+                            <option value="Dọn dẹp nhà cửa" data-rate="150000">Tổng vệ sinh &amp; Dọn dẹp căn hộ</option>
+                            <option value="Sơn sửa nhà cửa" data-rate="200000">Sơn sửa nhà cửa &amp; Chống thấm</option>
+                            <option value="Chăm sóc sân vườn" data-rate="160000">Chăm sóc sân vườn &amp; Cắt tỉa cây cảnh</option>
+                            <option value="Trợ lý việc vặt" data-rate="145000">Trợ lý việc vặt &amp; Giao nhận hỏa tốc</option>
+                        </select>
+                    </div>
+
+                    <!-- Hộp hiển thị Thu nhập ước tính -->
+                    <div class="vieker-income-box" style="background: linear-gradient(135deg, #FAF7F2 0%, #FCECEE 100%); border: 1.5px solid #F2D0D6; border-radius: 18px; padding: 20px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between;">
+                        <div>
+                            <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); margin-bottom: 4px;">
+                                Thu nhập trung bình
+                            </div>
+                            <div style="font-size: 2.2rem; font-weight: 800; color: #C24D63; letter-spacing: -0.8px;">
+                                <span id="hourlyRateDisplay">185.000 ₫</span>
+                                <span style="font-size: 0.95rem; font-weight: 600; color: var(--text-muted);">/ giờ</span>
+                            </div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="font-size: 0.76rem; color: var(--text-muted);">Ước tính ~25 giờ/tuần:</div>
+                            <div id="monthlyRateDisplay" style="font-size: 1.15rem; font-weight: 800; color: #2E7D5B; margin-top: 2px;">
+                                ~ 18.500.000 ₫ / tháng
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NÚT BẮT ĐẦU ĐĂNG KÝ (BẤM SẼ LẬT SANG FORM NHẬP) -->
+                    <button type="button" onclick="switchToSignupForm()" class="btn btn-primary btn-block btn-lg"
+                            style="border-radius: 999px; font-size: 1.05rem; padding: 15px 28px; width: 100%; box-shadow: 0 8px 20px rgba(194, 77, 99, 0.28);">
+                        Bắt đầu đăng ký Đối tác <i class="bi bi-arrow-right"></i>
+                    </button>
+
+                    <div style="text-align: center; margin-top: 18px; font-size: 0.88rem; color: var(--text-muted);">
+                        Đã có tài khoản Đối tác VieKer?
+                        <a th:href="@{/login}" style="color: var(--primary); font-weight: 700; text-decoration: none;">Đăng nhập ngay</a>
+                    </div>
+                </div>
+
+                <!-- ==================== GIAO DIỆN 2: FORM ĐĂNG KÝ THÔNG TIN ==================== -->
+                <div id="viewSignup" th:style="${openModal ? 'display: block;' : 'display: none;'}">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <button type="button" onclick="switchToEstimator()" style="background: none; border: none; color: var(--primary); font-weight: 700; font-size: 0.88rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; padding: 0;">
+                            <i class="bi bi-arrow-left"></i> Quay lại ước tính thu nhập
+                        </button>
+                        <span style="font-size: 0.78rem; font-weight: 700; background: #FCECEE; color: #C24D63; padding: 3px 10px; border-radius: 999px;">
+                            Bước 1 / 2
+                        </span>
+                    </div>
+
+                    <h2 style="font-size: 1.65rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.5px; margin-bottom: 6px;">
+                        Tạo tài khoản Đối tác VieKer
+                    </h2>
+                    
+                    <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.5; margin-bottom: 20px;">
+                        Điền thông tin ban đầu. Chúng tôi sẽ gửi <strong>đường dẫn định danh (hiệu lực 24 giờ)</strong> vào email để bạn tải lên 5 giấy tờ thật.
+                    </p>
+
+                    <!-- Form gửi thông tin -->
+                    <form th:action="@{/become-vieker}" th:object="${signupRequest}" method="post" id="viekerSignupForm" onsubmit="return validateViekerForm(event)">
+                        
+                        <!-- Lưu khu vực & danh mục -->
+                        <input type="hidden" id="modalAreaInput" th:field="*{area}">
+                        <input type="hidden" id="modalCategoryInput" th:field="*{category}">
+
+                        <!-- Email nhận link -->
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <label class="form-label" for="vEmail" style="font-weight: 700;">
+                                Địa chỉ Email nhận đường dẫn kích hoạt <span style="color: #E11D48;">*</span>
+                            </label>
+                            <input type="email" id="vEmail" th:field="*{email}" class="form-control"
+                                   placeholder="vi-du@gmail.com" required>
+                            <div id="emailClientError" class="form-error" style="display: none; color: #E11D48; font-size: 0.8rem; margin-top: 4px;"></div>
+                            <div class="form-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                        </div>
+
+                        <!-- Họ tên -->
+                        <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" for="vLastName" style="font-weight: 700;">
+                                    Họ &amp; tên đệm <span style="color: #E11D48;">*</span>
+                                </label>
+                                <input type="text" id="vLastName" th:field="*{lastName}" class="form-control"
+                                       placeholder="Nguyễn Văn" required>
+                                <div id="lastNameClientError" class="form-error" style="display: none; color: #E11D48; font-size: 0.8rem; margin-top: 4px;"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></div>
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 0;">
+                                <label class="form-label" for="vFirstName" style="font-weight: 700;">
+                                    Tên <span style="color: #E11D48;">*</span>
+                                </label>
+                                <input type="text" id="vFirstName" th:field="*{firstName}" class="form-control"
+                                       placeholder="Minh" required>
+                                <div id="firstNameClientError" class="form-error" style="display: none; color: #E11D48; font-size: 0.8rem; margin-top: 4px;"></div>
+                                <div class="form-error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></div>
+                            </div>
+                        </div>
+
+                        <!-- Số điện thoại -->
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <label class="form-label" for="vPhone" style="font-weight: 700;">
+                                Số điện thoại di động <span style="color: #E11D48;">*</span>
+                            </label>
+                            <div style="display: flex; gap: 8px;">
+                                <div style="display: inline-flex; align-items: center; gap: 4px; padding: 0 12px; background: var(--surface-subtle); border: 1.5px solid var(--border); border-radius: var(--radius-md); font-weight: 700; font-size: 0.88rem; color: var(--secondary); white-space: nowrap;">
+                                    <span>🇻🇳</span> <span>+84</span>
+                                </div>
+                                <input type="tel" id="vPhone" th:field="*{phone}" class="form-control"
+                                       placeholder="0912 345 678" required style="flex: 1;">
+                            </div>
+                            <div id="phoneClientError" class="form-error" style="display: none; color: #E11D48; font-size: 0.8rem; margin-top: 4px;"></div>
+                            <div class="form-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                        </div>
+
+                        <!-- Mật khẩu -->
+                        <div class="form-group" style="margin-bottom: 14px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                                <label class="form-label" for="vPassword" style="margin-bottom: 0; font-weight: 700;">
+                                    Tạo mật khẩu đăng nhập <span style="color: #E11D48;">*</span>
+                                </label>
+                                <span style="font-size: 0.75rem; color: var(--text-light);">(Tối thiểu 8 ký tự)</span>
+                            </div>
+                            <div style="position: relative;">
+                                <input type="password" id="vPassword" th:field="*{password}" class="form-control"
+                                       placeholder="••••••••" required minlength="8" style="padding-right: 42px;">
+                                <button type="button" onclick="togglePasswordVisibility()" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text-muted); cursor: pointer;">
+                                    <i id="eyeIcon" class="bi bi-eye"></i>
+                                </button>
+                            </div>
+                            <div id="passwordClientError" class="form-error" style="display: none; color: #E11D48; font-size: 0.8rem; margin-top: 4px;"></div>
+                            <div class="form-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                        </div>
+
+                        <!-- Thông tin khu vực & kỹ năng đã chọn (Có nút bấm đổi nhanh) -->
+                        <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; margin-bottom: 16px; font-size: 0.82rem; display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <span style="color: var(--text-light);">Đã chọn:</span>
+                                <strong id="selectedSummaryDisplay" style="color: var(--secondary);">TP. Hồ Chí Minh &bull; Lắp ráp nội thất</strong>
+                            </div>
+                            <button type="button" onclick="switchToEstimator()" style="background: none; border: none; color: var(--primary); font-size: 0.78rem; font-weight: 700; cursor: pointer;">
+                                Đổi
+                            </button>
+                        </div>
+
+                        <!-- Checkbox 1: Xác nhận tư cách độc lập -->
+                        <div class="form-group" style="margin-bottom: 10px;">
+                            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.82rem; color: var(--text-main); line-height: 1.45;">
+                                <input type="checkbox" id="vSoleProprietor" th:field="*{soleProprietor}" required
+                                       style="margin-top: 2px; width: 17px; height: 17px; accent-color: var(--primary); flex-shrink: 0;">
+                                <span>Tôi xác nhận mình đăng ký với tư cách <strong>cá nhân kinh doanh độc lập</strong> (VieKer Partner).</span>
+                            </label>
+                            <div class="form-error" th:if="${#fields.hasErrors('soleProprietor')}" th:errors="*{soleProprietor}"></div>
+                        </div>
+
+                        <!-- Checkbox 2: Đồng ý Điều khoản -->
+                        <div class="form-group" style="margin-bottom: 20px;">
+                            <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.82rem; color: var(--text-main); line-height: 1.45;">
+                                <input type="checkbox" id="vAgreeTerms" th:field="*{agreeTerms}" required
+                                       style="margin-top: 2px; width: 17px; height: 17px; accent-color: var(--primary); flex-shrink: 0;">
+                                <span>
+                                    Tôi đồng ý với
+                                    <a th:href="@{/terms}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: underline;">Điều khoản sử dụng</a>
+                                    và
+                                    <a th:href="@{/privacy}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: underline;">Chính sách bảo mật</a>.
+                                </span>
+                            </label>
+                            <div class="form-error" th:if="${#fields.hasErrors('agreeTerms')}" th:errors="*{agreeTerms}"></div>
+                        </div>
+
+                        <!-- Nút Xác nhận gửi Form -->
+                        <button type="submit" id="submitSignupBtn" class="btn btn-primary btn-block btn-lg" style="border-radius: 999px; width: 100%; font-weight: 700; padding: 14px;">
+                            <i class="bi bi-envelope-check"></i> Xác nhận &amp; Nhận link qua Email
+                        </button>
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===================================================================
+     2. QUY TRÌNH 4 BƯỚC RÕ RÀNG & CHUYÊN NGHIỆP (KHÔNG CÓ FORM THỪA)
+     =================================================================== -->
+<section style="padding: 72px 24px; background: #FFFFFF; border-bottom: 1px solid var(--border);">
+    <div class="main-wrapper" style="padding: 0;">
+        
+        <div style="text-align: center; max-width: 680px; margin: 0 auto 48px;">
+            <div style="color: var(--primary); font-weight: 800; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                Minh bạch &bull; An toàn &bull; Chuyên nghiệp
+            </div>
+            <h2 style="font-size: 2.1rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.6px; margin-bottom: 10px;">
+                4 bước trở thành Đối tác VieKer chính thức
+            </h2>
+            <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.6;">
+                Quy trình định danh KYC 5 lớp giúp bảo vệ uy tín nghề nghiệp của bạn và tạo niềm tin tuyệt đối với Khách hàng.
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;">
+            
+            <!-- Bước 1 -->
+            <div class="card" style="padding: 28px 24px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-app); transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 46px; height: 46px; border-radius: 12px; background: #FCECEE; color: #C24D63; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                    01
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    1. Đăng ký ban đầu
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+                    Điền họ tên, số điện thoại, mật khẩu và địa chỉ email nhận đường dẫn kích hoạt hồ sơ.
+                </p>
+            </div>
+
+            <!-- Bước 2 -->
+            <div class="card" style="padding: 28px 24px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-app); transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 46px; height: 46px; border-radius: 12px; background: #FAF3E8; color: #B86B28; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                    02
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    2. Nhận link qua Email
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+                    Hệ thống tự động gửi link hoàn thiện hồ sơ vào email. <strong>Link có hạn trong 24 giờ</strong> để bảo mật.
+                </p>
+            </div>
+
+            <!-- Bước 3 -->
+            <div class="card" style="padding: 28px 24px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-app); transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 46px; height: 46px; border-radius: 12px; background: #F0ECF9; color: #5E439C; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                    03
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    3. Tải 5 giấy tờ thật
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+                    Cung cấp: Ảnh chân dung, CCCD 2 mặt, Lý lịch tư pháp và Bằng lái xe để gửi xét duyệt.
+                </p>
+            </div>
+
+            <!-- Bước 4 -->
+            <div class="card" style="padding: 28px 24px; border-radius: 20px; border: 1px solid var(--border); background: var(--bg-app); transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 46px; height: 46px; border-radius: 12px; background: #E9F7EF; color: #2E7D5B; font-weight: 800; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; margin-bottom: 18px;">
+                    04
+                </div>
+                <h3 style="font-size: 1.1rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    4. Duyệt &amp; Nhận việc
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6; margin: 0;">
+                    Sau khi Ban Quản Trị duyệt, bạn dùng chính email và mật khẩu đã tạo để đăng nhập và bắt đầu nhận việc!
+                </p>
+            </div>
+
+        </div>
+
+        <div style="text-align: center; margin-top: 40px;">
+            <button type="button" onclick="switchToSignupForm(); window.scrollTo({top: 0, behavior: 'smooth'});" class="btn btn-primary btn-lg" style="border-radius: 999px; padding: 14px 36px; font-weight: 700;">
+                <i class="bi bi-pencil-square"></i> Đăng ký ngay hôm nay
+            </button>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===================================================================
+     3. QUYỀN LỢI ĐỐI TÁC VIEKER (3 CỘT)
+     =================================================================== -->
+<section style="padding: 72px 24px;">
+    <div class="main-wrapper" style="padding: 0;">
+        <div style="text-align: center; max-width: 600px; margin: 0 auto 48px;">
+            <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary);">
+                Đặc quyền dành riêng cho Đối tác VieKer
+            </h2>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;">
+            <div class="card" style="padding: 32px 28px; border-radius: 20px;">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(194, 77, 99, 0.12); color: #C24D63; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 18px;">
+                    <i class="bi bi-cash-stack"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+                    Nhận 90% Thu nhập
+                </h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                    Mức phí nền tảng chỉ 10%. Thu nhập được chuyển thẳng về ví cá nhân và có thể rút về tài khoản ngân hàng bất kỳ lúc nào trong 30 giây.
+                </p>
+            </div>
+
+            <div class="card" style="padding: 32px 28px; border-radius: 20px;">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(46, 125, 91, 0.12); color: #2E7D5B; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 18px;">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+                    Bảo hiểm &amp; Quỹ VieKer Care
+                </h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                    Mọi ca làm việc đều được bảo hiểm tài sản lên đến 50.000.000 VNĐ và được hỗ trợ từ Quỹ tương trợ đối tác khi gặp sự cố ngoài ý muốn.
+                </p>
+            </div>
+
+            <div class="card" style="padding: 32px 28px; border-radius: 20px;">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(230, 175, 118, 0.2); color: #C2864C; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 18px;">
+                    <i class="bi bi-geo-alt-fill"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+                    Việc làm gần nhà (Bán kính 5-10km)
+                </h3>
+                <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                    Thuật toán gợi ý việc làm theo thời gian thực (Live GPS) ưu tiên các đơn hàng ngay gần nơi bạn ở, giúp tiết kiệm thời gian và chi phí xăng xe di chuyển.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+<script>
+    // Tính toán mức thu nhập ước tính
+    function updateEstimatedRate() {
+        const areaSel = document.getElementById('estArea');
+        const catSel = document.getElementById('estCategory');
+        if (!areaSel || !catSel) return;
+
+        const mult = parseFloat(areaSel.options[areaSel.selectedIndex].getAttribute('data-mult') || '1.0');
+        const baseRate = parseFloat(catSel.options[catSel.selectedIndex].getAttribute('data-rate') || '185000');
+
+        const hourly = Math.round((baseRate * mult) / 5000) * 5000;
+        const monthly = hourly * 100; // ~25 giờ/tuần x 4 tuần
+
+        document.getElementById('hourlyRateDisplay').textContent = hourly.toLocaleString('vi-VN') + ' ₫';
+        document.getElementById('monthlyRateDisplay').textContent = '~ ' + monthly.toLocaleString('vi-VN') + ' ₫ / tháng';
+
+        // Đồng bộ dữ liệu sang form
+        const modalArea = document.getElementById('modalAreaInput');
+        const modalCat = document.getElementById('modalCategoryInput');
+        if (modalArea) modalArea.value = areaSel.value;
+        if (modalCat) modalCat.value = catSel.value;
+
+        const summaryDisplay = document.getElementById('selectedSummaryDisplay');
+        if (summaryDisplay) {
+            summaryDisplay.textContent = areaSel.value + ' • ' + catSel.value;
+        }
+    }
+
+    // Chuyển sang Form đăng ký (bước 2)
+    function switchToSignupForm() {
+        updateEstimatedRate();
+        document.getElementById('viewEstimator').style.display = 'none';
+        document.getElementById('viewSignup').style.display = 'block';
+    }
+
+    // Quay lại giao diện Ước tính (bước 1)
+    function switchToEstimator() {
+        document.getElementById('viewSignup').style.display = 'none';
+        document.getElementById('viewEstimator').style.display = 'block';
+    }
+
+    // Ẩn / hiện mật khẩu
+    function togglePasswordVisibility() {
+        const passInput = document.getElementById('vPassword');
+        const eyeIcon = document.getElementById('eyeIcon');
+        if (passInput.type === 'password') {
+            passInput.type = 'text';
+            eyeIcon.classList.remove('bi-eye');
+            eyeIcon.classList.add('bi-eye-slash');
+        } else {
+            passInput.type = 'password';
+            eyeIcon.classList.remove('bi-eye-slash');
+            eyeIcon.classList.add('bi-eye');
+        }
+    }
+
+    // Client-side Validation chuyên nghiệp trước khi gửi form
+    function validateViekerForm(event) {
+        let isValid = true;
+
+        // Reset errors
+        document.querySelectorAll('.form-error').forEach(el => {
+            if (el.id && el.id.includes('ClientError')) {
+                el.style.display = 'none';
+                el.textContent = '';
+            }
+        });
+
+        const email = document.getElementById('vEmail').value.trim();
+        const lastName = document.getElementById('vLastName').value.trim();
+        const firstName = document.getElementById('vFirstName').value.trim();
+        const phone = document.getElementById('vPhone').value.trim();
+        const password = document.getElementById('vPassword').value;
+        const soleProp = document.getElementById('vSoleProprietor').checked;
+        const agreeTerms = document.getElementById('vAgreeTerms').checked;
+
+        // Check Email
+        const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+        if (!email || !emailRegex.test(email)) {
+            showError('emailClientError', 'Vui lòng nhập địa chỉ email hợp lệ.');
+            isValid = false;
+        }
+
+        // Check Last Name
+        if (!lastName || lastName.length < 2) {
+            showError('lastNameClientError', 'Vui lòng nhập họ & tên đệm hợp lệ.');
+            isValid = false;
+        }
+
+        // Check First Name
+        if (!firstName || firstName.length < 2) {
+            showError('firstNameClientError', 'Vui lòng nhập tên của bạn.');
+            isValid = false;
+        }
+
+        // Check Phone (10 số Việt Nam)
+        const phoneRegex = /^(0|\+84)[0-9]{9,10}$/;
+        if (!phone || !phoneRegex.test(phone)) {
+            showError('phoneClientError', 'Số điện thoại không hợp lệ (gồm 10 số, vd: 0901234567).');
+            isValid = false;
+        }
+
+        // Check Password (>= 8 ký tự)
+        if (!password || password.length < 8) {
+            showError('passwordClientError', 'Mật khẩu phải có tối thiểu 8 ký tự.');
+            isValid = false;
+        }
+
+        if (!soleProp || !agreeTerms) {
+            alert('Vui lòng tích chọn xác nhận tư cách cá nhân độc lập và đồng ý Điều khoản dịch vụ.');
+            isValid = false;
+        }
+
+        if (!isValid) {
+            event.preventDefault();
+            return false;
+        }
+
+        // Thêm hiệu ứng loading khi đang gửi
+        const submitBtn = document.getElementById('submitSignupBtn');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Đang khởi tạo & gửi email...';
+        return true;
+    }
+
+    function showError(elementId, message) {
+        const el = document.getElementById(elementId);
+        if (el) {
+            el.textContent = message;
+            el.style.display = 'block';
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', updateEstimatedRate);
+</script>
+
+</body>
+</html>

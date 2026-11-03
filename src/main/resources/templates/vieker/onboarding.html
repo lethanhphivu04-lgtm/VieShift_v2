@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Hoàn thiện Hồ sơ Đối tác VieKer — Định danh KYC')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('onboarding')}"></header>
+
+<main class="main-wrapper" style="padding-top: 40px; padding-bottom: 72px;">
+
+    <!-- Thanh tiến trình Onboarding 3 bước -->
+    <div style="max-width: 860px; margin: 0 auto 36px;">
+        <div style="display: flex; justify-content: space-between; position: relative;">
+            <div style="position: absolute; top: 18px; left: 10%; right: 10%; height: 2px; background: var(--border); z-index: 1;"></div>
+            
+            <!-- Bước 1 -->
+            <div style="position: relative; z-index: 2; text-align: center; width: 140px;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; background: #2E7D5B; color: #FFFFFF; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px; box-shadow: 0 4px 10px rgba(46, 125, 91, 0.25);">
+                    <i class="bi bi-check-lg"></i>
+                </div>
+                <div style="font-size: 0.82rem; font-weight: 700; color: #2E7D5B;">1. Đăng ký tài khoản</div>
+            </div>
+
+            <!-- Bước 2 -->
+            <div style="position: relative; z-index: 2; text-align: center; width: 140px;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px; font-weight: 800;"
+                     th:styleappend="${profile.verificationStatus.name() == 'DRAFT' || profile.verificationStatus.name() == 'NEEDS_UPDATE' ? 'background: #C24D63; color: #FFFFFF; box-shadow: 0 4px 10px rgba(194, 77, 99, 0.3);' : 'background: #2E7D5B; color: #FFFFFF;'}">
+                    <span th:if="${profile.verificationStatus.name() == 'DRAFT' || profile.verificationStatus.name() == 'NEEDS_UPDATE'}">2</span>
+                    <i th:unless="${profile.verificationStatus.name() == 'DRAFT' || profile.verificationStatus.name() == 'NEEDS_UPDATE'}" class="bi bi-check-lg"></i>
+                </div>
+                <div style="font-size: 0.82rem; font-weight: 700;"
+                     th:styleappend="${profile.verificationStatus.name() == 'DRAFT' || profile.verificationStatus.name() == 'NEEDS_UPDATE' ? 'color: #C24D63;' : 'color: #2E7D5B;'}">
+                    2. Nộp hồ sơ KYC
+                </div>
+            </div>
+
+            <!-- Bước 3 -->
+            <div style="position: relative; z-index: 2; text-align: center; width: 140px;">
+                <div style="width: 36px; height: 36px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 8px; font-weight: 800;"
+                     th:styleappend="${profile.verificationStatus.name() == 'APPROVED' ? 'background: #2E7D5B; color: #FFFFFF;' : (profile.verificationStatus.name() == 'PENDING' ? 'background: #B86B28; color: #FFFFFF;' : 'background: var(--surface-subtle); color: var(--text-light); border: 2px solid var(--border);')}">
+                    <i th:if="${profile.verificationStatus.name() == 'APPROVED'}" class="bi bi-check-lg"></i>
+                    <i th:if="${profile.verificationStatus.name() == 'PENDING'}" class="bi bi-hourglass-split"></i>
+                    <span th:if="${profile.verificationStatus.name() == 'DRAFT' || profile.verificationStatus.name() == 'NEEDS_UPDATE' || profile.verificationStatus.name() == 'REJECTED'}">3</span>
+                </div>
+                <div style="font-size: 0.82rem; font-weight: 700;"
+                     th:styleappend="${profile.verificationStatus.name() == 'APPROVED' ? 'color: #2E7D5B;' : (profile.verificationStatus.name() == 'PENDING' ? 'color: #B86B28;' : 'color: var(--text-light);')}">
+                    3. Thẩm định &amp; Kích hoạt
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông báo lỗi / thành công -->
+    <div style="max-width: 860px; margin: 0 auto;">
+        <div th:if="${errorMessage}" class="alert alert-danger" style="margin-bottom: 24px;">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <div th:text="${errorMessage}"></div>
+        </div>
+        <div th:if="${successMessage}" class="alert alert-success" style="margin-bottom: 24px;">
+            <i class="bi bi-check-circle-fill"></i>
+            <div th:text="${successMessage}"></div>
+        </div>
+    </div>
+
+    <!-- ===================================================================
+         TRƯỜNG HỢP 1: TRẠNG THÁI PENDING (ĐANG CHỜ BAN QUẢN TRỊ DUYỆT)
+         =================================================================== -->
+    <div th:if="${profile.verificationStatus.name() == 'PENDING'}"
+         class="card" style="max-width: 720px; margin: 0 auto; padding: 48px 40px; text-align: center; border-radius: 24px;">
+        <div style="width: 76px; height: 76px; border-radius: 50%; background: #FAF3E8; border: 2px solid #F2D8BE; color: #B86B28; display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 20px;">
+            <i class="bi bi-hourglass-split"></i>
+        </div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--secondary); margin-bottom: 12px;">
+            Hồ sơ đang trong quá trình thẩm định
+        </h2>
+        <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
+            Hồ sơ đối tác VieKer của <strong th:text="${user.fullName}">Đối tác</strong> đã được gửi lên hệ thống vào lúc
+            <span th:text="${#temporals.format(profile.submittedAt != null ? profile.submittedAt : profile.updatedAt, 'HH:mm - dd/MM/yyyy')}">10:00 - 28/10/2026</span>.
+            <br>
+            Ban Quản Trị đang tiến hành đối chiếu 05 giấy tờ định danh và sẽ gửi kết quả qua email trong vòng <strong>24 giờ làm việc</strong>.
+        </p>
+
+        <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 16px; padding: 20px 24px; text-align: left; margin-bottom: 28px;">
+            <div style="font-weight: 700; font-size: 0.92rem; color: var(--secondary); margin-bottom: 12px;">
+                <i class="bi bi-file-earmark-check-fill" style="color: #2E7D5B; margin-right: 6px;"></i> Danh mục hồ sơ đã tiếp nhận:
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; font-size: 0.88rem; color: var(--text-main);">
+                <div>&bull; Số CCCD: <strong th:text="${profile.idCardNumber}">079123456789</strong></div>
+                <div>&bull; Khu vực: <strong th:text="${profile.operatingZone}">TP. Hồ Chí Minh</strong></div>
+                <div>&bull; Ngành nghề: <strong th:text="${profile.primaryCategory != null ? profile.primaryCategory : 'Lắp ráp nội thất'}">Lắp ráp</strong></div>
+                <div>&bull; Giấy tờ: <span class="badge" style="background: #E9F7EF; color: #2E7D5B; font-weight: 700;">Đủ 5/5 tài liệu</span></div>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 14px;">
+            <a th:href="@{/}" class="btn btn-outline" style="border-radius: 999px; padding: 10px 24px;">
+                Về trang chủ
+            </a>
+            <a th:href="@{/login}" class="btn btn-primary" style="border-radius: 999px; padding: 10px 24px;">
+                Đăng nhập hệ thống
+            </a>
+        </div>
+    </div>
+
+    <!-- ===================================================================
+         TRƯỜNG HỢP 2: TRẠNG THÁI APPROVED (ĐÃ ĐƯỢC PHÊ DUYỆT)
+         =================================================================== -->
+    <div th:if="${profile.verificationStatus.name() == 'APPROVED'}"
+         class="card" style="max-width: 680px; margin: 0 auto; padding: 48px 40px; text-align: center; border-radius: 24px;">
+        <div style="width: 76px; height: 76px; border-radius: 50%; background: #E9F7EF; border: 2px solid #A3E4D7; color: #2E7D5B; display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 20px;">
+            <i class="bi bi-shield-fill-check"></i>
+        </div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--secondary); margin-bottom: 12px;">
+            Chúc mừng! Bạn đã là Đối tác VieKer chính thức
+        </h2>
+        <p style="font-size: 1rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 28px;">
+            Hồ sơ định danh của bạn đã được phê duyệt thành công. Tài khoản đã sẵn sàng nhận việc trên Sàn dịch vụ VieShift.
+        </p>
+        <a th:href="@{/vieker}" class="btn btn-primary btn-lg" style="border-radius: 999px; padding: 14px 36px; font-weight: 700;">
+            Truy cập Sàn nhận việc ngay &rarr;
+        </a>
+    </div>
+
+    <!-- ===================================================================
+         TRƯỜNG HỢP 3: TRẠNG THÁI REJECTED (BỊ TỪ CHỐI)
+         =================================================================== -->
+    <div th:if="${profile.verificationStatus.name() == 'REJECTED'}"
+         class="card" style="max-width: 680px; margin: 0 auto; padding: 48px 40px; text-align: center; border-radius: 24px;">
+        <div style="width: 76px; height: 76px; border-radius: 50%; background: #FCECEE; border: 2px solid #F5C6CD; color: #C24D63; display: inline-flex; align-items: center; justify-content: center; font-size: 2.2rem; margin-bottom: 20px;">
+            <i class="bi bi-x-circle-fill"></i>
+        </div>
+        <h2 style="font-size: 1.8rem; font-weight: 800; color: var(--secondary); margin-bottom: 12px;">
+            Hồ sơ đối tác chưa được chấp thuận
+        </h2>
+        <div style="background: #FCECEE; border: 1px solid #F5C6CD; border-radius: 14px; padding: 18px 20px; text-align: left; margin: 20px 0 24px; color: #8D2638; font-size: 0.95rem;">
+            <strong>Lý do từ Ban Quản Trị:</strong>
+            <div style="margin-top: 6px;" th:text="${profile.rejectionReason != null ? profile.rejectionReason : 'Hồ sơ không đáp ứng tiêu chuẩn đối tác của VieShift.'}"></div>
+        </div>
+        <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 24px;">
+            Nếu bạn cho rằng có sự nhầm lẫn, vui lòng liên hệ Bộ phận Hỗ trợ Đối tác qua email <a href="mailto:support@vieshift.vn" style="color: var(--primary);">support@vieshift.vn</a>.
+        </p>
+        <a th:href="@{/}" class="btn btn-outline" style="border-radius: 999px; padding: 10px 24px;">
+            Về trang chủ
+        </a>
+    </div>
+
+    <!-- ===================================================================
+         TRƯỜNG HỢP 4: DRAFT HOẶC NEEDS_UPDATE (ĐIỀN FORM & TẢI 5 GIẤY TỜ THẬT)
+         =================================================================== -->
+    <div th:if="${profile.verificationStatus.name() == 'DRAFT' || profile.verificationStatus.name() == 'NEEDS_UPDATE'}"
+         style="max-width: 860px; margin: 0 auto;">
+
+        <!-- Banner thông báo khi Admin yêu cầu chỉnh sửa/bổ sung -->
+        <div th:if="${profile.verificationStatus.name() == 'NEEDS_UPDATE'}"
+             class="card" style="background: #FDF4EB; border: 1.5px solid #F2D8BE; padding: 24px 28px; border-radius: 20px; margin-bottom: 28px;">
+            <div style="display: flex; align-items: flex-start; gap: 14px;">
+                <div style="width: 40px; height: 40px; border-radius: 12px; background: #8E4F18; color: #FFFFFF; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0;">
+                    <i class="bi bi-pencil-square"></i>
+                </div>
+                <div>
+                    <h3 style="font-size: 1.15rem; font-weight: 800; color: #8E4F18; margin-bottom: 6px;">
+                        Yêu cầu cập nhật / bổ sung hồ sơ từ Ban Quản Trị
+                    </h3>
+                    <div style="font-size: 0.92rem; color: #574E4A; line-height: 1.6;" th:if="${profile.rejectionReason}">
+                        <strong>Ghi chú:</strong> <span th:text="${profile.rejectionReason}"></span>
+                    </div>
+                    <div style="font-size: 0.88rem; color: #8E4F18; font-weight: 700; margin-top: 8px;">
+                        Vui lòng kiểm tra lại thông tin và tải lại các mục có viền cam nổi bật bên dưới.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 40px 44px; border-radius: 24px;">
+            <div style="margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+                <div style="display: inline-flex; align-items: center; gap: 6px; background: #FCECEE; color: #C24D63; padding: 4px 12px; border-radius: 999px; font-size: 0.76rem; font-weight: 800; text-transform: uppercase; margin-bottom: 8px;">
+                    <i class="bi bi-shield-check"></i> Xác thực Định danh Cá nhân (KYC)
+                </div>
+                <h1 style="font-size: 1.75rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.5px; margin-bottom: 6px;">
+                    Hoàn thiện hồ sơ Đối tác VieKer
+                </h1>
+                <p style="font-size: 0.9rem; color: var(--text-muted); margin: 0;">
+                    Vui lòng điền thông tin chính xác theo CCCD và tải lên 05 tài liệu chứng thực bản gốc rõ nét.
+                </p>
+            </div>
+
+            <form th:action="@{/onboarding/{token}(token=${profile.onboardingToken})}" method="post" enctype="multipart/form-data">
+                
+                <!-- PHẦN 1: THÔNG TIN CÁ NHÂN -->
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 18px; display: flex; align-items: center; gap: 8px;">
+                    <span style="width: 26px; height: 26px; border-radius: 50%; background: var(--secondary); color: #fff; font-size: 0.8rem; display: inline-flex; align-items: center; justify-content: center;">1</span>
+                    Thông tin Định danh Cá nhân
+                </h3>
+
+                <div class="grid-2" style="gap: 16px; margin-bottom: 16px;">
+                    <div class="form-group">
+                        <label class="form-label" for="idCardNumber">Số Căn cước công dân (12 chữ số) <span style="color: var(--danger);">*</span></label>
+                        <input type="text" id="idCardNumber" name="idCardNumber" class="form-control"
+                               th:value="${profile.idCardNumber}" placeholder="Ví dụ: 079123456789" required pattern="\d{12}" title="Vui lòng nhập đúng 12 chữ số CCCD">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="dateOfBirth">Ngày tháng năm sinh (Đủ 18 tuổi) <span style="color: var(--danger);">*</span></label>
+                        <input type="date" id="dateOfBirth" name="dateOfBirth" class="form-control"
+                               th:value="${profile.dateOfBirth}" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="permanentAddress">Địa chỉ thường trú (Theo mặt sau CCCD) <span style="color: var(--danger);">*</span></label>
+                    <input type="text" id="permanentAddress" name="permanentAddress" class="form-control"
+                           th:value="${profile.permanentAddress}" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành phố" required>
+                </div>
+
+                <div class="grid-2" style="gap: 16px; margin-bottom: 24px;">
+                    <div class="form-group">
+                        <label class="form-label" for="driverLicenseNumber">Số Giấy phép lái xe (GPLX)</label>
+                        <input type="text" id="driverLicenseNumber" name="driverLicenseNumber" class="form-control"
+                               th:value="${profile.driverLicenseNumber}" placeholder="Nhập số GPLX nếu có phương tiện di chuyển">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="experienceYears">Số năm kinh nghiệm trong nghề</label>
+                        <input type="number" id="experienceYears" name="experienceYears" class="form-control"
+                               th:value="${profile.experienceYears != null ? profile.experienceYears : 1}" min="0" max="50">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-bottom: 36px;">
+                    <label class="form-label" for="skillsDescription">Mô tả tay nghề &amp; Dịch vụ bạn nhận làm tốt nhất <span style="color: var(--danger);">*</span></label>
+                    <textarea id="skillsDescription" name="skillsDescription" class="form-control" rows="3"
+                              placeholder="Ví dụ: Có 5 năm kinh nghiệm lắp đặt tủ bếp, giường gỗ, bàn ghế IKEA; có đủ bộ máy khoan pin, máy cắt và dụng cụ chuyên dụng..." required th:text="${profile.skillsDescription}"></textarea>
+                </div>
+
+                <!-- PHẦN 2: TẢI LÊN 5 GIẤY TỜ THẬT -->
+                <div style="margin-bottom: 18px; display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
+                    <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin: 0; display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 26px; height: 26px; border-radius: 50%; background: var(--secondary); color: #fff; font-size: 0.8rem; display: inline-flex; align-items: center; justify-content: center;">2</span>
+                        Hồ sơ Giấy tờ Chứng thực (05 loại giấy tờ) <span style="color: var(--danger);">*</span>
+                    </h3>
+                    <span style="font-size: 0.8rem; color: var(--text-light);">Định dạng: JPG, PNG, WEBP hoặc PDF (tối đa 10MB/tệp)</span>
+                </div>
+
+                <div class="kyc-doc-grid" style="margin-bottom: 32px;">
+                    
+                    <!-- 1. Ảnh chân dung -->
+                    <div class="kyc-upload-card"
+                         th:classappend="${profile.needsDoc('portrait') ? 'needs-reupload' : (profile.portraitPath != null ? 'has-file' : '')}">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 0.92rem; color: var(--secondary);">1. Ảnh chân dung</strong>
+                                <span th:if="${profile.portraitPath != null}" class="badge" style="background: #E9F7EF; color: #2E7D5B; font-size: 0.72rem;">Đã tải</span>
+                                <span th:if="${profile.needsDoc('portrait')}" class="badge" style="background: #FDF4EB; color: #8E4F18; font-size: 0.72rem;">Cần tải lại</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0;">Chính diện, rõ mặt, không đeo kính râm.</p>
+                        </div>
+
+                        <div class="kyc-preview-box" id="box-portrait">
+                            <img th:if="${profile.portraitPath != null}" th:src="@{/onboarding/{token}/doc/portrait(token=${profile.onboardingToken})}" id="preview-portrait" alt="Ảnh chân dung">
+                            <i th:unless="${profile.portraitPath != null}" class="bi bi-person-bounding-box" id="icon-portrait" style="font-size: 2.8rem; color: var(--text-light);"></i>
+                        </div>
+
+                        <div>
+                            <input type="file" name="portrait" id="input-portrait" accept="image/*" class="form-control" style="font-size: 0.8rem; padding: 6px;"
+                                   th:required="${profile.portraitPath == null || profile.needsDoc('portrait')}"
+                                   onchange="previewKycDoc(this, 'preview-portrait', 'box-portrait')">
+                        </div>
+                    </div>
+
+                    <!-- 2. CCCD mặt trước -->
+                    <div class="kyc-upload-card"
+                         th:classappend="${profile.needsDoc('idFront') ? 'needs-reupload' : (profile.idFrontPath != null ? 'has-file' : '')}">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 0.92rem; color: var(--secondary);">2. CCCD Mặt trước</strong>
+                                <span th:if="${profile.idFrontPath != null}" class="badge" style="background: #E9F7EF; color: #2E7D5B; font-size: 0.72rem;">Đã tải</span>
+                                <span th:if="${profile.needsDoc('idFront')}" class="badge" style="background: #FDF4EB; color: #8E4F18; font-size: 0.72rem;">Cần tải lại</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0;">Rõ số CCCD, họ tên và ảnh thẻ.</p>
+                        </div>
+
+                        <div class="kyc-preview-box" id="box-idFront">
+                            <img th:if="${profile.idFrontPath != null}" th:src="@{/onboarding/{token}/doc/idFront(token=${profile.onboardingToken})}" id="preview-idFront" alt="CCCD Mặt trước">
+                            <i th:unless="${profile.idFrontPath != null}" class="bi bi-card-heading" id="icon-idFront" style="font-size: 2.8rem; color: var(--text-light);"></i>
+                        </div>
+
+                        <div>
+                            <input type="file" name="idFront" id="input-idFront" accept="image/*,application/pdf" class="form-control" style="font-size: 0.8rem; padding: 6px;"
+                                   th:required="${profile.idFrontPath == null || profile.needsDoc('idFront')}"
+                                   onchange="previewKycDoc(this, 'preview-idFront', 'box-idFront')">
+                        </div>
+                    </div>
+
+                    <!-- 3. CCCD mặt sau -->
+                    <div class="kyc-upload-card"
+                         th:classappend="${profile.needsDoc('idBack') ? 'needs-reupload' : (profile.idBackPath != null ? 'has-file' : '')}">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 0.92rem; color: var(--secondary);">3. CCCD Mặt sau</strong>
+                                <span th:if="${profile.idBackPath != null}" class="badge" style="background: #E9F7EF; color: #2E7D5B; font-size: 0.72rem;">Đã tải</span>
+                                <span th:if="${profile.needsDoc('idBack')}" class="badge" style="background: #FDF4EB; color: #8E4F18; font-size: 0.72rem;">Cần tải lại</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0;">Rõ nơi cấp, ngày cấp và mã vạch MRZ.</p>
+                        </div>
+
+                        <div class="kyc-preview-box" id="box-idBack">
+                            <img th:if="${profile.idBackPath != null}" th:src="@{/onboarding/{token}/doc/idBack(token=${profile.onboardingToken})}" id="preview-idBack" alt="CCCD Mặt sau">
+                            <i th:unless="${profile.idBackPath != null}" class="bi bi-card-text" id="icon-idBack" style="font-size: 2.8rem; color: var(--text-light);"></i>
+                        </div>
+
+                        <div>
+                            <input type="file" name="idBack" id="input-idBack" accept="image/*,application/pdf" class="form-control" style="font-size: 0.8rem; padding: 6px;"
+                                   th:required="${profile.idBackPath == null || profile.needsDoc('idBack')}"
+                                   onchange="previewKycDoc(this, 'preview-idBack', 'box-idBack')">
+                        </div>
+                    </div>
+
+                    <!-- 4. Lý lịch tư pháp -->
+                    <div class="kyc-upload-card"
+                         th:classappend="${profile.needsDoc('criminalRecord') ? 'needs-reupload' : (profile.criminalRecordPath != null ? 'has-file' : '')}">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 0.92rem; color: var(--secondary);">4. Lý lịch tư pháp</strong>
+                                <span th:if="${profile.criminalRecordPath != null}" class="badge" style="background: #E9F7EF; color: #2E7D5B; font-size: 0.72rem;">Đã tải</span>
+                                <span th:if="${profile.needsDoc('criminalRecord')}" class="badge" style="background: #FDF4EB; color: #8E4F18; font-size: 0.72rem;">Cần tải lại</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0;">Phiếu số 1, 2 hoặc Giấy xác nhận nhân thân.</p>
+                        </div>
+
+                        <div class="kyc-preview-box" id="box-criminalRecord">
+                            <img th:if="${profile.criminalRecordPath != null}" th:src="@{/onboarding/{token}/doc/criminalRecord(token=${profile.onboardingToken})}" id="preview-criminalRecord" alt="Lý lịch tư pháp">
+                            <i th:unless="${profile.criminalRecordPath != null}" class="bi bi-file-earmark-lock2" id="icon-criminalRecord" style="font-size: 2.8rem; color: var(--text-light);"></i>
+                        </div>
+
+                        <div>
+                            <input type="file" name="criminalRecord" id="input-criminalRecord" accept="image/*,application/pdf" class="form-control" style="font-size: 0.8rem; padding: 6px;"
+                                   th:required="${profile.criminalRecordPath == null || profile.needsDoc('criminalRecord')}"
+                                   onchange="previewKycDoc(this, 'preview-criminalRecord', 'box-criminalRecord')">
+                        </div>
+                    </div>
+
+                    <!-- 5. Bằng lái xe -->
+                    <div class="kyc-upload-card"
+                         th:classappend="${profile.needsDoc('driverLicense') ? 'needs-reupload' : (profile.driverLicensePath != null ? 'has-file' : '')}">
+                        <div>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <strong style="font-size: 0.92rem; color: var(--secondary);">5. Bằng lái xe</strong>
+                                <span th:if="${profile.driverLicensePath != null}" class="badge" style="background: #E9F7EF; color: #2E7D5B; font-size: 0.72rem;">Đã tải</span>
+                                <span th:if="${profile.needsDoc('driverLicense')}" class="badge" style="background: #FDF4EB; color: #8E4F18; font-size: 0.72rem;">Cần tải lại</span>
+                            </div>
+                            <p style="font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0;">Bằng A1, A2 hoặc B1, B2 còn hạn.</p>
+                        </div>
+
+                        <div class="kyc-preview-box" id="box-driverLicense">
+                            <img th:if="${profile.driverLicensePath != null}" th:src="@{/onboarding/{token}/doc/driverLicense(token=${profile.onboardingToken})}" id="preview-driverLicense" alt="Bằng lái xe">
+                            <i th:unless="${profile.driverLicensePath != null}" class="bi bi-car-front" id="icon-driverLicense" style="font-size: 2.8rem; color: var(--text-light);"></i>
+                        </div>
+
+                        <div>
+                            <input type="file" name="driverLicense" id="input-driverLicense" accept="image/*,application/pdf" class="form-control" style="font-size: 0.8rem; padding: 6px;"
+                                   th:required="${profile.driverLicensePath == null || profile.needsDoc('driverLicense')}"
+                                   onchange="previewKycDoc(this, 'preview-driverLicense', 'box-driverLicense')">
+                        </div>
+                    </div>
+
+                </div>
+
+                <div style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; font-size: 0.82rem; color: var(--text-muted); line-height: 1.55;">
+                    <i class="bi bi-shield-lock-fill" style="color: var(--primary); margin-right: 4px;"></i>
+                    <strong>Cam kết bảo mật:</strong> Các tệp hình ảnh giấy tờ tùy thân của bạn được lưu trữ trong vùng bảo mật phân vùng riêng và chỉ dùng cho mục đích thẩm định danh tính theo quy định của Nghị định 13/2023/NĐ-CP.
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" style="border-radius: 999px; font-weight: 700; font-size: 1.05rem; padding: 15px;">
+                    <i class="bi bi-send-check-fill"></i> Nộp hồ sơ xét duyệt Đối tác VieKer
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+<script>
+    function previewKycDoc(input, previewImgId, boxId) {
+        if (!input.files || !input.files[0]) return;
+        const file = input.files[0];
+        const box = document.getElementById(boxId);
+        if (!box) return;
+
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                let img = document.getElementById(previewImgId);
+                if (!img) {
+                    img = document.createElement('img');
+                    img.id = previewImgId;
+                    box.innerHTML = '';
+                    box.appendChild(img);
+                }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        } else if (file.type === 'application/pdf') {
+            box.innerHTML = '<div style="font-size: 0.82rem; color: #2E7D5B; font-weight: 700; text-align: center; padding: 10px;"><i class="bi bi-file-earmark-pdf-fill" style="font-size: 2.4rem; color: #C24D63; display: block; margin-bottom: 4px;"></i> Tệp PDF: ' + file.name + '</div>';
+        }
+    }
+</script>
+
+</body>
+</html>

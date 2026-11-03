@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>VieShift - Đã tiếp nhận hồ sơ đối tác</title>
+</head>
+<body style="margin:0;padding:32px 16px;background-color:#FAF7F2;font-family:'Helvetica Neue',Arial,sans-serif;color:#2B2523;">
+<div style="max-width:580px;margin:0 auto;background:#FFFFFF;border:1px solid #EAE2D9;border-radius:16px;overflow:hidden;">
+    <div style="background:linear-gradient(135deg,#2B2523 0%,#453B38 55%,#C24D63 100%);padding:28px 32px;color:#FFFFFF;">
+        <div style="font-size:22px;font-weight:800;">VieShift <span style="color:#E6AF76;">.</span></div>
+        <div style="font-size:12px;opacity:0.85;margin-top:4px;text-transform:uppercase;">Ban Thẩm Định Hồ Sơ Đối Tác</div>
+    </div>
+    <div style="padding:32px;">
+        <h2 style="margin:0 0 14px;font-size:22px;color:#2B2523;">Xin chào <span th:text="${name}">Đối tác</span>,</h2>
+        <p style="font-size:15px;line-height:1.65;color:#574E4A;margin:0 0 18px;">
+            Hệ thống VieShift đã tiếp nhận đầy đủ bộ hồ sơ và giấy tờ xác minh danh tính (KYC) của bạn. Ban Quản Trị đang tiến hành đối chiếu thông tin và sẽ phản hồi kết quả qua email trong vòng <strong>24 giờ làm việc</strong>.
+        </p>
+        <div style="text-align:center;margin:26px 0;">
+            <a th:href="${link}" style="display:inline-block;background:#2B2523;color:#FFFFFF;text-decoration:none;font-weight:700;font-size:14px;padding:12px 28px;border-radius:999px;">
+                Theo dõi trạng thái hồ sơ
+            </a>
+        </div>
+    </div>
+    <div style="background:#F4EFEA;padding:16px 32px;font-size:12px;color:#8C827D;text-align:center;">
+        &copy; 2026 VieShift Marketplace Vietnam.
+    </div>
+</div>
+</body>
+</html>
