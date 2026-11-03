@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('VieShift Mall — Cửa hàng Vật tư & Thiết bị Gia đình')}"></head>
+<body style="background: #FAF7F2; color: #2B2523;">
+
+<header th:replace="~{fragments/layout :: navbar('shop')}"></header>
+
+<!-- Hero Banner VieShift Mall -->
+<section style="background: linear-gradient(135deg, #2B2523 0%, #4A252D 55%, #C24D63 100%); color: #FFFFFF; padding: 44px 24px; position: relative; overflow: hidden;">
+    <div style="max-width: 1220px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 28px;">
+        <div style="max-width: 680px;">
+            <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.14); border: 1px solid rgba(255,255,255,0.25); padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; margin-bottom: 14px;">
+                <i class="bi bi-patch-check-fill" style="color: #FCD34D;"></i> VIESHIFT OFFICIAL MALL • CHÍNH HÃNG 100% • BẢO HÀNH 1 ĐỔI 1
+            </div>
+            <h1 style="font-size: 2.25rem; font-weight: 800; line-height: 1.2; margin: 0 0 12px 0; color: #FFFFFF;">
+                Siêu thị Vật tư, Phụ kiện &amp; Dụng cụ Gia đình
+            </h1>
+            <p style="font-size: 0.98rem; color: rgba(255,255,255,0.88); margin: 0 0 22px 0; line-height: 1.6;">
+                Mua lẻ <strong>tự lắp đặt tại nhà (hỗ trợ Ví VieShift &amp; COD)</strong> hoặc <strong>Đặt kèm Đối tác VieKer mang tới lắp đặt trọn gói</strong>. Săn thêm Voucher giảm giá tại <a th:href="@{/minigame}" style="color: #FCD34D; font-weight: 800; text-decoration: underline;">Vòng Quay May Mắn</a>!
+            </p>
+
+            <!-- Thanh tìm kiếm sản phẩm -->
+            <form th:action="@{/shop}" method="get" style="display: flex; gap: 10px; max-width: 580px;">
+                <input type="hidden" name="category" th:value="${selectedCategory}">
+                <input type="hidden" name="sort" th:value="${selectedSort}">
+                <input type="hidden" name="priceRange" th:value="${selectedPriceRange}">
+                <div style="flex: 1; position: relative;">
+                    <i class="bi bi-search" style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #8A817C;"></i>
+                    <input type="text" name="q" id="liveProductSearchInput" th:value="${searchQuery}"
+                           placeholder="Tìm vật tư, phụ kiện, linh kiện: aptomat, vòi xịt, bóng đèn, keo..."
+                           style="width: 100%; padding: 13px 16px 13px 42px; border-radius: 999px; border: none; font-size: 0.92rem; outline: none; color: #2B2523;">
+                </div>
+                <button type="submit" class="btn btn-primary" style="background: #E6AF76; color: #2B2523; border: none; border-radius: 999px; padding: 0 24px; font-weight: 800; cursor: pointer;">
+                    Tìm kiếm
+                </button>
+            </form>
+        </div>
+
+        <!-- Thẻ Ví & Giỏ hàng nhanh -->
+        <div style="background: rgba(255,255,255,0.1); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.22); border-radius: 20px; padding: 22px 26px; min-width: 300px;">
+            <div th:if="${wallet != null}" style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.15);">
+                <div style="font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; color: rgba(255,255,255,0.75);">Số dư Ví VieShift khả dụng</div>
+                <div style="font-size: 1.5rem; font-weight: 800; color: #FCD34D; margin-top: 2px;">
+                    <span th:text="${#numbers.formatDecimal(wallet.balance, 0, 'COMMA', 0, 'POINT')}">1,120,000</span> đ
+                </div>
+                <div style="display: flex; gap: 12px; margin-top: 4px;">
+                    <a th:href="@{/customer(tab='wallet')}" style="font-size: 0.78rem; color: #FFFFFF; text-decoration: underline;">+ Nạp Ví VNPay</a>
+                    <a th:href="@{/minigame}" style="font-size: 0.78rem; color: #FCD34D; text-decoration: underline;">🎡 Săn Voucher</a>
+                </div>
+            </div>
+            <div th:if="${wallet == null}" style="margin-bottom: 14px; padding-bottom: 12px; border-bottom: 1px solid rgba(255,255,255,0.15);">
+                <div style="font-size: 0.85rem; color: rgba(255,255,255,0.9); font-weight: 600;">Thanh toán Ví VieShift hoặc Tiền mặt (COD)</div>
+                <a th:href="@{/login}" style="display: inline-block; margin-top: 6px; font-size: 0.8rem; color: #FCD34D; font-weight: 700;">Đăng nhập tài khoản &rarr;</a>
+            </div>
+
+            <button type="button" onclick="openCartModal()"
+                    style="width: 100%; background: #FFFFFF; color: #C24D63; border: none; border-radius: 12px; padding: 12px 18px; font-weight: 800; font-size: 0.95rem; cursor: pointer; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 6px 16px rgba(0,0,0,0.15);">
+                <span><i class="bi bi-cart-check-fill" style="margin-right: 6px;"></i> Giỏ hàng của bạn</span>
+                <span id="headerCartBadge" style="background: #C24D63; color: #FFFFFF; padding: 2px 10px; border-radius: 999px; font-size: 0.82rem;">0 món</span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- Cam kết chất lượng -->
+<div style="background: #FFFFFF; border-bottom: 1px solid #EAE2D8; padding: 14px 24px;">
+    <div style="max-width: 1220px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; font-size: 0.85rem; font-weight: 700; color: #4A4543;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="bi bi-shield-fill-check" style="font-size: 1.25rem; color: #C24D63;"></i>
+            <span>Vật tư chuẩn hãng — Bảo hành 1 đổi 1</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="bi bi-tools" style="font-size: 1.25rem; color: #C2864C;"></i>
+            <span>Mua lẻ tự lắp hoặc Thuê kèm thợ VieKer</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="bi bi-truck" style="font-size: 1.25rem; color: #16A34A;"></i>
+            <span>Giao hỏa tốc 2h — Freeship đơn từ 300K</span>
+        </div>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <i class="bi bi-cash-coin" style="font-size: 1.25rem; color: #0D7A5F;"></i>
+            <span>Hỗ trợ cả Ví VieShift &amp; Tiền mặt COD</span>
+        </div>
+    </div>
+</div>
+
+<!-- Nội dung chính -->
+<main style="max-width: 1220px; margin: 28px auto; padding: 0 24px;">
+
+    <!-- Thông báo Flash -->
+    <div th:if="${successMessage}" class="alert alert-success" style="margin-bottom: 22px; border-radius: 14px; padding: 16px 20px; background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; font-weight: 700;">
+        <i class="bi bi-check-circle-fill" style="margin-right: 8px;"></i>
+        <span th:text="${successMessage}"></span>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" style="margin-bottom: 22px; border-radius: 14px; padding: 16px 20px; background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; font-weight: 700;">
+        <i class="bi bi-exclamation-triangle-fill" style="margin-right: 8px;"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Bộ lọc Danh mục + Sắp xếp + Khoảng giá -->
+    <div style="background: #FFFFFF; border: 1px solid #EAE2D8; border-radius: 18px; padding: 18px 20px; margin-bottom: 26px; box-shadow: 0 2px 10px rgba(43,37,35,0.03);">
+        <!-- Hàng 1: Danh mục -->
+        <div style="display: flex; gap: 8px; flex-wrap: wrap; align-items: center; padding-bottom: 14px; border-bottom: 1px dashed #EFE8DF; margin-bottom: 14px;">
+            <span style="font-size: 0.8rem; font-weight: 800; color: #78716C; text-transform: uppercase; margin-right: 4px;">
+                <i class="bi bi-funnel-fill" style="color: #C24D63;"></i> Danh mục:
+            </span>
+            <a th:href="@{/shop(category='ALL', q=${searchQuery}, sort=${selectedSort}, priceRange=${selectedPriceRange})}"
+               th:style="${selectedCategory == 'ALL' ? 'background:#C24D63;color:#FFFFFF;border-color:#C24D63;' : 'background:#FAF7F2;color:#4A4543;border-color:#E5DEC9;'}"
+               style="padding: 7px 15px; border-radius: 999px; border: 1px solid; font-weight: 700; font-size: 0.84rem; text-decoration: none; transition: all 0.2s;">
+                <i class="bi bi-grid-fill" style="margin-right: 4px;"></i> Tất cả
+            </a>
+            <a th:each="cat : ${categories}"
+               th:href="@{/shop(category=${cat}, q=${searchQuery}, sort=${selectedSort}, priceRange=${selectedPriceRange})}"
+               th:style="${selectedCategory == cat ? 'background:#C24D63;color:#FFFFFF;border-color:#C24D63;' : 'background:#FAF7F2;color:#4A4543;border-color:#E5DEC9;'}"
+               style="padding: 7px 15px; border-radius: 999px; border: 1px solid; font-weight: 700; font-size: 0.84rem; text-decoration: none; transition: all 0.2s;"
+               th:text="${cat}">
+                Danh mục
+            </a>
+            <button type="button" id="btnFilterWishlist" onclick="toggleWishlistFilter()"
+                    style="margin-left: auto; padding: 7px 15px; border-radius: 999px; border: 1px solid #F2BFC8; background: #FDF2F4; color: #C24D63; font-weight: 800; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                <i class="bi bi-heart-fill"></i> Yêu thích (<span id="wishlistCountBadge">0</span>)
+            </button>
+        </div>
+
+        <!-- Hàng 2: Sắp xếp & Khoảng giá -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <span style="font-size: 0.8rem; font-weight: 800; color: #78716C; text-transform: uppercase;">Sắp xếp:</span>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort='popular', priceRange=${selectedPriceRange})}"
+                   th:style="${selectedSort == 'popular' ? 'background:#2B2523;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none;">
+                    🔥 Bán chạy nhất
+                </a>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort='price_asc', priceRange=${selectedPriceRange})}"
+                   th:style="${selectedSort == 'price_asc' ? 'background:#2B2523;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none;">
+                    ↑ Giá thấp đến cao
+                </a>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort='price_desc', priceRange=${selectedPriceRange})}"
+                   th:style="${selectedSort == 'price_desc' ? 'background:#2B2523;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none;">
+                    ↓ Giá cao đến thấp
+                </a>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort='discount', priceRange=${selectedPriceRange})}"
+                   th:style="${selectedSort == 'discount' ? 'background:#2B2523;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none;">
+                    🏷️ Giảm giá sâu
+                </a>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span style="font-size: 0.8rem; font-weight: 800; color: #78716C; text-transform: uppercase;">Mức giá:</span>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort=${selectedSort}, priceRange='ALL')}"
+                   th:style="${selectedPriceRange == 'ALL' ? 'background:#0D7A5F;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; text-decoration: none;">Tất cả</a>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort=${selectedSort}, priceRange='UNDER_150K')}"
+                   th:style="${selectedPriceRange == 'UNDER_150K' ? 'background:#0D7A5F;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; text-decoration: none;">&le; 150K</a>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort=${selectedSort}, priceRange='150K_300K')}"
+                   th:style="${selectedPriceRange == '150K_300K' ? 'background:#0D7A5F;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; text-decoration: none;">150K - 300K</a>
+                <a th:href="@{/shop(category=${selectedCategory}, q=${searchQuery}, sort=${selectedSort}, priceRange='OVER_300K')}"
+                   th:style="${selectedPriceRange == 'OVER_300K' ? 'background:#0D7A5F;color:#FFFFFF;' : 'background:#FAF7F2;color:#4A4543;'}"
+                   style="padding: 5px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; text-decoration: none;">&gt; 300K</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Thông báo nếu lọc không có sản phẩm -->
+    <div th:if="${#lists.isEmpty(products)}" style="background: #FFFFFF; border-radius: 18px; border: 1px solid #EAE2D8; padding: 48px 24px; text-align: center; margin-bottom: 40px;">
+        <i class="bi bi-box-seam" style="font-size: 2.6rem; color: #C24D63;"></i>
+        <h3 style="margin: 12px 0 6px 0; font-size: 1.15rem; font-weight: 800;">Không tìm thấy sản phẩm phù hợp với bộ lọc</h3>
+        <p style="color: #78716C; font-size: 0.9rem; margin-bottom: 16px;">Hãy thử xóa bộ lọc khoảng giá hoặc tìm với từ khóa khác.</p>
+        <a th:href="@{/shop}" class="btn btn-primary" style="background: #C24D63; color: #FFF; padding: 9px 20px; border-radius: 999px; text-decoration: none; font-weight: 700;">Xem tất cả sản phẩm</a>
+    </div>
+
+    <!-- Grid Sản phẩm -->
+    <div th:if="${!#lists.isEmpty(products)}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(285px, 1fr)); gap: 22px; margin-bottom: 48px;">
+        <div th:each="p : ${products}"
+             class="shop-product-card"
+             th:data-product-id="${p.id}"
+             style="background: #FFFFFF; border-radius: 18px; border: 1px solid #EAE2D8; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 4px 14px rgba(43,37,35,0.04); transition: transform 0.2s, box-shadow 0.2s; position: relative;"
+             onmouseover="this.style.transform='translateY(-4px)';this.style.boxShadow='0 12px 24px rgba(194,77,99,0.12)';"
+             onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 4px 14px rgba(43,37,35,0.04)';">
+
+            <!-- Nút Yêu thích (Wishlist) -->
+            <button type="button"
+                    class="wishlist-heart-btn"
+                    th:data-id="${p.id}"
+                    onclick="toggleWishlistItem(event, this)"
+                    title="Thêm/Bỏ khỏi Danh sách Yêu thích"
+                    style="position: absolute; top: 12px; right: 12px; z-index: 5; width: 34px; height: 34px; border-radius: 50%; border: none; background: rgba(255,255,255,0.92); color: #9CA3AF; display: flex; align-items: center; justify-content: center; font-size: 1rem; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.12);">
+                <i class="bi bi-heart-fill"></i>
+            </button>
+
+            <div>
+                <!-- Ảnh sản phẩm & Badge giảm giá -->
+                <a th:href="@{/shop/products/{id}(id=${p.id})}" style="display: block; position: relative; height: 195px; background: #F5EFE6; overflow: hidden; text-decoration: none;">
+                    <img th:src="${p.imageUrl}" th:alt="${p.name}"
+                         style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s;"
+                         onmouseover="this.style.transform='scale(1.05)'"
+                         onmouseout="this.style.transform='scale(1)'">
+                    <span th:if="${p.discountPercent > 0}"
+                          style="position: absolute; top: 12px; left: 12px; background: #C24D63; color: #FFFFFF; font-size: 0.75rem; font-weight: 800; padding: 4px 10px; border-radius: 999px;">
+                        -<span th:text="${p.discountPercent}">20</span>%
+                    </span>
+                    <span style="position: absolute; bottom: 10px; right: 10px; background: rgba(43,37,35,0.78); color: #FFFFFF; font-size: 0.72rem; font-weight: 600; padding: 3px 9px; border-radius: 999px;">
+                        Đã bán <span th:text="${p.soldCount}">50</span>
+                    </span>
+                </a>
+
+                <!-- Thông tin sản phẩm -->
+                <div style="padding: 18px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 8px;">
+                        <span style="font-size: 0.72rem; font-weight: 800; color: #C2864C; text-transform: uppercase;" th:text="${p.category}">Điện nước</span>
+                        <span th:if="${p.relatedServiceCategory != null}"
+                              style="font-size: 0.7rem; background: #FDF2F4; color: #C24D63; padding: 2px 8px; border-radius: 6px; font-weight: 700;">
+                            <i class="bi bi-wrench"></i> <span th:text="${p.relatedServiceCategory}">Sửa điện nước</span>
+                        </span>
+                    </div>
+
+                    <h3 style="font-size: 1.02rem; font-weight: 800; color: #2B2523; margin: 0 0 8px 0; line-height: 1.38;">
+                        <a th:href="@{/shop/products/{id}(id=${p.id})}" style="color: #2B2523; text-decoration: none;" th:text="${p.name}">
+                            Tên sản phẩm
+                        </a>
+                    </h3>
+
+                    <p style="font-size: 0.82rem; color: #6E655F; line-height: 1.5; margin: 0 0 12px 0; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;"
+                       th:text="${p.description}">
+                        Mô tả ngắn
+                    </p>
+                </div>
+            </div>
+
+            <!-- Giá & Cụm nút Thêm Giỏ / Mua Ngay / Thuê Thợ -->
+            <div style="padding: 0 18px 18px 18px; border-top: 1px dashed #EFE8DF; padding-top: 14px;">
+                <div style="display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 12px;">
+                    <div>
+                        <span style="font-size: 1.25rem; font-weight: 800; color: #C24D63;"
+                              th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">180,000 đ</span>
+                        <span style="font-size: 0.78rem; color: #8A817C;">/ <span th:text="${p.unit}">Bộ</span></span>
+                        <div th:if="${p.originalPrice != null and p.originalPrice > p.price}"
+                             style="font-size: 0.78rem; color: #9CA3AF; text-decoration: line-through;"
+                             th:text="${#numbers.formatDecimal(p.originalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">240,000 đ</div>
+                    </div>
+                    <span style="font-size: 0.75rem; color: #16A34A; font-weight: 700;">
+                        <i class="bi bi-box-seam"></i> Kho: <span th:text="${p.stockQuantity}">45</span>
+                    </span>
+                </div>
+
+                <!-- Hàng 1: Thêm giỏ hàng & Mua ngay (Tự lắp) -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px;">
+                    <button type="button"
+                            th:data-id="${p.id}"
+                            th:data-name="${p.name}"
+                            th:data-price="${p.price}"
+                            th:data-unit="${p.unit}"
+                            onclick="addToCartFromBtn(this)"
+                            style="background: #FDF2F4; color: #C24D63; border: 1px solid #F2BFC8; border-radius: 10px; padding: 8px 10px; font-weight: 800; font-size: 0.8rem; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                        <i class="bi bi-cart-plus-fill"></i> Thêm giỏ
+                    </button>
+
+                    <a th:href="@{/shop/products/{id}(id=${p.id})}"
+                       style="background: #ECFDF5; color: #0D7A5F; border: 1px solid #A7F3D0; border-radius: 10px; padding: 8px 10px; font-weight: 800; font-size: 0.8rem; text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 4px;">
+                        <i class="bi bi-bag-check-fill"></i> Mua / Chi tiết
+                    </a>
+                </div>
+
+                <!-- Hàng 2: Đặt kèm thợ VieKer lắp đặt -->
+                <a th:href="@{/customer(tab='create', catName=${p.relatedServiceCategory}, title=${'Lắp đặt / Thay mới: ' + p.name}, addonId=${p.id})}"
+                   style="width: 100%; background: linear-gradient(135deg, #C24D63, #D95D74); color: #FFFFFF; border-radius: 10px; padding: 9px 10px; font-weight: 800; font-size: 0.82rem; text-decoration: none; text-align: center; display: inline-flex; align-items: center; justify-content: center; gap: 5px;">
+                    <i class="bi bi-person-check-fill"></i> Thuê kèm thợ VieKer tới lắp
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Khu vực Tra cứu Đơn hàng & Bảo hành điện tử (Dành cho mọi khách hàng) -->
+    <section id="order-tracking" style="background: #FFFFFF; border-radius: 20px; border: 1px solid #EAE2D8; padding: 26px; margin-bottom: 36px; box-shadow: 0 4px 14px rgba(43,37,35,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+            <div>
+                <h3 style="font-size: 1.2rem; font-weight: 800; margin: 0; color: #2B2523;">
+                    <i class="bi bi-truck-flatbed" style="color: #0D7A5F; margin-right: 6px;"></i> Tra cứu Vận đơn &amp; Bảo hành Điện tử 1 Đổi 1
+                </h3>
+                <p style="font-size: 0.84rem; color: #6E655F; margin: 4px 0 0 0;">
+                    Nhập mã đơn hàng (VD: <code>#VS-MALL-1</code>) và số điện thoại nhận hàng để kiểm tra tiến độ giao và in hóa đơn bảo hành.
+                </p>
+            </div>
+            <form th:action="@{/shop#order-tracking}" method="get" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" name="trackCode" th:value="${trackCode}" placeholder="Mã đơn (VD: VS-MALL-1)" required
+                       style="padding: 10px 14px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.88rem; width: 190px;">
+                <input type="text" name="trackPhone" th:value="${trackPhone}" placeholder="SĐT nhận hàng (Tùy chọn)"
+                       style="padding: 10px 14px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.88rem; width: 190px;">
+                <button type="submit" style="background: #0D7A5F; color: #FFFFFF; border: none; border-radius: 10px; padding: 10px 18px; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
+                    <i class="bi bi-search"></i> Tra cứu ngay
+                </button>
+            </form>
+        </div>
+
+        <div th:if="${trackingError}" style="margin-top: 16px; background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; padding: 12px 16px; border-radius: 12px; font-size: 0.86rem; font-weight: 700;">
+            <i class="bi bi-exclamation-circle-fill"></i> <span th:text="${trackingError}"></span>
+        </div>
+
+        <div th:if="${trackedOrder != null}" style="margin-top: 18px; background: #FAF7F2; border: 1.5px solid #0D7A5F; border-radius: 14px; padding: 18px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px dashed #DCD3C8; padding-bottom: 12px; margin-bottom: 12px;">
+                <div>
+                    <span style="font-size: 0.78rem; font-weight: 800; color: #0D7A5F; text-transform: uppercase;">Kết quả tra cứu vận đơn</span>
+                    <h4 style="margin: 2px 0 0 0; font-size: 1.15rem; font-weight: 800; color: #2B2523;">
+                        Đơn hàng #VS-MALL-<span th:text="${trackedOrder.id}">1</span> (<span th:text="${trackedOrder.orderCode}"></span>)
+                    </h4>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span class="badge" th:classappend="${trackedOrder.statusBadgeClass}" th:text="${trackedOrder.statusDisplayName}">Đã thanh toán</span>
+                    <a th:href="@{/shop/orders/{id}/invoice(id=${trackedOrder.id})}" target="_blank"
+                       style="background: #C24D63; color: #FFFFFF; padding: 6px 14px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; text-decoration: none;">
+                        <i class="bi bi-printer-fill"></i> Xem / In Hóa Đơn
+                    </a>
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; font-size: 0.86rem;">
+                <div><strong>Người nhận:</strong> <span th:text="${trackedOrder.recipientName}"></span> (<span th:text="${trackedOrder.recipientPhone}"></span>)</div>
+                <div><strong>Địa chỉ giao:</strong> <span th:text="${trackedOrder.shippingAddress}"></span></div>
+                <div><strong>Vật tư đặt mua:</strong> <span th:text="${trackedOrder.itemsSummary}"></span></div>
+                <div><strong>Tổng thanh toán:</strong> <strong style="color: #C24D63;" th:text="${#numbers.formatDecimal(trackedOrder.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'"></strong> (<span th:text="${trackedOrder.paymentMethodDisplayName}"></span>)</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Khu vực Đơn mua vật tư của tôi (Hiển thị khi đã đăng nhập) -->
+    <section id="my-orders" sec:authorize="isAuthenticated()" style="background: #FFFFFF; border-radius: 20px; border: 1px solid #EAE2D8; padding: 28px; margin-bottom: 48px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; margin-bottom: 20px;">
+            <div>
+                <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0; color: #2B2523;">
+                    <i class="bi bi-receipt-cutoff" style="color: #C24D63; margin-right: 8px;"></i> Đơn mua Vật tư &amp; Thiết bị của tôi
+                </h2>
+                <p style="font-size: 0.85rem; color: #6E655F; margin: 4px 0 0 0;">
+                    Quản lý các đơn đặt mua lẻ trên VieShift Mall, xác nhận nhận hàng kích hoạt bảo hành hoặc in hóa đơn điện tử.
+                </p>
+            </div>
+        </div>
+
+        <div th:if="${#lists.isEmpty(myOrders)}" style="text-align: center; padding: 32px; color: #8A817C; font-size: 0.92rem;">
+            Bạn chưa có đơn mua vật tư nào. Hãy chọn sản phẩm phía trên hoặc tích chọn mua kèm khi đặt thợ!
+        </div>
+
+        <div th:if="${!#lists.isEmpty(myOrders)}" style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.86rem;">
+                <thead>
+                <tr style="border-bottom: 2px solid #EFE8DF; text-align: left; color: #6E655F;">
+                    <th style="padding: 12px 10px;">Mã đơn</th>
+                    <th style="padding: 12px 10px;">Hình thức &amp; Thanh toán</th>
+                    <th style="padding: 12px 10px;">Danh sách vật tư</th>
+                    <th style="padding: 12px 10px;">Địa chỉ nhận</th>
+                    <th style="padding: 12px 10px;">Tổng tiền</th>
+                    <th style="padding: 12px 10px;">Trạng thái</th>
+                    <th style="padding: 12px 10px;">Thao tác</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="o : ${myOrders}" style="border-bottom: 1px solid #F5EFE6;">
+                    <td style="padding: 14px 10px; font-weight: 800; color: #C24D63;">
+                        #VS-MALL-<span th:text="${o.id}">1</span>
+                        <div style="font-size: 0.74rem; color: #8A817C; font-weight: 500;"
+                             th:text="${#temporals.format(o.createdAt, 'dd/MM/yyyy HH:mm')}">02/11/2026</div>
+                    </td>
+                    <td style="padding: 14px 10px;">
+                        <div style="margin-bottom: 4px;">
+                            <span th:if="${o.orderType == 'JOB_ADDON' or o.orderType == 'WITH_JOB'}"
+                                  style="background: #FEF3C7; color: #92400E; padding: 3px 9px; border-radius: 999px; font-size: 0.72rem; font-weight: 700;">
+                                <i class="bi bi-tools"></i> Kèm thợ lắp
+                                <a th:if="${o.relatedJob != null}" th:href="@{/customer/jobs/{id}(id=${o.relatedJob.id})}" style="color: #92400E; text-decoration: underline;">
+                                    #<span th:text="${o.relatedJob.id}"></span>
+                                </a>
+                            </span>
+                            <span th:if="${o.orderType != 'JOB_ADDON' and o.orderType != 'WITH_JOB'}"
+                                  style="background: #E0E7FF; color: #1E40AF; padding: 3px 9px; border-radius: 999px; font-size: 0.72rem; font-weight: 700;">
+                                <i class="bi bi-truck"></i> Mua lẻ tự lắp
+                            </span>
+                        </div>
+                        <div style="font-size: 0.75rem; color: #6E655F; font-weight: 600;" th:text="${o.paymentMethodDisplayName}">
+                            Ví bảo đảm VieShift
+                        </div>
+                    </td>
+                    <td style="padding: 14px 10px; font-weight: 600; max-width: 290px;">
+                        <div th:text="${o.itemsSummary}">1x Giá treo Tivi</div>
+                        <div th:if="${o.voucherCode != null}" style="font-size: 0.73rem; color: #0D7A5F; margin-top: 2px;">
+                            <i class="bi bi-ticket-perforated-fill"></i> Mã <strong th:text="${o.voucherCode}"></strong> (-<span th:text="${#numbers.formatDecimal(o.discountAmount, 0, 'COMMA', 0, 'POINT')}"></span>đ)
+                        </div>
+                    </td>
+                    <td style="padding: 14px 10px; color: #4A4543; max-width: 220px;" th:text="${o.shippingAddress}">
+                        Địa chỉ
+                    </td>
+                    <td style="padding: 14px 10px; font-weight: 800; color: #2B2523;"
+                        th:text="${#numbers.formatDecimal(o.totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">
+                        275,000 đ
+                    </td>
+                    <td style="padding: 14px 10px;">
+                        <span class="badge" th:classappend="${o.statusBadgeClass}" th:text="${o.statusDisplayName}">Đã thanh toán</span>
+                    </td>
+                    <td style="padding: 14px 10px;">
+                        <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                            <a th:href="@{/shop/orders/{id}/invoice(id=${o.id})}" target="_blank"
+                               class="btn btn-outline btn-sm" style="font-size: 0.74rem; padding: 4px 8px; text-decoration: none; border-radius: 6px;">
+                                <i class="bi bi-printer"></i> Hóa đơn
+                            </a>
+
+                            <form th:if="${o.status == 'PENDING_VNPAY'}"
+                                  th:action="@{/shop/orders/{id}/repay-vnpay(id=${o.id})}" method="post">
+                                <button type="submit" class="btn btn-sm" style="background: #0284C7; color: #FFF; border: none; font-size: 0.74rem; padding: 4px 8px; border-radius: 6px; cursor: pointer; font-weight: 700;">
+                                    <i class="bi bi-credit-card"></i> Thanh toán VNPAY
+                                </button>
+                            </form>
+
+                            <form th:if="${o.status == 'DELIVERING' or o.status == 'SHIPPING' or o.status == 'PAID' or o.status == 'PENDING_COD'}"
+                                  th:action="@{/shop/orders/{id}/confirm-received(id=${o.id})}" method="post"
+                                  onsubmit="return confirm('Xác nhận bạn đã nhận đủ vật tư và kích hoạt bảo hành 1 đổi 1?');">
+                                <button type="submit" class="btn btn-sm" style="background: #0D7A5F; color: #FFF; border: none; font-size: 0.74rem; padding: 4px 8px; border-radius: 6px; cursor: pointer;">
+                                    <i class="bi bi-check2-circle"></i> Đã nhận hàng
+                                </button>
+                            </form>
+
+                            <form th:if="${o.status == 'PAID' or o.status == 'PENDING_COD' or o.status == 'PENDING_VNPAY'}"
+                                  th:action="@{/shop/orders/{id}/cancel(id=${o.id})}" method="post"
+                                  onsubmit="return confirm('Bạn chắc chắn muốn hủy đơn vật tư này?');">
+                                <button type="submit" class="btn btn-outline btn-sm" style="color: #DC2626; border-color: #FCA5A5; font-size: 0.74rem; padding: 4px 8px; border-radius: 6px; cursor: pointer;">
+                                    Hủy đơn
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+</main>
+
+<!-- Modal Giỏ hàng & Thanh toán Đa Phương Thức -->
+<div id="cartModalOverlay" style="display: none; position: fixed; inset: 0; background: rgba(25,21,20,0.62); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #FFFFFF; border-radius: 22px; max-width: 620px; width: 100%; max-height: 92vh; overflow-y: auto; padding: 26px; box-shadow: 0 24px 48px rgba(0,0,0,0.25);">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #EFE8DF; padding-bottom: 14px; margin-bottom: 16px;">
+            <h3 style="margin: 0; font-size: 1.25rem; font-weight: 800; color: #2B2523;">
+                <i class="bi bi-bag-check-fill" style="color: #C24D63; margin-right: 6px;"></i> Giỏ hàng &amp; Thanh toán VieShift Mall
+            </h3>
+            <button type="button" onclick="closeCartModal()" style="background: none; border: none; font-size: 1.4rem; cursor: pointer; color: #8A817C;">&times;</button>
+        </div>
+
+        <form th:action="@{/shop/checkout}" method="post" id="shopCheckoutForm">
+            <div id="cartItemsContainer" style="margin-bottom: 16px;"></div>
+
+            <!-- Khối Nhập / Chọn Voucher Giảm Giá -->
+            <div style="background: #FDF2F4; border: 1px dashed #F2BFC8; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;">
+                <label style="display: block; font-size: 0.8rem; font-weight: 800; color: #C24D63; margin-bottom: 6px;">
+                    <i class="bi bi-ticket-perforated-fill"></i> Mã Giảm Giá / Voucher (Tùy chọn)
+                </label>
+                <div style="display: flex; gap: 8px;">
+                    <input type="text" name="voucherCode" id="modalVoucherInput"
+                           placeholder="Nhập mã Voucher (VD: CHAOHE2026, MINIGAME20K...)"
+                           style="flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.85rem; text-transform: uppercase;">
+                    <button type="button" onclick="applyModalVoucher()"
+                            style="background: #2B2523; color: #FFFFFF; border: none; border-radius: 8px; padding: 8px 14px; font-weight: 700; font-size: 0.82rem; cursor: pointer;">
+                        Áp dụng
+                    </button>
+                </div>
+                <div id="modalVoucherMessage" style="font-size: 0.78rem; margin-top: 6px; display: none;"></div>
+                <div th:if="${publicVouchers != null and !publicVouchers.isEmpty()}" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+                    <span th:each="v : ${publicVouchers}"
+                          th:data-code="${v.code}"
+                          onclick="selectQuickVoucher(this.getAttribute('data-code'))"
+                          style="background: #FFFFFF; border: 1px solid #C24D63; color: #C24D63; font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; cursor: pointer;">
+                        + <span th:text="${v.code}">CODE</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Bảng tính tổng tiền -->
+            <div style="background: #FAF7F2; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; font-size: 0.88rem;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="color: #6E655F;">Tạm tính tiền vật tư:</span>
+                    <strong id="cartSubtotalDisplay">0 đ</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                    <span style="color: #6E655F;">Phí giao hàng (Freeship đơn &ge; 300K):</span>
+                    <strong id="cartShippingDisplay" style="color: #16A34A;">0 đ</strong>
+                </div>
+                <div id="cartDiscountRow" style="display: none; justify-content: space-between; margin-bottom: 6px; color: #0D7A5F;">
+                    <span>Giảm giá Voucher:</span>
+                    <strong id="cartDiscountDisplay">-0 đ</strong>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #EAE2D8; padding-top: 8px; margin-top: 4px;">
+                    <span style="font-weight: 800; color: #2B2523;">Tổng thanh toán:</span>
+                    <span id="cartTotalDisplay" style="font-size: 1.35rem; font-weight: 800; color: #C24D63;">0 đ</span>
+                </div>
+            </div>
+
+            <!-- Chọn Hình thức Lắp đặt & Thanh toán -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px;">
+                <div>
+                    <label style="display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 6px;">Hình thức lắp đặt *</label>
+                    <select name="installationMode" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.86rem; font-weight: 600;">
+                        <option value="SELF_INSTALL">📦 Mua vật tư tự lắp (Không thuê thợ)</option>
+                        <option value="NEED_VIEKER">🛠️ Yêu cầu thợ VieKer hỗ trợ lắp</option>
+                    </select>
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 6px;">Phương thức thanh toán *</label>
+                    <select name="paymentMethod" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.86rem; font-weight: 600;">
+                        <option value="WALLET">💳 Ví bảo đảm VieShift (Khuyên dùng)</option>
+                        <option value="COD">💵 Tiền mặt khi nhận hàng (COD)</option>
+                        <option value="VNPAY">🏦 Cổng VNPAY Online (QR / ATM / Visa)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                <div>
+                    <label style="display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 5px;">Họ tên người nhận *</label>
+                    <input type="text" name="recipientName" required
+                           th:value="${currentUser != null ? currentUser.fullName : ''}"
+                           placeholder="Nhập họ tên người nhận"
+                           style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.88rem;">
+                </div>
+                <div>
+                    <label style="display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 5px;">Số điện thoại người nhận *</label>
+                    <input type="text" name="recipientPhone" required
+                           th:value="${currentUser != null ? currentUser.phone : ''}"
+                           placeholder="Ví dụ: 0901234567"
+                           style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.88rem;">
+                </div>
+            </div>
+
+            <div style="margin-bottom: 12px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <label style="font-weight: 700; font-size: 0.82rem; margin: 0;">Khu vực nhận hàng &amp; Địa chỉ chi tiết *</label>
+                    <button type="button" onclick="detectModalGps()" id="btnModalGps"
+                            style="background: #FDF2F4; color: #C24D63; border: 1px solid #F2BFC8; border-radius: 6px; padding: 3px 8px; font-size: 0.74rem; font-weight: 800; cursor: pointer;">
+                        <i class="bi bi-crosshair"></i> Lấy vị trí hiện tại
+                    </button>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; margin-bottom: 8px;">
+                    <select id="modalGhnProvince" onchange="onModalProvinceChange()" style="padding: 8px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.8rem;">
+                        <option value="">-- Tỉnh/Thành --</option>
+                    </select>
+                    <select id="modalGhnDistrict" name="ghnDistrictId" onchange="onModalDistrictChange()" style="padding: 8px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.8rem;">
+                        <option value="">-- Quận/Huyện --</option>
+                    </select>
+                    <select id="modalGhnWard" name="ghnWardCode" onchange="onModalWardChange()" style="padding: 8px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.8rem;">
+                        <option value="">-- Phường/Xã --</option>
+                    </select>
+                </div>
+                <input type="text" name="shippingAddress" id="modalShippingAddress" required
+                       th:value="${currentUser != null and currentUser.address != null ? currentUser.address : 'Vinhomes Central Park, P.22, Q. Bình Thạnh, TP.HCM'}"
+                       placeholder="Nhập số nhà, tên đường, phường/xã, quận/huyện..."
+                       style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.88rem;">
+                <div id="modalGhnStatusText" style="font-size: 0.74rem; color: #0D7A5F; font-weight: 700; margin-top: 4px;">
+                    <i class="bi bi-truck"></i> Giao hàng tận nơi nhanh chóng — Miễn phí vận chuyển đơn từ 300.000đ
+                </div>
+            </div>
+
+            <div style="margin-bottom: 18px;">
+                <label style="display: block; font-weight: 700; font-size: 0.82rem; margin-bottom: 5px;">Ghi chú giao hàng / lắp đặt</label>
+                <input type="text" name="notes"
+                       placeholder="Giao giờ hành chính, gọi trước 15 phút..."
+                       style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid #DCD3C8; font-size: 0.88rem;">
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="clearCart()" class="btn btn-outline" style="border-radius: 10px; padding: 11px 16px; cursor: pointer;">
+                    Xóa giỏ
+                </button>
+                <button type="submit" id="checkoutSubmitBtn" class="btn btn-primary"
+                        style="background: linear-gradient(135deg, #C24D63, #D95D74); color: #FFF; border: none; border-radius: 10px; padding: 11px 24px; font-weight: 800; cursor: pointer;">
+                    <i class="bi bi-check2-circle"></i> Đặt Mua Vật Tư Ngay
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    const CART_STORAGE_KEY = 'vieshift_mall_cart_v1';
+    let currentModalDiscount = 0;
+
+    function getCart() {
+        try {
+            return JSON.parse(localStorage.getItem(CART_STORAGE_KEY) || '[]');
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveCart(cart) {
+        localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(cart));
+        renderCartBadge();
+    }
+
+    function addToCartFromBtn(btn) {
+        const id = Number(btn.getAttribute('data-id'));
+        const name = btn.getAttribute('data-name');
+        const price = Number(btn.getAttribute('data-price'));
+        const unit = btn.getAttribute('data-unit') || 'Bộ';
+
+        const cart = getCart();
+        const existing = cart.find(item => item.id === id);
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            cart.push({ id, name, price, unit, qty: 1 });
+        }
+        saveCart(cart);
+        openCartModal();
+    }
+
+    function updateQty(id, delta) {
+        let cart = getCart();
+        const item = cart.find(x => x.id === id);
+        if (item) {
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(x => x.id !== id);
+            }
+        }
+        currentModalDiscount = 0;
+        const msgEl = document.getElementById('modalVoucherMessage');
+        if (msgEl) msgEl.style.display = 'none';
+        saveCart(cart);
+        renderCartModalContents();
+    }
+
+    function clearCart() {
+        localStorage.removeItem(CART_STORAGE_KEY);
+        currentModalDiscount = 0;
+        renderCartBadge();
+        renderCartModalContents();
+    }
+
+    function renderCartBadge() {
+        const cart = getCart();
+        const totalQty = cart.reduce((acc, item) => acc + item.qty, 0);
+        const badge = document.getElementById('headerCartBadge');
+        if (badge) {
+            badge.textContent = totalQty + ' món';
+        }
+        const floatingBadge = document.getElementById('floatingCartBadge');
+        if (floatingBadge) {
+            floatingBadge.textContent = totalQty;
+        }
+    }
+
+    function renderCartModalContents() {
+        const cart = getCart();
+        const container = document.getElementById('cartItemsContainer');
+        const subtotalEl = document.getElementById('cartSubtotalDisplay');
+        const shippingEl = document.getElementById('cartShippingDisplay');
+        const discountRow = document.getElementById('cartDiscountRow');
+        const discountEl = document.getElementById('cartDiscountDisplay');
+        const totalEl = document.getElementById('cartTotalDisplay');
+        const submitBtn = document.getElementById('checkoutSubmitBtn');
+
+        if (!container) return;
+
+        if (cart.length === 0) {
+            container.innerHTML = '<div style="text-align:center;padding:24px;color:#8A817C;">Giỏ hàng của bạn đang trống. Hãy chọn sản phẩm cần mua!</div>';
+            if (subtotalEl) subtotalEl.textContent = '0 đ';
+            if (shippingEl) shippingEl.textContent = '0 đ';
+            if (discountRow) discountRow.style.display = 'none';
+            totalEl.textContent = '0 đ';
+            if (submitBtn) submitBtn.disabled = true;
+            return;
+        }
+
+        if (submitBtn) submitBtn.disabled = false;
+        let subtotal = 0;
+        let html = '';
+
+        cart.forEach(item => {
+            const lineTotal = item.price * item.qty;
+            subtotal += lineTotal;
+            html += `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #F5EFE6;gap:10px;">
+                    <div style="flex:1;">
+                        <div style="font-weight:700;font-size:0.9rem;color:#2B2523;">${item.name}</div>
+                        <div style="font-size:0.78rem;color:#8A817C;">${item.price.toLocaleString('vi-VN')} đ / ${item.unit}</div>
+                        <input type="hidden" name="productIds" value="${item.id}">
+                        <input type="hidden" name="quantities" value="${item.qty}">
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <button type="button" onclick="updateQty(${item.id}, -1)" style="width:28px;height:28px;border-radius:8px;border:1px solid #DCD3C8;background:#FFF;cursor:pointer;font-weight:800;">-</button>
+                        <span style="font-weight:800;min-width:20px;text-align:center;">${item.qty}</span>
+                        <button type="button" onclick="updateQty(${item.id}, 1)" style="width:28px;height:28px;border-radius:8px;border:1px solid #DCD3C8;background:#FFF;cursor:pointer;font-weight:800;">+</button>
+                    </div>
+                    <div style="font-weight:800;color:#C24D63;min-width:95px;text-align:right;">
+                        ${lineTotal.toLocaleString('vi-VN')} đ
+                    </div>
+                </div>
+            `;
+        });
+
+        const shipping = subtotal >= 300000 ? 0 : 25000;
+        if (subtotalEl) subtotalEl.textContent = subtotal.toLocaleString('vi-VN') + ' đ';
+        if (shippingEl) {
+            shippingEl.textContent = shipping === 0 ? 'Miễn phí (0 đ)' : shipping.toLocaleString('vi-VN') + ' đ';
+        }
+        if (currentModalDiscount > 0) {
+            if (discountRow) discountRow.style.display = 'flex';
+            if (discountEl) discountEl.textContent = '-' + currentModalDiscount.toLocaleString('vi-VN') + ' đ';
+        } else {
+            if (discountRow) discountRow.style.display = 'none';
+        }
+
+        const finalTotal = Math.max(0, subtotal - currentModalDiscount + shipping);
+        container.innerHTML = html;
+        totalEl.textContent = finalTotal.toLocaleString('vi-VN') + ' đ';
+    }
+
+    function selectQuickVoucher(code) {
+        const input = document.getElementById('modalVoucherInput');
+        if (input) {
+            input.value = code;
+            applyModalVoucher();
+        }
+    }
+
+    function applyModalVoucher() {
+        const input = document.getElementById('modalVoucherInput');
+        const msgEl = document.getElementById('modalVoucherMessage');
+        const cart = getCart();
+        if (!input || !msgEl || cart.length === 0) return;
+
+        const code = input.value.trim();
+        if (!code) {
+            currentModalDiscount = 0;
+            msgEl.style.display = 'none';
+            renderCartModalContents();
+            return;
+        }
+
+        const subtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+        fetch(`/api/vouchers/validate?code=${encodeURIComponent(code)}&amount=${subtotal}`)
+            .then(r => r.json())
+            .then(data => {
+                msgEl.style.display = 'block';
+                if (data.valid) {
+                    currentModalDiscount = Number(data.discountAmount || 0);
+                    msgEl.style.color = '#0D7A5F';
+                    msgEl.innerHTML = `<i class="bi bi-check-circle-fill"></i> Đã áp dụng mã <strong>${data.code}</strong>: Giảm -${currentModalDiscount.toLocaleString('vi-VN')} đ`;
+                } else {
+                    currentModalDiscount = 0;
+                    msgEl.style.color = '#DC2626';
+                    msgEl.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> ${data.message || 'Mã giảm giá không hợp lệ'}`;
+                }
+                renderCartModalContents();
+            })
+            .catch(() => {});
+    }
+
+    function openCartModal() {
+        renderCartModalContents();
+        document.getElementById('cartModalOverlay').style.display = 'flex';
+        loadModalGhnProvinces();
+    }
+
+    function closeCartModal() {
+        document.getElementById('cartModalOverlay').style.display = 'none';
+    }
+
+    // --- TÍCH HỢP GIAO HÀNG NHANH (GHN) & GPS TRONG MODAL GIỎ HÀNG ---
+    let modalGhnProvincesLoaded = false;
+    function loadModalGhnProvinces() {
+        if (modalGhnProvincesLoaded) return;
+        const provSel = document.getElementById('modalGhnProvince');
+        if (!provSel) return;
+        fetch('/shop/api/ghn/provinces')
+            .then(r => r.json())
+            .then(list => {
+                provSel.innerHTML = '<option value="">-- Tỉnh/Thành --</option>';
+                list.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.ProvinceID;
+                    opt.textContent = p.ProvinceName;
+                    provSel.appendChild(opt);
+                });
+                modalGhnProvincesLoaded = true;
+            })
+            .catch(() => {});
+    }
+
+    function onModalProvinceChange() {
+        const provId = document.getElementById('modalGhnProvince')?.value;
+        const distSel = document.getElementById('modalGhnDistrict');
+        const wardSel = document.getElementById('modalGhnWard');
+        distSel.innerHTML = '<option value="">-- Quận/Huyện --</option>';
+        wardSel.innerHTML = '<option value="">-- Phường/Xã --</option>';
+        if (!provId) return;
+        fetch(`/shop/api/ghn/districts?provinceId=${encodeURIComponent(provId)}`)
+            .then(r => r.json())
+            .then(list => {
+                list.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.DistrictID;
+                    opt.textContent = d.DistrictName;
+                    distSel.appendChild(opt);
+                });
+            })
+            .catch(() => {});
+    }
+
+    function onModalDistrictChange() {
+        const distId = document.getElementById('modalGhnDistrict')?.value;
+        const wardSel = document.getElementById('modalGhnWard');
+        wardSel.innerHTML = '<option value="">-- Phường/Xã --</option>';
+        if (!distId) return;
+        fetch(`/shop/api/ghn/wards?districtId=${encodeURIComponent(distId)}`)
+            .then(r => r.json())
+            .then(list => {
+                list.forEach(w => {
+                    const opt = document.createElement('option');
+                    opt.value = w.WardCode;
+                    opt.textContent = w.WardName;
+                    wardSel.appendChild(opt);
+                });
+                updateModalGhnFee();
+            })
+            .catch(() => {});
+    }
+
+    function onModalWardChange() {
+        const provSel = document.getElementById('modalGhnProvince');
+        const distSel = document.getElementById('modalGhnDistrict');
+        const wardSel = document.getElementById('modalGhnWard');
+        const addrInput = document.getElementById('modalShippingAddress');
+        if (provSel && distSel && wardSel && addrInput && provSel.value && distSel.value && wardSel.value) {
+            const base = addrInput.value.split(',')[0].trim() || 'Số 10 Đường chính';
+            const provName = provSel.options[provSel.selectedIndex]?.text || '';
+            const distName = distSel.options[distSel.selectedIndex]?.text || '';
+            const wardName = wardSel.options[wardSel.selectedIndex]?.text || '';
+            addrInput.value = `${base}, ${wardName}, ${distName}, ${provName}`;
+        }
+        updateModalGhnFee();
+    }
+
+    function updateModalGhnFee() {
+        const distId = document.getElementById('modalGhnDistrict')?.value;
+        const wardCode = document.getElementById('modalGhnWard')?.value;
+        const cart = getCart();
+        if (!distId || cart.length === 0) return;
+        const subtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+        const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
+        fetch(`/shop/api/ghn/calculate-fee?districtId=${encodeURIComponent(distId)}&wardCode=${encodeURIComponent(wardCode || '')}&subtotal=${subtotal}&totalItems=${totalItems}`)
+            .then(r => r.json())
+            .then(res => {
+                const fee = Number(res.shippingFee || 0);
+                const shippingEl = document.getElementById('cartShippingDisplay');
+                const totalEl = document.getElementById('cartTotalDisplay');
+                const statusEl = document.getElementById('modalGhnStatusText');
+                if (shippingEl) shippingEl.textContent = fee === 0 ? 'Miễn phí (0 đ)' : fee.toLocaleString('vi-VN') + ' đ';
+                if (totalEl) totalEl.textContent = Math.max(0, subtotal - currentModalDiscount + fee).toLocaleString('vi-VN') + ' đ';
+                if (statusEl) statusEl.innerHTML = `<i class="bi bi-check2-circle"></i> ${res.methodName || 'Giao Hàng Nhanh'}: <strong>${fee === 0 ? 'Miễn phí 0đ' : fee.toLocaleString('vi-VN') + 'đ'}</strong>`;
+            })
+            .catch(() => {});
+    }
+
+    function detectModalGps() {
+        const btn = document.getElementById('btnModalGps');
+        const statusEl = document.getElementById('modalGhnStatusText');
+        if (!navigator.geolocation) {
+            alert('Trình duyệt của bạn không hỗ trợ GPS.');
+            return;
+        }
+        if (btn) btn.innerHTML = 'Đang định vị...';
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                fetch(`/shop/api/geocode/reverse?lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && data.formattedAddress) {
+                            const addrInput = document.getElementById('modalShippingAddress');
+                            if (addrInput) addrInput.value = data.formattedAddress;
+                            if (statusEl) statusEl.innerHTML = `<i class="bi bi-geo-alt-fill"></i> Đã định vị GPS: <strong>${data.formattedAddress}</strong>`;
+                        }
+                    })
+                    .finally(() => { if (btn) btn.innerHTML = '<i class="bi bi-crosshair"></i> Định vị GPS'; });
+            },
+            () => { if (btn) btn.innerHTML = '<i class="bi bi-crosshair"></i> Định vị GPS'; }
+        );
+    }
+
+    // --- DANH SÁCH YÊU THÍCH (WISHLIST) ---
+    const WISHLIST_STORAGE_KEY = 'vieshift_mall_wishlist_v1';
+    let isFilteringWishlist = false;
+
+    function getWishlist() {
+        try {
+            return JSON.parse(localStorage.getItem(WISHLIST_STORAGE_KEY) || '[]');
+        } catch (e) {
+            return [];
+        }
+    }
+
+    function saveWishlist(list) {
+        localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(list));
+        syncWishlistUI();
+    }
+
+    function toggleWishlistItem(event, btn) {
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        const id = Number(btn.getAttribute('data-id'));
+        let list = getWishlist();
+        if (list.includes(id)) {
+            list = list.filter(x => x !== id);
+        } else {
+            list.push(id);
+        }
+        saveWishlist(list);
+    }
+
+    function toggleWishlistFilter() {
+        isFilteringWishlist = !isFilteringWishlist;
+        syncWishlistUI();
+    }
+
+    function syncWishlistUI() {
+        const list = getWishlist();
+        const badge = document.getElementById('wishlistCountBadge');
+        if (badge) badge.textContent = list.length;
+
+        const filterBtn = document.getElementById('btnFilterWishlist');
+        if (filterBtn) {
+            if (isFilteringWishlist) {
+                filterBtn.style.background = '#C24D63';
+                filterBtn.style.color = '#FFFFFF';
+            } else {
+                filterBtn.style.background = '#FDF2F4';
+                filterBtn.style.color = '#C24D63';
+            }
+        }
+
+        document.querySelectorAll('.wishlist-heart-btn').forEach(btn => {
+            const id = Number(btn.getAttribute('data-id'));
+            if (list.includes(id)) {
+                btn.style.color = '#C24D63';
+                btn.style.background = '#FDF2F4';
+            } else {
+                btn.style.color = '#9CA3AF';
+                btn.style.background = 'rgba(255,255,255,0.92)';
+            }
+        });
+
+        document.querySelectorAll('.shop-product-card').forEach(card => {
+            const id = Number(card.getAttribute('data-product-id'));
+            if (isFilteringWishlist && !list.includes(id)) {
+                card.style.display = 'none';
+            } else {
+                card.style.display = 'flex';
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        renderCartBadge();
+        syncWishlistUI();
+        const form = document.getElementById('shopCheckoutForm');
+        if (form) {
+            form.addEventListener('submit', function() {
+                localStorage.removeItem(CART_STORAGE_KEY);
+            });
+        }
+
+        // Tìm kiếm gõ tới đâu lọc tới đó (Live Filter tức thì)
+        const liveSearchInput = document.getElementById('liveProductSearchInput');
+        if (liveSearchInput) {
+            liveSearchInput.addEventListener('input', function(e) {
+                const term = e.target.value.trim().toLowerCase();
+                document.querySelectorAll('.shop-product-card').forEach(card => {
+                    const title = card.querySelector('h3, [style*="font-weight: 800"]')?.textContent.toLowerCase() || '';
+                    const desc = card.querySelector('p')?.textContent.toLowerCase() || '';
+                    if (!term || title.includes(term) || desc.includes(term)) {
+                        card.style.display = 'flex';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+<!-- Nút Giỏ Hàng Nổi Thông Minh (Sticky Floating Cart Button) -->
+<div id="stickyFloatingCartBtn" onclick="openCartModal()"
+     title="Nhấn để xem giỏ hàng và thanh toán"
+     style="position: fixed; bottom: 28px; right: 28px; z-index: 9999; background: linear-gradient(135deg, #C24D63, #A8384E); color: #FFFFFF; border-radius: 999px; padding: 12px 20px; font-weight: 800; font-size: 0.92rem; cursor: pointer; display: flex; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(194,77,99,0.38); transition: transform 0.2s, box-shadow 0.2s;">
+    <i class="bi bi-cart3" style="font-size: 1.25rem;"></i>
+    <span>Giỏ hàng</span>
+    <span id="floatingCartBadge" style="background: #FFFFFF; color: #C24D63; border-radius: 999px; padding: 2px 9px; font-size: 0.82rem; font-weight: 800;">0</span>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader(${product.name} + ' — VieShift Mall')}"></head>
+<body style="background: #FAF7F2; color: #2B2523;">
+
+<header th:replace="~{fragments/layout :: navbar('shop')}"></header>
+
+<!-- Breadcrumb -->
+<div style="background: #FFFFFF; border-bottom: 1px solid #EAE2D8; padding: 14px 24px;">
+    <div style="max-width: 1220px; margin: 0 auto; display: flex; align-items: center; gap: 8px; font-size: 0.86rem; color: #78716C; flex-wrap: wrap;">
+        <a th:href="@{/}" style="color: #78716C; text-decoration: none;">Trang chủ</a>
+        <i class="bi bi-chevron-right" style="font-size: 0.72rem;"></i>
+        <a th:href="@{/shop}" style="color: #78716C; text-decoration: none;">VieShift Mall</a>
+        <i class="bi bi-chevron-right" style="font-size: 0.72rem;"></i>
+        <a th:href="@{/shop(category=${product.category})}" style="color: #78716C; text-decoration: none;" th:text="${product.category}">Danh mục</a>
+        <i class="bi bi-chevron-right" style="font-size: 0.72rem;"></i>
+        <span style="color: #2B2523; font-weight: 700;" th:text="${product.name}">Tên sản phẩm</span>
+    </div>
+</div>
+
+<main style="max-width: 1220px; margin: 32px auto; padding: 0 24px;">
+
+    <!-- Thông báo Flash -->
+    <div th:if="${successMessage}" class="alert alert-success" style="margin-bottom: 22px; border-radius: 14px; padding: 16px 20px; background: #ECFDF5; border: 1px solid #A7F3D0; color: #065F46; font-weight: 700; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div>
+            <i class="bi bi-check-circle-fill" style="margin-right: 8px;"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+        <a th:href="@{/minigame}" style="background: #0D7A5F; color: #FFF; padding: 6px 14px; border-radius: 999px; font-size: 0.8rem; text-decoration: none; font-weight: 800;">
+            🎡 Tới Vòng Quay Ngay &rarr;
+        </a>
+    </div>
+    <div th:if="${errorMessage}" class="alert alert-danger" style="margin-bottom: 22px; border-radius: 14px; padding: 16px 20px; background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; font-weight: 700;">
+        <i class="bi bi-exclamation-triangle-fill" style="margin-right: 8px;"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <!-- Khối Chi tiết Sản Phẩm -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 36px; background: #FFFFFF; border-radius: 24px; border: 1px solid #EAE2D8; padding: 32px; box-shadow: 0 4px 20px rgba(43,37,35,0.04); margin-bottom: 36px;">
+        
+        <!-- Cột Trái: Ảnh lớn & Tiêu chuẩn bảo hành -->
+        <div>
+            <div style="position: relative; border-radius: 18px; overflow: hidden; background: #F5EFE6; height: 390px; box-shadow: 0 4px 14px rgba(0,0,0,0.06);">
+                <img th:src="${product.imageUrl}" th:alt="${product.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                <span th:if="${product.discountPercent > 0}"
+                      style="position: absolute; top: 16px; left: 16px; background: #C24D63; color: #FFFFFF; font-size: 0.85rem; font-weight: 800; padding: 6px 14px; border-radius: 999px;">
+                    Giảm -<span th:text="${product.discountPercent}">25</span>%
+                </span>
+                <span style="position: absolute; bottom: 14px; left: 14px; background: rgba(13,122,95,0.92); color: #FFFFFF; font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 999px; display: inline-flex; align-items: center; gap: 6px;">
+                    <i class="bi bi-patch-check-fill"></i> Chính hãng 100% • Bảo hành 1 đổi 1
+                </span>
+            </div>
+
+            <!-- Cam kết chất lượng -->
+            <div style="margin-top: 20px; background: #FAF7F2; border-radius: 14px; border: 1px solid #EFE8DF; padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 0.82rem; color: #4A4543;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="bi bi-shield-check" style="color: #0D7A5F; font-size: 1.15rem;"></i>
+                    <strong>Bảo hành 1 đổi 1 (12 tháng)</strong>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="bi bi-arrow-repeat" style="color: #2563EB; font-size: 1.15rem;"></i>
+                    <strong>Đổi trả miễn phí 7 ngày</strong>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="bi bi-truck" style="color: #C24D63; font-size: 1.15rem;"></i>
+                    <strong>Giao nhanh 2h (Freeship &ge;300K)</strong>
+                </div>
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <i class="bi bi-cash-coin" style="color: #D97706; font-size: 1.15rem;"></i>
+                    <strong>Thanh toán Ví hoặc COD</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cột Phải: Thông tin chi tiết & Lựa chọn Mua -->
+        <div style="display: flex; flex-direction: column; justify-content: space-between;">
+            <div>
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+                    <span style="font-size: 0.78rem; font-weight: 800; color: #C2864C; text-transform: uppercase;" th:text="${product.category}">Danh mục</span>
+                    <span th:if="${product.relatedServiceCategory != null}"
+                          style="font-size: 0.75rem; background: #FDF2F4; color: #C24D63; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
+                        Phù hợp: <span th:text="${product.relatedServiceCategory}">Sửa điện nước</span>
+                    </span>
+                    <span style="font-size: 0.76rem; color: #16A34A; background: #ECFDF5; padding: 3px 10px; border-radius: 999px; font-weight: 700;">
+                        <i class="bi bi-check-circle-fill"></i> Còn hàng (<span th:text="${product.stockQuantity}">50</span> <span th:text="${product.unit}">Bộ</span>)
+                    </span>
+                </div>
+
+                <h1 style="font-size: 1.65rem; font-weight: 800; color: #2B2523; line-height: 1.35; margin: 0 0 10px 0;" th:text="${product.name}">
+                    Tên sản phẩm
+                </h1>
+
+                <!-- Đánh giá sao & Lượt bán -->
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 16px; font-size: 0.86rem; color: #6E655F;">
+                    <a href="#reviews-section" style="color: #F59E0B; font-weight: 800; text-decoration: none;">
+                        ★★★★★ <span th:text="${avgRating}">5.0</span> (<span th:text="${reviewCount}">2</span> đánh giá)
+                    </a>
+                    <span>•</span>
+                    <span>Đã bán: <strong style="color: #2B2523;" th:text="${product.soldCount}">68</strong></span>
+                </div>
+
+                <!-- Khối Giá -->
+                <div style="background: #FDF2F4; border-radius: 16px; padding: 18px 24px; margin-bottom: 20px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+                    <span style="font-size: 2.05rem; font-weight: 800; color: #C24D63;"
+                          th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">180,000 đ</span>
+                    <span style="font-size: 0.95rem; color: #78716C;">/ <span th:text="${product.unit}">Bộ</span></span>
+                    <span th:if="${product.originalPrice != null and product.originalPrice > product.price}"
+                          style="font-size: 1.05rem; color: #9CA3AF; text-decoration: line-through;"
+                          th:text="${#numbers.formatDecimal(product.originalPrice, 0, 'COMMA', 0, 'POINT')} + ' đ'">240,000 đ</span>
+                </div>
+
+                <!-- Mô tả & Đặc điểm -->
+                <div style="margin-bottom: 20px;">
+                    <h3 style="font-size: 0.9rem; font-weight: 800; color: #2B2523; margin: 0 0 6px 0; text-transform: uppercase;">Mô tả &amp; Thông số kỹ thuật</h3>
+                    <p style="font-size: 0.92rem; color: #4A4543; line-height: 1.65; margin: 0;" th:text="${product.description}">
+                        Mô tả chi tiết sản phẩm...
+                    </p>
+                </div>
+
+                <!-- Chọn Số lượng & Thêm Giỏ Hàng -->
+                <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <span style="font-size: 0.88rem; font-weight: 800; color: #2B2523;">Số lượng:</span>
+                    <div style="display: inline-flex; align-items: center; border: 1.5px solid #DCD3C8; border-radius: 10px; overflow: hidden; background: #FFF;">
+                        <button type="button" onclick="changeDetailQty(-1)" style="width: 36px; height: 36px; border: none; background: #FAF7F2; font-weight: 800; font-size: 1rem; cursor: pointer;">-</button>
+                        <input type="number" id="detailQtyInput" value="1" min="1" th:max="${product.stockQuantity}"
+                               onchange="syncDetailQty()"
+                               style="width: 50px; height: 36px; border: none; text-align: center; font-weight: 800; font-size: 0.95rem;">
+                        <button type="button" onclick="changeDetailQty(1)" style="width: 36px; height: 36px; border: none; background: #FAF7F2; font-weight: 800; font-size: 1rem; cursor: pointer;">+</button>
+                    </div>
+
+                    <button type="button"
+                            th:data-id="${product.id}"
+                            th:data-name="${product.name}"
+                            th:data-price="${product.price}"
+                            th:data-unit="${product.unit}"
+                            onclick="addDetailProductToCart(this)"
+                            style="background: #FFFFFF; color: #C24D63; border: 1.5px solid #C24D63; border-radius: 10px; padding: 9px 18px; font-weight: 800; font-size: 0.88rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                        <i class="bi bi-cart-plus-fill"></i> Thêm vào giỏ hàng
+                    </button>
+                    <span id="cartToastMsg" style="display: none; font-size: 0.82rem; font-weight: 700; color: #0D7A5F;">
+                        <i class="bi bi-check-circle-fill"></i> Đã thêm vào giỏ! <a th:href="@{/shop}" style="color: #C24D63; text-decoration: underline;">Mở giỏ hàng</a>
+                    </span>
+                </div>
+            </div>
+
+            <!-- CỤM LỰA CHỌN: TỰ LÀM (KHÔNG THUÊ THỢ) HOẶC THUÊ THỢ LẮP ĐẶT -->
+            <div style="border-top: 1.5px dashed #EAE2D8; padding-top: 18px;">
+                <div style="font-size: 0.84rem; font-weight: 800; color: #78716C; text-transform: uppercase; margin-bottom: 12px;">
+                    Chọn hình thức đặt mua ngay:
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1.1fr 1fr; gap: 14px;">
+                    
+                    <!-- LỰA CHỌN 1: MUA VẬT TƯ TỰ LÀM (KHÔNG CẦN THỢ LẮP) -->
+                    <div style="border: 2px solid #0D7A5F; background: #F0FDF4; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                                <strong style="color: #065F46; font-size: 0.95rem;">
+                                    <i class="bi bi-box-seam-fill"></i> Mua vật tư tự lắp
+                                </strong>
+                                <span style="background: #0D7A5F; color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 999px;">
+                                    Không thuê thợ
+                                </span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #047857; line-height: 1.4; margin: 0 0 12px 0;">
+                                Giao tận nhà trong 2 giờ (Ví hoặc COD). Bạn tự lắp đặt hoặc thay thế tại nhà.
+                            </p>
+                        </div>
+                        <a id="buyNowSelfInstallLink"
+                           th:href="@{/shop/checkout-now(productId=${product.id}, qty=1)}"
+                           th:data-base-url="@{/shop/checkout-now(productId=${product.id})}"
+                           style="background: #0D7A5F; color: #FFFFFF; text-decoration: none; text-align: center; font-weight: 800; padding: 11px 16px; border-radius: 10px; font-size: 0.88rem; display: block; box-shadow: 0 4px 12px rgba(13,122,95,0.25);">
+                            <i class="bi bi-lightning-charge-fill"></i> Mua ngay (Giao tận nơi)
+                        </a>
+                    </div>
+
+                    <!-- LỰA CHỌN 2: ĐẶT KÈM THỢ VIEKER LẮP ĐẶT TRỌN GÓI -->
+                    <div style="border: 1.5px solid #F2BFC8; background: #FDF2F4; border-radius: 16px; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                        <div>
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                                <strong style="color: #991B1B; font-size: 0.95rem;">
+                                    <i class="bi bi-tools"></i> Thuê thợ lắp đặt
+                                </strong>
+                                <span style="background: #C24D63; color: #FFF; font-size: 0.68rem; font-weight: 800; padding: 2px 7px; border-radius: 999px;">
+                                    Trọn gói
+                                </span>
+                            </div>
+                            <p style="font-size: 0.8rem; color: #B91C1C; line-height: 1.4; margin: 0 0 12px 0;">
+                                Thợ VieKer mang theo vật tư, có đủ máy khoan &amp; dụng cụ đến lắp tại nhà.
+                            </p>
+                        </div>
+                        <a th:href="@{/customer(tab='create', catName=${product.relatedServiceCategory}, title=${'Lắp đặt / Thay mới: ' + product.name}, addonId=${product.id})}"
+                           style="background: linear-gradient(135deg, #C24D63, #D95D74); color: #FFFFFF; text-decoration: none; text-align: center; font-weight: 800; padding: 11px 16px; border-radius: 10px; font-size: 0.88rem; display: block; box-shadow: 0 4px 12px rgba(194,77,99,0.25);">
+                            <i class="bi bi-person-check-fill"></i> Đặt lịch thợ tới lắp
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- KHU VỰC ĐÁNH GIÁ & NHẬN XÉT SẢN PHẨM (KẾ THỪA TỪ LTW_01 + TẶNG LƯỢT QUAY MINIGAME) -->
+    <section id="reviews-section" style="background: #FFFFFF; border-radius: 24px; border: 1px solid #EAE2D8; padding: 32px; margin-bottom: 36px; box-shadow: 0 4px 20px rgba(43,37,35,0.03);">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; border-bottom: 1px solid #EFE8DF; padding-bottom: 18px; margin-bottom: 24px;">
+            <div>
+                <h2 style="font-size: 1.35rem; font-weight: 800; margin: 0; color: #2B2523;">
+                    <i class="bi bi-chat-heart-fill" style="color: #C24D63; margin-right: 6px;"></i> Đánh giá &amp; Nhận xét từ Khách hàng (<span th:text="${reviewCount}">2</span>)
+                </h2>
+                <p style="font-size: 0.85rem; color: #6E655F; margin: 4px 0 0 0;">
+                    🎡 Gửi đánh giá thực tế để nhận ngay mã Giftcode <strong>REVIEWVIP</strong> (+1 Lượt Quay tại <a th:href="@{/minigame}" style="color: #C24D63; font-weight: 800;">Vòng Quay May Mắn</a>)!
+                </p>
+            </div>
+            <div style="background: #FAF7F2; border: 1px solid #EAE2D8; border-radius: 14px; padding: 10px 20px; text-align: center;">
+                <div style="font-size: 1.6rem; font-weight: 900; color: #F59E0B;">
+                    ★ <span th:text="${avgRating}">5.0</span> <span style="font-size: 0.9rem; color: #78716C; font-weight: 600;">/ 5.0</span>
+                </div>
+                <div style="font-size: 0.75rem; color: #6E655F; font-weight: 700;">100% Khách hàng hài lòng</div>
+            </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 28px;">
+            <!-- Cột Trái: Danh sách đánh giá -->
+            <div>
+                <div th:if="${#lists.isEmpty(reviews)}" style="padding: 28px; text-align: center; color: #8A817C;">
+                    Chưa có đánh giá nào cho sản phẩm này. Hãy là người đầu tiên đánh giá để nhận +1 lượt quay!
+                </div>
+                <div th:each="r : ${reviews}" style="border-bottom: 1px dashed #EFE8DF; padding: 14px 0;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <strong style="font-size: 0.92rem; color: #2B2523;" th:text="${r.reviewerName}">Nguyễn Minh Tâm</strong>
+                            <span th:if="${r.verifiedPurchase}"
+                                  style="background: #ECFDF5; color: #0D7A5F; font-size: 0.7rem; font-weight: 800; padding: 2px 8px; border-radius: 999px;">
+                                <i class="bi bi-patch-check-fill"></i> Đã mua hàng
+                            </span>
+                        </div>
+                        <span style="font-size: 0.75rem; color: #8A817C;" th:text="${#temporals.format(r.createdAt, 'dd/MM/yyyy HH:mm')}">02/11/2026</span>
+                    </div>
+                    <div style="color: #F59E0B; font-size: 0.85rem; margin-bottom: 6px;">
+                        <span th:each="i : ${#numbers.sequence(1, r.rating)}">★</span>
+                    </div>
+                    <p style="font-size: 0.88rem; color: #4A4543; line-height: 1.55; margin: 0;" th:text="${r.comment}">
+                        Sản phẩm rất tốt!
+                    </p>
+                    <div th:if="${r.adminReply != null and !r.adminReply.isBlank()}"
+                         style="margin-top: 8px; background: #FDF2F4; border-left: 3px solid #C24D63; padding: 8px 12px; border-radius: 6px; font-size: 0.82rem; color: #4A4543;">
+                        <strong style="color: #C24D63;"><i class="bi bi-reply-fill"></i> Phản hồi từ VieShift Mall:</strong>
+                        <span th:text="${r.adminReply}">Cảm ơn bạn đã tin chọn VieShift Mall!</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột Phải: Form Gửi Đánh Giá -->
+            <div style="background: #FAF7F2; border-radius: 18px; border: 1px solid #EAE2D8; padding: 22px;">
+                <h3 style="font-size: 1rem; font-weight: 800; margin: 0 0 14px 0; color: #2B2523;">
+                    <i class="bi bi-pencil-square" style="color: #C24D63;"></i> Viết đánh giá của bạn
+                </h3>
+                <form th:action="@{/shop/products/{id}/reviews(id=${product.id})}" method="post">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+                        <div>
+                            <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Họ và tên *</label>
+                            <input type="text" name="reviewerName" required
+                                   th:value="${currentUser != null ? currentUser.fullName : ''}"
+                                   placeholder="Nhập họ tên..."
+                                   style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.86rem;">
+                        </div>
+                        <div>
+                            <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">SĐT mua hàng (Để xác thực)</label>
+                            <input type="text" name="reviewerPhone"
+                                   th:value="${currentUser != null ? currentUser.phone : ''}"
+                                   placeholder="VD: 0912345678"
+                                   style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.86rem;">
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 12px;">
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Mức độ hài lòng *</label>
+                        <select name="rating" style="width: 100%; padding: 9px 12px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.86rem; font-weight: 700; color: #B45309;">
+                            <option value="5">★★★★★ — Tuyệt vời (5 sao)</option>
+                            <option value="4">★★★★☆ — Hài lòng (4 sao)</option>
+                            <option value="3">★★★☆☆ — Bình thường (3 sao)</option>
+                            <option value="2">★★☆☆☆ — Tạm được (2 sao)</option>
+                            <option value="1">★☆☆☆☆ — Cần cải thiện (1 sao)</option>
+                        </select>
+                    </div>
+
+                    <div style="margin-bottom: 14px;">
+                        <label style="display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 4px;">Chia sẻ cảm nhận về sản phẩm *</label>
+                        <textarea name="comment" rows="3" required
+                                  placeholder="Chất lượng vật tư, độ hoàn thiện, tốc độ giao hàng..."
+                                  style="width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.86rem;"></textarea>
+                    </div>
+
+                    <button type="submit" style="width: 100%; background: #C24D63; color: #FFFFFF; border: none; border-radius: 10px; padding: 11px 18px; font-weight: 800; font-size: 0.88rem; cursor: pointer;">
+                        <i class="bi bi-send-check-fill"></i> Gửi Đánh Giá &amp; Nhận +1 Lượt Quay
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sản phẩm liên quan cùng danh mục -->
+    <div th:if="${relatedProducts != null and !relatedProducts.isEmpty()}">
+        <h2 style="font-size: 1.35rem; font-weight: 800; color: #2B2523; margin: 0 0 20px 0;">
+            Sản phẩm cùng danh mục bạn có thể cần
+        </h2>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px;">
+            <div th:each="rp : ${relatedProducts}"
+                 style="background: #FFFFFF; border-radius: 18px; border: 1px solid #EAE2D8; overflow: hidden; padding: 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <a th:href="@{/shop/products/{id}(id=${rp.id})}" style="display: block; height: 160px; border-radius: 12px; overflow: hidden; margin-bottom: 12px;">
+                        <img th:src="${rp.imageUrl}" th:alt="${rp.name}" style="width: 100%; height: 100%; object-fit: cover;">
+                    </a>
+                    <h4 style="font-size: 0.95rem; font-weight: 800; margin: 0 0 8px 0; line-height: 1.35;">
+                        <a th:href="@{/shop/products/{id}(id=${rp.id})}" style="color: #2B2523; text-decoration: none;" th:text="${rp.name}">Tên SP</a>
+                    </h4>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px dashed #EFE8DF; padding-top: 10px; margin-top: 10px;">
+                    <strong style="color: #C24D63;" th:text="${#numbers.formatDecimal(rp.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">180,000 đ</strong>
+                    <a th:href="@{/shop/products/{id}(id=${rp.id})}" style="font-size: 0.8rem; font-weight: 700; color: #0D7A5F; text-decoration: none;">
+                        Xem chi tiết &rarr;
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    const DETAIL_CART_KEY = 'vieshift_mall_cart_v1';
+
+    function changeDetailQty(delta) {
+        const input = document.getElementById('detailQtyInput');
+        if (!input) return;
+        const max = Number(input.getAttribute('max') || 99);
+        let val = Number(input.value || 1) + delta;
+        val = Math.max(1, Math.min(max, val));
+        input.value = val;
+        syncDetailQty();
+    }
+
+    function syncDetailQty() {
+        const input = document.getElementById('detailQtyInput');
+        const buyLink = document.getElementById('buyNowSelfInstallLink');
+        if (!input || !buyLink) return;
+        const qty = Math.max(1, Number(input.value || 1));
+        const baseUrl = buyLink.getAttribute('data-base-url');
+        buyLink.setAttribute('href', baseUrl + '&qty=' + qty);
+    }
+
+    function addDetailProductToCart(btn) {
+        const id = Number(btn.getAttribute('data-id'));
+        const name = btn.getAttribute('data-name');
+        const price = Number(btn.getAttribute('data-price'));
+        const unit = btn.getAttribute('data-unit') || 'Bộ';
+        const input = document.getElementById('detailQtyInput');
+        const qty = Math.max(1, Number(input ? input.value : 1));
+
+        let cart = [];
+        try {
+            cart = JSON.parse(localStorage.getItem(DETAIL_CART_KEY) || '[]');
+        } catch (e) {
+            cart = [];
+        }
+
+        const existing = cart.find(x => x.id === id);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            cart.push({ id, name, price, unit, qty });
+        }
+        localStorage.setItem(DETAIL_CART_KEY, JSON.stringify(cart));
+
+        const toast = document.getElementById('cartToastMsg');
+        if (toast) {
+            toast.style.display = 'inline-block';
+        }
+    }
+</script>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

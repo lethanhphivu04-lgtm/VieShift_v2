@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Thanh Toán Đơn Vật Tư — VieShift Mall')}"></head>
+<body style="background: #FAF7F2; color: #2B2523;">
+
+<header th:replace="~{fragments/layout :: navbar('shop')}"></header>
+
+<main style="max-width: 1020px; margin: 32px auto; padding: 0 24px;">
+
+    <!-- Tiêu đề trang thanh toán -->
+    <div style="margin-bottom: 26px;">
+        <a th:href="@{/shop}" style="color: #78716C; text-decoration: none; font-size: 0.88rem;">
+            &larr; Quay lại Cửa hàng Vật tư VieShift Mall
+        </a>
+        <h1 style="font-size: 1.85rem; font-weight: 800; color: #2B2523; margin: 10px 0 6px 0;">
+            <i class="bi bi-shield-check" style="color: #0D7A5F;"></i> Xác Nhận &amp; Thanh Toán Đơn Vật Tư
+        </h1>
+        <p style="font-size: 0.92rem; color: #6E655F; margin: 0;">
+            Linh hoạt chọn <strong>Tự lắp đặt tại nhà (Không thuê thợ)</strong> hoặc <strong>Thuê kèm thợ VieKer</strong> • Hỗ trợ cả <strong>Ví VieShift</strong> &amp; <strong>Tiền mặt COD</strong>.
+        </p>
+    </div>
+
+    <!-- Thông báo lỗi nếu có -->
+    <div th:if="${errorMessage}" class="alert alert-danger" style="margin-bottom: 24px; border-radius: 14px; padding: 16px 20px; background: #FEF2F2; border: 1px solid #FECACA; color: #991B1B; font-weight: 700;">
+        <i class="bi bi-exclamation-triangle-fill" style="margin-right: 8px;"></i>
+        <span th:text="${errorMessage}"></span>
+    </div>
+
+    <form th:action="@{/shop/checkout}" method="post" id="standaloneCheckoutForm">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 28px;">
+            
+            <!-- Cột Trái: Thông tin giao nhận & Lựa chọn hình thức -->
+            <div style="background: #FFFFFF; border-radius: 20px; border: 1px solid #EAE2D8; padding: 26px; box-shadow: 0 4px 16px rgba(43,37,35,0.04);">
+                <h3 style="font-size: 1.05rem; font-weight: 800; color: #2B2523; margin: 0 0 18px 0; display: flex; align-items: center; gap: 8px;">
+                    <i class="bi bi-geo-alt-fill" style="color: #C24D63;"></i> 1. Thông tin người nhận &amp; Lắp đặt
+                </h3>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px;">
+                    <div>
+                        <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #4A4543; margin-bottom: 6px;">Họ tên người nhận *</label>
+                        <input type="text" name="recipientName" required
+                               th:value="${currentUser.fullName}"
+                               style="width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #DCD3C8; font-size: 0.9rem;">
+                    </div>
+                    <div>
+                        <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #4A4543; margin-bottom: 6px;">Số điện thoại nhận hàng *</label>
+                        <input type="text" name="recipientPhone" required
+                               th:value="${currentUser.phone}"
+                               placeholder="Ví dụ: 0901234567"
+                               style="width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #DCD3C8; font-size: 0.9rem;">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                        <label style="font-size: 0.84rem; font-weight: 700; color: #4A4543; margin: 0;">Khu vực giao hàng *</label>
+                        <button type="button" onclick="detectGpsLocation()" id="btnGpsDetect"
+                                style="background: #FDF2F4; color: #C24D63; border: 1px solid #F2BFC8; border-radius: 8px; padding: 4px 10px; font-size: 0.76rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="bi bi-crosshair"></i> Lấy vị trí hiện tại
+                        </button>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                        <select id="ghnProvinceSelect" onchange="onGhnProvinceChange()"
+                                style="width: 100%; padding: 9px 10px; border-radius: 10px; border: 1.5px solid #DCD3C8; font-size: 0.82rem; background: #FFFFFF;">
+                            <option value="">-- Tỉnh/Thành --</option>
+                        </select>
+                        <select id="ghnDistrictSelect" name="ghnDistrictId" onchange="onGhnDistrictChange()"
+                                style="width: 100%; padding: 9px 10px; border-radius: 10px; border: 1.5px solid #DCD3C8; font-size: 0.82rem; background: #FFFFFF;">
+                            <option value="">-- Quận/Huyện --</option>
+                        </select>
+                        <select id="ghnWardSelect" name="ghnWardCode" onchange="onGhnWardChange()"
+                                style="width: 100%; padding: 9px 10px; border-radius: 10px; border: 1.5px solid #DCD3C8; font-size: 0.82rem; background: #FFFFFF;">
+                            <option value="">-- Phường/Xã --</option>
+                        </select>
+                    </div>
+                    <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #4A4543; margin-bottom: 6px;">Số nhà, tên đường, tòa nhà chi tiết *</label>
+                    <input type="text" name="shippingAddress" id="shippingAddressInput" required
+                           th:value="${currentUser.address != null ? currentUser.address : 'Vinhomes Central Park, P.22, Q. Bình Thạnh, TP.HCM'}"
+                           placeholder="Số nhà, tên đường, phường/xã, quận/huyện..."
+                           style="width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #DCD3C8; font-size: 0.9rem;">
+                    <div id="ghnFeeStatusMsg" style="font-size: 0.76rem; color: #0D7A5F; margin-top: 5px; font-weight: 700;">
+                        <i class="bi bi-truck"></i> Giao hàng tận nơi nhanh chóng (Miễn phí vận chuyển đơn &ge; 300.000đ)
+                    </div>
+                </div>
+
+                <!-- TÙY CHỌN LẮP ĐẶT: TỰ LẮP HAY CẦN THỢ -->
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #4A4543; margin-bottom: 8px;">Hình thức lắp đặt vật tư *</label>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <label style="border: 2px solid #0D7A5F; background: #F0FDF4; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; align-items: flex-start; gap: 8px;">
+                            <input type="radio" name="installationMode" value="SELF_INSTALL" checked style="margin-top: 3px; accent-color: #0D7A5F;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.85rem; color: #065F46;">Tự lắp tại nhà</div>
+                                <div style="font-size: 0.74rem; color: #047857;">Chỉ giao vật tư (0đ phí thợ)</div>
+                            </div>
+                        </label>
+                        <label style="border: 1.5px solid #F2BFC8; background: #FDF2F4; border-radius: 12px; padding: 12px; cursor: pointer; display: flex; align-items: flex-start; gap: 8px;">
+                            <input type="radio" name="installationMode" value="NEED_VIEKER" style="margin-top: 3px; accent-color: #C24D63;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.85rem; color: #991B1B;">Cần thợ hỗ trợ lắp</div>
+                                <div style="font-size: 0.74rem; color: #B91C1C;">Ghi chú điều phối thợ VieKer</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- PHƯƠNG THỨC THANH TOÁN: VÍ VIESHIFT, COD HOẶC VNPAY ONLINE -->
+                <div style="margin-bottom: 16px;">
+                    <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #4A4543; margin-bottom: 8px;">2. Phương thức thanh toán *</label>
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px;">
+                        <label style="border: 2px solid #C24D63; background: #FDF2F4; border-radius: 12px; padding: 11px; cursor: pointer; display: flex; align-items: flex-start; gap: 6px;">
+                            <input type="radio" name="paymentMethod" value="WALLET" checked onchange="updatePaymentMethodUI()" style="margin-top: 3px; accent-color: #C24D63;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.82rem; color: #991B1B;">Ví VieShift</div>
+                                <div style="font-size: 0.7rem; color: #78716C;">Trừ ví, hoàn tiền 100% nếu hủy</div>
+                            </div>
+                        </label>
+                        <label style="border: 1.5px solid #DCD3C8; background: #FAF7F2; border-radius: 12px; padding: 11px; cursor: pointer; display: flex; align-items: flex-start; gap: 6px;">
+                            <input type="radio" name="paymentMethod" value="COD" onchange="updatePaymentMethodUI()" style="margin-top: 3px; accent-color: #2B2523;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.82rem; color: #2B2523;">Tiền mặt (COD)</div>
+                                <div style="font-size: 0.7rem; color: #6E655F;">Nhận &amp; kiểm tra hàng mới trả</div>
+                            </div>
+                        </label>
+                        <label style="border: 1.5px solid #93C5FD; background: #EFF6FF; border-radius: 12px; padding: 11px; cursor: pointer; display: flex; align-items: flex-start; gap: 6px;">
+                            <input type="radio" name="paymentMethod" value="VNPAY" onchange="updatePaymentMethodUI()" style="margin-top: 3px; accent-color: #0284C7;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.82rem; color: #0369A1;">VNPAY Online</div>
+                                <div style="font-size: 0.7rem; color: #0284C7;">Quét QR / Thẻ ATM / Quốc tế</div>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.84rem; font-weight: 700; color: #4A4543; margin-bottom: 6px;">Ghi chú giao hàng (Tùy chọn)</label>
+                    <input type="text" name="notes"
+                           placeholder="Giao giờ hành chính, gửi lễ tân/bảo vệ, gọi trước khi giao..."
+                           style="width: 100%; padding: 11px 14px; border-radius: 10px; border: 1.5px solid #DCD3C8; font-size: 0.9rem;">
+                </div>
+            </div>
+
+            <!-- Cột Phải: Tóm tắt đơn hàng, Voucher & Xác nhận -->
+            <div style="background: #FFFFFF; border-radius: 20px; border: 1px solid #EAE2D8; padding: 26px; box-shadow: 0 4px 16px rgba(43,37,35,0.04); display: flex; flex-direction: column; justify-content: space-between;">
+                <div>
+                    <h3 style="font-size: 1.05rem; font-weight: 800; color: #2B2523; margin: 0 0 16px 0; display: flex; align-items: center; gap: 8px;">
+                        <i class="bi bi-receipt" style="color: #0D7A5F;"></i> 3. Chi tiết Vật tư &amp; Ưu đãi
+                    </h3>
+
+                    <!-- Danh sách vật tư có thể tăng/giảm số lượng ngay tại chỗ -->
+                    <div style="border-bottom: 1.5px dashed #EFE8DF; padding-bottom: 16px; margin-bottom: 16px;">
+                        <div th:each="p : ${checkoutProducts}"
+                             id="checkoutItemRow"
+                             th:data-price="${p.price}"
+                             th:data-max="${p.stockQuantity}"
+                             style="display: flex; gap: 12px; align-items: center; justify-content: space-between;">
+                            <img th:src="${p.imageUrl}" alt="thumb" style="width: 58px; height: 58px; border-radius: 12px; object-fit: cover;">
+                            <div style="flex: 1; min-width: 0;">
+                                <div style="font-size: 0.92rem; font-weight: 800; color: #2B2523; line-height: 1.3;" th:text="${p.name}">Tên SP</div>
+                                <div style="font-size: 0.8rem; color: #78716C; margin-top: 4px;">
+                                    Đơn giá: <strong th:text="${#numbers.formatDecimal(p.price, 0, 'COMMA', 0, 'POINT')} + ' đ'">180,000 đ</strong> / <span th:text="${p.unit}">Bộ</span>
+                                </div>
+                            </div>
+
+                            <!-- Tăng giảm số lượng -->
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <button type="button" onclick="adjustCheckoutQty(-1)" style="width: 28px; height: 28px; border-radius: 8px; border: 1px solid #DCD3C8; background: #FAF7F2; font-weight: 800; cursor: pointer;">-</button>
+                                <input type="number" name="quantities" id="checkoutQtyInput"
+                                       th:value="${initialQty != null ? initialQty : 1}" min="1" th:max="${p.stockQuantity}"
+                                       onchange="recalcCheckoutTotals()"
+                                       style="width: 42px; text-align: center; font-weight: 800; border: 1px solid #DCD3C8; border-radius: 6px; padding: 4px 0;">
+                                <button type="button" onclick="adjustCheckoutQty(1)" style="width: 28px; height: 28px; border-radius: 8px; border: 1px solid #DCD3C8; background: #FAF7F2; font-weight: 800; cursor: pointer;">+</button>
+                            </div>
+
+                            <input type="hidden" name="productIds" th:value="${p.id}">
+                        </div>
+                    </div>
+
+                    <!-- Khối Áp dụng Mã Giảm Giá (Voucher) -->
+                    <div style="background: #FDF2F4; border: 1px dashed #F2BFC8; border-radius: 12px; padding: 12px 14px; margin-bottom: 16px;">
+                        <label style="display: block; font-size: 0.8rem; font-weight: 800; color: #C24D63; margin-bottom: 6px;">
+                            <i class="bi bi-ticket-perforated-fill"></i> Mã Giảm Giá / Voucher VieShift
+                        </label>
+                        <div style="display: flex; gap: 8px;">
+                            <input type="text" name="voucherCode" id="checkoutVoucherInput"
+                                   placeholder="Nhập mã Voucher (VD: CHAOHE2026)..."
+                                   style="flex: 1; padding: 9px 12px; border-radius: 8px; border: 1px solid #DCD3C8; font-size: 0.86rem; text-transform: uppercase;">
+                            <button type="button" onclick="applyCheckoutVoucher()"
+                                    style="background: #2B2523; color: #FFFFFF; border: none; border-radius: 8px; padding: 9px 16px; font-weight: 700; font-size: 0.82rem; cursor: pointer;">
+                                Áp dụng
+                            </button>
+                        </div>
+                        <div id="checkoutVoucherMsg" style="font-size: 0.78rem; margin-top: 6px; display: none;"></div>
+                        <div th:if="${publicVouchers != null and !publicVouchers.isEmpty()}" style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+                            <span th:each="v : ${publicVouchers}"
+                                  th:data-code="${v.code}"
+                                  onclick="pickCheckoutVoucher(this.getAttribute('data-code'))"
+                                  style="background: #FFFFFF; border: 1px solid #C24D63; color: #C24D63; font-size: 0.72rem; font-weight: 700; padding: 3px 8px; border-radius: 6px; cursor: pointer;">
+                                + <span th:text="${v.code}">CODE</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Bảng tính tiền -->
+                    <div style="font-size: 0.9rem; color: #4A4543; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;">
+                        <div style="display: flex; justify-content: space-between;">
+                            <span>Tạm tính tiền vật tư:</span>
+                            <strong id="chkSubtotalText" th:text="${#numbers.formatDecimal(subtotalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">180,000 đ</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; color: #16A34A;">
+                            <span>Phí vận chuyển (Freeship đơn &ge; 300K):</span>
+                            <strong id="chkShippingText" th:text="${shippingFee > 0 ? #numbers.formatDecimal(shippingFee, 0, 'COMMA', 0, 'POINT') + ' đ' : 'Miễn phí (0 đ)'}">25,000 đ</strong>
+                        </div>
+                        <div id="chkDiscountRow" style="display: none; justify-content: space-between; color: #0D7A5F;">
+                            <span>Giảm giá Voucher:</span>
+                            <strong id="chkDiscountText">-0 đ</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; font-size: 1.2rem; font-weight: 800; color: #2B2523; border-top: 1px solid #EFE8DF; padding-top: 10px; margin-top: 4px;">
+                            <span>Tổng thanh toán:</span>
+                            <span id="chkTotalText" style="color: #C24D63;" th:text="${#numbers.formatDecimal(totalAmount, 0, 'COMMA', 0, 'POINT')} + ' đ'">205,000 đ</span>
+                        </div>
+                    </div>
+
+                    <!-- Trạng thái ví VieShift -->
+                    <div id="walletBalanceBox" th:data-balance="${wallet.balance}"
+                         style="background: #F8FAFC; border: 1.5px solid #E2E8F0; border-radius: 14px; padding: 14px 16px; margin-bottom: 18px;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                            <span style="font-size: 0.8rem; color: #64748B; font-weight: 600;">Số dư Ví VieShift khả dụng:</span>
+                            <strong style="color: #0D7A5F; font-size: 1rem;" th:text="${#numbers.formatDecimal(wallet.balance, 0, 'COMMA', 0, 'POINT')} + ' đ'">1,120,000 đ</strong>
+                        </div>
+                        <div id="walletStatusMessage" style="font-size: 0.78rem; color: #16A34A; font-weight: 700;">
+                            <i class="bi bi-check-circle-fill"></i> Đủ số dư để thanh toán ngay lập tức
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <button type="submit" id="chkSubmitBtn"
+                            style="width: 100%; background: linear-gradient(135deg, #0D7A5F, #10B981); color: #FFFFFF; border: none; border-radius: 12px; padding: 14px; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(13,122,95,0.3);">
+                        <i class="bi bi-shield-lock-fill"></i> Xác Nhận Đặt Hàng Ngay
+                    </button>
+                    <div style="text-align: center; margin-top: 10px; font-size: 0.76rem; color: #8A817C;">
+                        Cam kết hàng chính hãng 100% • Hoàn tiền tức thì nếu hủy đơn thanh toán Ví.
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+
+</main>
+
+<script>
+    let currentChkDiscount = 0;
+    let currentGhnBaseFee = 25000;
+    let currentGhnMethodName = 'Giao Hàng Nhanh (GHN)';
+
+    function adjustCheckoutQty(delta) {
+        const input = document.getElementById('checkoutQtyInput');
+        if (!input) return;
+        const max = Number(input.getAttribute('max') || 99);
+        let val = Number(input.value || 1) + delta;
+        val = Math.max(1, Math.min(max, val));
+        input.value = val;
+        currentChkDiscount = 0;
+        const msg = document.getElementById('checkoutVoucherMsg');
+        if (msg) msg.style.display = 'none';
+        refreshGhnFeeOrRecalc();
+    }
+
+    function getCheckoutSubtotal() {
+        const row = document.getElementById('checkoutItemRow');
+        const input = document.getElementById('checkoutQtyInput');
+        if (!row || !input) return 0;
+        const price = Number(row.getAttribute('data-price') || 0);
+        const qty = Math.max(1, Number(input.value || 1));
+        return price * qty;
+    }
+
+    function getCheckoutTotalItems() {
+        const input = document.getElementById('checkoutQtyInput');
+        return input ? Math.max(1, Number(input.value || 1)) : 1;
+    }
+
+    function getEffectiveShippingFee(subtotal) {
+        if (subtotal >= 300000) return 0;
+        return currentGhnBaseFee;
+    }
+
+    function recalcCheckoutTotals() {
+        const subtotal = getCheckoutSubtotal();
+        const shipping = getEffectiveShippingFee(subtotal);
+        const total = Math.max(0, subtotal - currentChkDiscount + shipping);
+
+        document.getElementById('chkSubtotalText').textContent = subtotal.toLocaleString('vi-VN') + ' đ';
+        document.getElementById('chkShippingText').textContent = shipping === 0 ? 'Miễn phí (0 đ)' : shipping.toLocaleString('vi-VN') + ' đ';
+
+        const discRow = document.getElementById('chkDiscountRow');
+        if (currentChkDiscount > 0) {
+            discRow.style.display = 'flex';
+            document.getElementById('chkDiscountText').textContent = '-' + currentChkDiscount.toLocaleString('vi-VN') + ' đ';
+        } else {
+            discRow.style.display = 'none';
+        }
+
+        document.getElementById('chkTotalText').textContent = total.toLocaleString('vi-VN') + ' đ';
+        updatePaymentMethodUI();
+    }
+
+    function updatePaymentMethodUI() {
+        const subtotal = getCheckoutSubtotal();
+        const shipping = getEffectiveShippingFee(subtotal);
+        const total = Math.max(0, subtotal - currentChkDiscount + shipping);
+
+        const walletBox = document.getElementById('walletBalanceBox');
+        const walletBalance = Number(walletBox ? walletBox.getAttribute('data-balance') : 0);
+        const statusMsg = document.getElementById('walletStatusMessage');
+        const submitBtn = document.getElementById('chkSubmitBtn');
+
+        const selectedPay = document.querySelector('input[name="paymentMethod"]:checked')?.value || 'WALLET';
+        if (selectedPay === 'COD') {
+            statusMsg.style.color = '#0D7A5F';
+            statusMsg.innerHTML = '<i class="bi bi-truck"></i> Thanh toán tiền mặt cho nhân viên giao hàng khi nhận vật tư (COD)';
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        } else if (selectedPay === 'VNPAY') {
+            statusMsg.style.color = '#0284C7';
+            statusMsg.innerHTML = '<i class="bi bi-credit-card-2-front-fill"></i> Chuyển hướng sang Cổng thanh toán VNPAY an toàn (Hỗ trợ giữ đơn 30 phút)';
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+        } else {
+            if (walletBalance >= total) {
+                statusMsg.style.color = '#16A34A';
+                statusMsg.innerHTML = '<i class="bi bi-check-circle-fill"></i> Số dư Ví đủ thanh toán ngay lập tức';
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            } else {
+                statusMsg.style.color = '#DC2626';
+                statusMsg.innerHTML = '<i class="bi bi-exclamation-triangle-fill"></i> Số dư Ví chưa đủ. Vui lòng nạp thêm hoặc chọn Tiền mặt (COD) / VNPAY.';
+                submitBtn.disabled = true;
+                submitBtn.style.opacity = '0.6';
+            }
+        }
+    }
+
+    function loadGhnProvinces() {
+        const provSel = document.getElementById('ghnProvinceSelect');
+        if (!provSel) return;
+        fetch('/shop/api/ghn/provinces')
+            .then(r => r.json())
+            .then(list => {
+                provSel.innerHTML = '<option value="">-- Tỉnh/Thành --</option>';
+                list.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.ProvinceID;
+                    opt.textContent = p.ProvinceName;
+                    provSel.appendChild(opt);
+                });
+            })
+            .catch(() => {});
+    }
+
+    function onGhnProvinceChange() {
+        const provId = document.getElementById('ghnProvinceSelect')?.value;
+        const distSel = document.getElementById('ghnDistrictSelect');
+        const wardSel = document.getElementById('ghnWardSelect');
+        distSel.innerHTML = '<option value="">-- Quận/Huyện --</option>';
+        wardSel.innerHTML = '<option value="">-- Phường/Xã --</option>';
+        if (!provId) return;
+        fetch(`/shop/api/ghn/districts?provinceId=${encodeURIComponent(provId)}`)
+            .then(r => r.json())
+            .then(list => {
+                list.forEach(d => {
+                    const opt = document.createElement('option');
+                    opt.value = d.DistrictID;
+                    opt.textContent = d.DistrictName;
+                    distSel.appendChild(opt);
+                });
+            })
+            .catch(() => {});
+    }
+
+    function onGhnDistrictChange() {
+        const distId = document.getElementById('ghnDistrictSelect')?.value;
+        const wardSel = document.getElementById('ghnWardSelect');
+        wardSel.innerHTML = '<option value="">-- Phường/Xã --</option>';
+        if (!distId) return;
+        fetch(`/shop/api/ghn/wards?districtId=${encodeURIComponent(distId)}`)
+            .then(r => r.json())
+            .then(list => {
+                list.forEach(w => {
+                    const opt = document.createElement('option');
+                    opt.value = w.WardCode;
+                    opt.textContent = w.WardName;
+                    wardSel.appendChild(opt);
+                });
+                refreshGhnFeeOrRecalc();
+            })
+            .catch(() => {});
+    }
+
+    function onGhnWardChange() {
+        updateFullAddressFromDropdowns();
+        refreshGhnFeeOrRecalc();
+    }
+
+    function updateFullAddressFromDropdowns() {
+        const provSel = document.getElementById('ghnProvinceSelect');
+        const distSel = document.getElementById('ghnDistrictSelect');
+        const wardSel = document.getElementById('ghnWardSelect');
+        const addrInput = document.getElementById('shippingAddressInput');
+        if (!provSel || !distSel || !wardSel || !addrInput) return;
+        const provName = provSel.options[provSel.selectedIndex]?.text || '';
+        const distName = distSel.options[distSel.selectedIndex]?.text || '';
+        const wardName = wardSel.options[wardSel.selectedIndex]?.text || '';
+        if (provSel.value && distSel.value && wardSel.value) {
+            const basePart = addrInput.value.split(',')[0].trim() || 'Số 10 Đường chính';
+            addrInput.value = `${basePart}, ${wardName}, ${distName}, ${provName}`;
+        }
+    }
+
+    function refreshGhnFeeOrRecalc() {
+        const distId = document.getElementById('ghnDistrictSelect')?.value;
+        const wardCode = document.getElementById('ghnWardSelect')?.value;
+        const subtotal = getCheckoutSubtotal();
+        const totalItems = getCheckoutTotalItems();
+        if (!distId) {
+            recalcCheckoutTotals();
+            return;
+        }
+        fetch(`/shop/api/ghn/calculate-fee?districtId=${encodeURIComponent(distId)}&wardCode=${encodeURIComponent(wardCode || '')}&subtotal=${subtotal}&totalItems=${totalItems}`)
+            .then(r => r.json())
+            .then(res => {
+                currentGhnBaseFee = Number(res.shippingFee || 0);
+                currentGhnMethodName = res.methodName || 'Giao Hàng Nhanh (GHN)';
+                const feeMsg = document.getElementById('ghnFeeStatusMsg');
+                if (feeMsg) {
+                    feeMsg.innerHTML = `<i class="bi bi-check2-circle"></i> ${currentGhnMethodName}: <strong>${currentGhnBaseFee === 0 ? 'Miễn phí 0đ' : currentGhnBaseFee.toLocaleString('vi-VN') + 'đ'}</strong>`;
+                }
+                recalcCheckoutTotals();
+            })
+            .catch(() => recalcCheckoutTotals());
+    }
+
+    function detectGpsLocation() {
+        const btn = document.getElementById('btnGpsDetect');
+        const feeMsg = document.getElementById('ghnFeeStatusMsg');
+        if (!navigator.geolocation) {
+            alert('Trình duyệt của bạn không hỗ trợ định vị GPS.');
+            return;
+        }
+        if (btn) {
+            btn.disabled = true;
+            btn.innerHTML = '<i class="bi bi-hourglass-split"></i> Đang lấy tọa độ GPS...';
+        }
+        navigator.geolocation.getCurrentPosition(
+            pos => {
+                const lat = pos.coords.latitude;
+                const lon = pos.coords.longitude;
+                fetch(`/shop/api/geocode/reverse?lat=${lat}&lon=${lon}`)
+                    .then(r => r.json())
+                    .then(data => {
+                        if (data.success && data.formattedAddress) {
+                            const addrInput = document.getElementById('shippingAddressInput');
+                            if (addrInput) addrInput.value = data.formattedAddress;
+                            if (feeMsg) {
+                                feeMsg.innerHTML = `<i class="bi bi-geo-alt-fill"></i> Đã định vị GPS: <strong>${data.formattedAddress}</strong>`;
+                            }
+                        }
+                    })
+                    .finally(() => {
+                        if (btn) {
+                            btn.disabled = false;
+                            btn.innerHTML = '<i class="bi bi-crosshair"></i> Định vị GPS tự động';
+                        }
+                    });
+            },
+            err => {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="bi bi-crosshair"></i> Định vị GPS tự động';
+                }
+                alert('Không thể truy cập vị trí GPS: ' + (err.message || 'Vui lòng cấp quyền vị trí cho trình duyệt'));
+            },
+            { enableHighAccuracy: true, timeout: 8000 }
+        );
+    }
+
+    function pickCheckoutVoucher(code) {
+        const input = document.getElementById('checkoutVoucherInput');
+        if (input) {
+            input.value = code;
+            applyCheckoutVoucher();
+        }
+    }
+
+    function applyCheckoutVoucher() {
+        const input = document.getElementById('checkoutVoucherInput');
+        const msg = document.getElementById('checkoutVoucherMsg');
+        if (!input || !msg) return;
+        const code = input.value.trim();
+        if (!code) {
+            currentChkDiscount = 0;
+            msg.style.display = 'none';
+            recalcCheckoutTotals();
+            return;
+        }
+        const subtotal = getCheckoutSubtotal();
+        fetch(`/api/vouchers/validate?code=${encodeURIComponent(code)}&amount=${subtotal}`)
+            .then(r => r.json())
+            .then(data => {
+                msg.style.display = 'block';
+                if (data.valid) {
+                    currentChkDiscount = Number(data.discountAmount || 0);
+                    msg.style.color = '#0D7A5F';
+                    msg.innerHTML = `<i class="bi bi-check-circle-fill"></i> Đã áp dụng mã <strong>${data.code}</strong>: Giảm -${currentChkDiscount.toLocaleString('vi-VN')} đ`;
+                } else {
+                    currentChkDiscount = 0;
+                    msg.style.color = '#DC2626';
+                    msg.innerHTML = `<i class="bi bi-exclamation-circle-fill"></i> ${data.message || 'Mã giảm giá không hợp lệ'}`;
+                }
+                recalcCheckoutTotals();
+            })
+            .catch(() => {});
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        loadGhnProvinces();
+        recalcCheckoutTotals();
+    });
+</script>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
