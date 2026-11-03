@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Điều khoản Thương mại & Chính sách Bảo mật')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('terms')}"></header>
+
+<section style="background: linear-gradient(135deg, #2B2523 0%, #3E3330 55%, #C24D63 100%); color: #FAF7F2; padding: 56px 24px; border-bottom: 1px solid var(--border);">
+    <div class="main-wrapper" style="padding: 0;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(250, 247, 242, 0.14); padding: 6px 14px; border-radius: 999px; font-size: 0.76rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #E6AF76; margin-bottom: 14px;">
+            <i class="bi bi-bank2"></i> Văn bản Pháp lý &amp; Quy chế Sàn Thương mại Điện tử VieShift
+        </div>
+        <h1 style="font-size: 2.3rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.7px; margin-bottom: 10px;">
+            Điều khoản Dịch vụ &amp; Chính sách Bảo mật Dữ liệu
+        </h1>
+        <p style="font-size: 0.98rem; color: rgba(250, 247, 242, 0.84); max-width: 780px; line-height: 1.6;">
+            Áp dụng cho toàn bộ Khách hàng và Đối tác Độc lập (VieKer) tham gia giao dịch trên nền tảng VieShift. Tuân thủ Bộ luật Dân sự 2015, Luật Bảo vệ quyền lợi người tiêu dùng, Nghị định 85/2021/NĐ-CP về Thương mại điện tử và Nghị định 13/2023/NĐ-CP về Bảo vệ dữ liệu cá nhân.
+        </p>
+        <div style="margin-top: 18px; font-size: 0.82rem; color: rgba(250, 247, 242, 0.68);">
+            Hiệu lực cập nhật gần nhất: Ngày 01 tháng 10 năm 2026 &bull; Phiên bản Thương mại 2.4
+        </div>
+    </div>
+</section>
+
+<main class="main-wrapper" style="padding-top: 40px; padding-bottom: 72px;">
+    <div style="display: grid; grid-template-columns: 280px 1fr; gap: 36px; align-items: start;">
+
+        <!-- Mục lục điều hướng nhanh -->
+        <aside class="card" style="position: sticky; top: 96px; padding: 22px;">
+            <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-light); margin-bottom: 14px;">
+                Mục lục Pháp lý
+            </div>
+            <nav style="display: flex; flex-direction: column; gap: 10px; font-size: 0.88rem; font-weight: 600;">
+                <a href="#general" style="color: var(--secondary); text-decoration: none;">1. Nguyên tắc &amp; Tư cách Pháp lý</a>
+                <a href="#customer" style="color: var(--secondary); text-decoration: none;">2. Quyền &amp; Nghĩa vụ của Khách hàng</a>
+                <a href="#vieker" style="color: var(--secondary); text-decoration: none;">3. Quy chế Đối tác Độc lập VieKer &amp; KYC</a>
+                <a href="#escrow" style="color: var(--secondary); text-decoration: none;">4. Cơ chế Ví Tạm giữ (Escrow) &amp; Phí</a>
+                <a href="#dispute" style="color: var(--secondary); text-decoration: none;">5. Giải quyết Khiếu nại &amp; Đền bù</a>
+                <a href="#privacy" style="color: var(--primary); text-decoration: none; font-weight: 800;">6. Chính sách Bảo mật Dữ liệu Cá nhân (NĐ 13/2023/NĐ-CP)</a>
+            </nav>
+        </aside>
+
+        <!-- Nội dung chi tiết -->
+        <div class="card" style="padding: 40px 44px; line-height: 1.75; color: var(--text-main);">
+
+            <section id="general" style="margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border);">
+                <h2 style="font-size: 1.35rem; color: var(--secondary); margin-bottom: 12px;">
+                    Điều 1. Nguyên tắc Chung &amp; Tư cách Pháp lý của Nền tảng VieShift
+                </h2>
+                <p style="margin-bottom: 12px;">
+                    <strong>1.1. Bản chất dịch vụ:</strong> VieShift là sàn giao dịch thương mại điện tử cung cấp giải pháp công nghệ kết nối trực tiếp giữa người có nhu cầu sử dụng dịch vụ gia đình (sau đây gọi là <strong>"Khách hàng"</strong>) và các cá nhân hành nghề độc lập cung ứng dịch vụ lắp ráp, sửa chữa, vệ sinh, vận chuyển (sau đây gọi là <strong>"Đối tác VieKer"</strong>).
+                </p>
+                <p style="margin-bottom: 12px;">
+                    <strong>1.2. Quan hệ hợp tác độc lập:</strong> Đối tác VieKer hoạt động với tư cách là cá nhân kinh doanh độc lập, tự chủ về thời gian, công cụ lao động và chịu trách nhiệm trước pháp luật về chất lượng chuyên môn của mình. Giữa VieShift và Đối tác VieKer là quan hệ hợp tác thương mại cung cấp dịch vụ kết nối công nghệ, không phải quan hệ hợp đồng lao động theo Bộ luật Lao động.
+                </p>
+                <p style="margin-bottom: 0;">
+                    <strong>1.3. Điều kiện tham gia:</strong> Mọi Khách hàng và Đối tác VieKer khi đăng ký tài khoản phải từ đủ 18 tuổi trở lên, có đầy đủ năng lực hành vi dân sự theo quy định của pháp luật Việt Nam.
+                </p>
+            </section>
+
+            <section id="customer" style="margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border);">
+                <h2 style="font-size: 1.35rem; color: var(--secondary); margin-bottom: 12px;">
+                    Điều 2. Quyền và Nghĩa vụ của Khách hàng
+                </h2>
+                <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 8px;">
+                    <li>Cung cấp chính xác địa chỉ thi công, mô tả trung thực khối lượng công việc và đảm bảo môi trường làm việc an toàn, hợp pháp cho Đối tác VieKer.</li>
+                    <li>Không yêu cầu Đối tác VieKer thực hiện các công việc vi phạm pháp luật, vận chuyển hàng cấm hoặc thi công vượt quá giới hạn an toàn kỹ thuật mà không có biện pháp bảo hộ.</li>
+                    <li>Thực hiện kiểm tra, nghiệm thu kết quả công việc trong vòng <strong>24 giờ</strong> kể từ khi Đối tác VieKer báo cáo hoàn thành trên hệ thống.</li>
+                    <li>Không tự ý thỏa thuận giao dịch ngầm bên ngoài nền tảng nhằm trốn tránh quy trình bảo vệ thanh toán Escrow. Các giao dịch ngoài hệ thống sẽ không được VieShift bảo hiểm hoặc hỗ trợ giải quyết tranh chấp.</li>
+                </ul>
+            </section>
+
+            <section id="vieker" style="margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border);">
+                <h2 style="font-size: 1.35rem; color: var(--secondary); margin-bottom: 12px;">
+                    Điều 3. Tiêu chuẩn Thẩm định Hồ sơ (KYC) &amp; Trách nhiệm của Đối tác VieKer
+                </h2>
+                <p style="margin-bottom: 12px;">
+                    <strong>3.1. Hồ sơ định danh bắt buộc (KYC 5 Lớp):</strong> Để được kích hoạt tài khoản nhận việc, mọi Đối tác VieKer bắt buộc phải hoàn tất quy trình xác thực danh tính qua đường dẫn định danh riêng biệt, bao gồm 05 chứng từ gốc chụp rõ nét:
+                </p>
+                <ol style="padding-left: 22px; margin-bottom: 14px; display: flex; flex-direction: column; gap: 6px;">
+                    <li><strong>Ảnh chân dung chính diện:</strong> Chụp trong vòng 06 tháng gần nhất, không đội mũ hoặc đeo kính râm.</li>
+                    <li><strong>Căn cước công dân (CCCD) gắn chip — Mặt trước:</strong> Còn thời hạn sử dụng, rõ số định danh 12 chữ số.</li>
+                    <li><strong>Căn cước công dân (CCCD) gắn chip — Mặt sau:</strong> Rõ đặc điểm nhận dạng, ngày cấp và mã MRZ.</li>
+                    <li><strong>Phiếu Lý lịch tư pháp (Số 1 hoặc Số 2) / Giấy xác nhận nhân thân:</strong> Xác nhận không đang trong thời gian chấp hành án hình sự.</li>
+                    <li><strong>Giấy phép lái xe (Bằng lái xe):</strong> Hợp lệ để đảm bảo an toàn khi di chuyển đến địa điểm của Khách hàng.</li>
+                </ol>
+                <p style="margin-bottom: 0;">
+                    <strong>3.2. Chế tài vi phạm:</strong> Trường hợp phát hiện Đối tác VieKer sử dụng giấy tờ giả mạo, cho mượn tài khoản hoặc có hành vi xâm phạm tài sản, danh dự của Khách hàng, VieShift có quyền khóa vĩnh viễn tài khoản, phong tỏa số dư ví để khắc phục hậu quả và chuyển hồ sơ cho cơ quan Công an có thẩm quyền.
+                </p>
+            </section>
+
+            <section id="escrow" style="margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border);">
+                <h2 style="font-size: 1.35rem; color: var(--secondary); margin-bottom: 12px;">
+                    Điều 4. Cơ chế Thanh toán Tạm giữ (Escrow) &amp; Biểu phí Dịch vụ
+                </h2>
+                <p style="margin-bottom: 12px;">
+                    <strong>4.1. Phong tỏa tạm giữ (Escrow Hold):</strong> Ngay tại thời điểm Khách hàng xác nhận đăng đơn đặt thợ, 100% giá trị đơn hàng được trích từ số dư khả dụng của Khách hàng sang trạng thái <em>Số dư Tạm giữ (Escrow)</em>.
+                </p>
+                <p style="margin-bottom: 12px;">
+                    <strong>4.2. Giải ngân thu nhập &amp; Phí nền tảng:</strong> Khi Khách hàng xác nhận nghiệm thu hoàn tất, hệ thống tự động khấu trừ <strong>10% Phí dịch vụ vận hành nền tảng</strong> (bao gồm phí duy trì hạ tầng công nghệ, thẩm định KYC và quỹ bảo vệ khách hàng) và cộng ngay <strong>90% giá trị đơn hàng</strong> vào Ví khả dụng của Đối tác VieKer.
+                </p>
+                <p style="margin-bottom: 0;">
+                    <strong>4.3. Chính sách hoàn tiền khi hủy đơn:</strong> Khách hàng được hủy đơn miễn phí và nhận lại 100% tiền tạm giữ ngay lập tức nếu đơn hàng đang ở trạng thái chờ nhận việc (chưa có VieKer nhận).
+                </p>
+            </section>
+
+            <section id="dispute" style="margin-bottom: 36px; padding-bottom: 28px; border-bottom: 1px solid var(--border);">
+                <h2 style="font-size: 1.35rem; color: var(--secondary); margin-bottom: 12px;">
+                    Điều 5. Quy trình Giải quyết Khiếu nại &amp; Bảo hiểm Dịch vụ
+                </h2>
+                <p style="margin-bottom: 12px;">
+                    Khi phát sinh bất đồng về chất lượng công việc, tiến độ thi công hoặc hư hỏng tài sản, Khách hàng hoặc Đối tác VieKer có quyền gửi <strong>"Yêu cầu Khiếu nại"</strong> ngay trên chi tiết công việc.
+                </p>
+                <p style="margin-bottom: 0;">
+                    Trong suốt thời gian đơn hàng ở trạng thái Khiếu nại (<code>DISPUTED</code>), khoản tiền trong quỹ Escrow sẽ được tạm giữ an toàn. Ban Quản Trị VieShift sẽ thu thập thông tin và bằng chứng từ hai phía để đưa ra phương án xử lý thỏa đáng trong vòng 24–48 giờ làm việc: (i) Hoàn tiền 100% cho Khách hàng; (ii) Giải ngân cho Đối tác VieKer; hoặc (iii) Chia đều 50/50 tùy theo mức độ hoàn thành thực tế.
+                </p>
+            </section>
+
+            <section id="privacy" style="background: #FAF7F2; border: 1px solid var(--border); border-radius: 16px; padding: 28px 30px;">
+                <div style="display: inline-block; background: #FCECEE; color: #C24D63; font-size: 0.74rem; font-weight: 800; padding: 4px 12px; border-radius: 999px; text-transform: uppercase; margin-bottom: 10px;">
+                    Tuân thủ Nghị định 13/2023/NĐ-CP
+                </div>
+                <h2 style="font-size: 1.35rem; color: var(--secondary); margin-bottom: 12px;">
+                    Điều 6. Chính sách Bảo vệ Dữ liệu Cá nhân &amp; Hồ sơ Định danh
+                </h2>
+                <p style="margin-bottom: 12px;">
+                    <strong>6.1. Dữ liệu thu thập:</strong> VieShift xử lý dữ liệu cá nhân cơ bản (họ tên, ngày sinh, số điện thoại, email, địa chỉ) và dữ liệu định danh đối tác (số CCCD, hình ảnh CCCD 2 mặt, lý lịch tư pháp, giấy phép lái xe) nhằm mục đích duy nhất là xác thực danh tính, ngăn chặn gian lận và thực hiện hợp đồng dịch vụ.
+                </p>
+                <p style="margin-bottom: 12px;">
+                    <strong>6.2. Lưu trữ &amp; Phân quyền truy cập nghiêm ngặt:</strong> Toàn bộ tệp chứng từ KYC của Đối tác VieKer được lưu trữ trong vùng thư mục bảo mật riêng biệt, không công khai trên Internet và chỉ Quản trị viên cấp cao (<code>ROLE_ADMIN</code>) mới có quyền truy xuất để thẩm định.
+                </p>
+                <p style="margin-bottom: 0;">
+                    <strong>6.3. Quyền của chủ thể dữ liệu:</strong> Người dùng có quyền yêu cầu trích xuất, chỉnh sửa, cập nhật hoặc yêu cầu xóa dữ liệu cá nhân khi chấm dứt sử dụng dịch vụ bằng cách gửi yêu cầu tới Bộ phận Bảo vệ Dữ liệu của VieShift qua địa chỉ <a href="mailto:privacy@vieshift.vn" style="color: var(--primary); font-weight: 700;">privacy@vieshift.vn</a>.
+                </p>
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

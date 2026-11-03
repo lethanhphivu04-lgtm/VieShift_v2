@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Đăng ký Tài khoản Khách hàng')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('register')}"></header>
+
+<main class="auth-boutique-shell">
+
+    <!-- Họa tiết nghệ thuật rìa trái -->
+    <svg class="edge-art-left" viewBox="0 0 280 620" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="opacity: 0.7;">
+        <circle cx="30" cy="140" r="145" stroke="#E87A8D" stroke-width="1.3" stroke-dasharray="7 7" opacity="0.45"/>
+        <path d="M-20 80 C85 130, 120 260, 45 360 C-10 430, 65 510, 145 580" stroke="#C24D63" stroke-width="1.8" opacity="0.28" fill="none"/>
+        <g class="edge-sparkle" transform="translate(115, 110)">
+            <path d="M12 0 L15 9 L24 12 L15 15 L12 24 L9 15 L0 12 L9 9 Z" fill="#C24D63" opacity="0.45"/>
+        </g>
+    </svg>
+
+    <!-- Họa tiết nghệ thuật rìa phải -->
+    <svg class="edge-art-right" viewBox="0 0 280 620" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" style="opacity: 0.7;">
+        <circle cx="250" cy="200" r="160" stroke="#E6AF76" stroke-width="1.3" stroke-dasharray="6 8" opacity="0.45"/>
+        <path d="M300 90 C190 160, 165 290, 235 400 C285 480, 200 545, 120 600" stroke="#2B2523" stroke-width="1.5" opacity="0.2" fill="none"/>
+    </svg>
+
+    <div class="auth-split-container" style="max-width: 1060px;">
+        <!-- Cột Trái: Quyền lợi Khách hàng & Lối đi riêng cho Đối tác VieKer -->
+        <div class="auth-editorial-panel">
+            <div>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(250, 247, 242, 0.12); border: 1px solid rgba(250, 247, 242, 0.22); padding: 6px 14px; border-radius: 999px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: #F5D0D8;">
+                    <i class="bi bi-house-heart-fill"></i> Dành cho Chủ nhà &amp; Khách hàng
+                </div>
+                <h2 style="font-size: 1.95rem; font-weight: 800; color: #FFFFFF; line-height: 1.24; margin-top: 18px; letter-spacing: -0.5px;">
+                    Chăm sóc tổ ấm thanh lịch cùng <span style="color: #E6AF76;">VieShift.</span>
+                </h2>
+                <p style="font-size: 0.92rem; color: rgba(250, 247, 242, 0.82); line-height: 1.65; margin-top: 12px;">
+                    Tạo tài khoản Khách hàng miễn phí trong 30 giây để đặt thợ lắp ráp nội thất, sửa chữa điện nước, vệ sinh chuyên sâu và chuyển nhà trọn gói.
+                </p>
+
+                <div style="margin-top: 28px; display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(230, 175, 118, 0.18); color: #E6AF76; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-calculator-fill"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #FFFFFF;">Báo giá Minh bạch Tức thì</div>
+                            <div style="font-size: 0.8rem; color: rgba(250, 247, 242, 0.72);">Hệ thống tự động tính chi phí rõ ràng theo danh mục, cam kết không phát sinh phụ phí ẩn.</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 12px;">
+                        <div style="width: 34px; height: 34px; border-radius: 10px; background: rgba(232, 122, 141, 0.22); color: #F5B7C2; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                            <i class="bi bi-shield-lock-fill"></i>
+                        </div>
+                        <div>
+                            <div style="font-weight: 700; font-size: 0.9rem; color: #FFFFFF;">Cam kết Bảo vệ Khách hàng 100%</div>
+                            <div style="font-size: 0.8rem; color: rgba(250, 247, 242, 0.72);">Tiền thanh toán được giữ an toàn trong ví Escrow cho đến khi bạn xác nhận nghiệm thu.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Box nổi bật chuyển sang quy trình Đăng ký Đối tác VieKer chuyên biệt -->
+            <div style="margin-top: 32px; background: rgba(250, 247, 242, 0.1); border: 1px solid rgba(230, 175, 118, 0.35); border-radius: 16px; padding: 18px 20px;">
+                <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 0.92rem; color: #E6AF76; margin-bottom: 6px;">
+                    <i class="bi bi-tools"></i> Bạn muốn đăng ký làm Đối tác VieKer?
+                </div>
+                <p style="font-size: 0.8rem; color: rgba(250, 247, 242, 0.82); line-height: 1.5; margin-bottom: 12px;">
+                    Đối tác VieKer có cổng đăng ký &amp; thẩm định hồ sơ (KYC) riêng biệt với công cụ ước tính thu nhập theo khu vực.
+                </p>
+                <a th:href="@{/become-vieker}" class="btn btn-sm" style="background: #E6AF76; color: #2B2523; font-weight: 800; border-radius: 999px; padding: 8px 18px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                    Trở thành Đối tác VieKer <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <!-- Cột Phải: Form Đăng ký Khách hàng -->
+        <div class="auth-form-panel">
+            <div style="margin-bottom: 20px;">
+                <h1 style="font-size: 1.6rem; font-weight: 800; color: var(--secondary); margin-bottom: 4px;">Tạo tài khoản Khách hàng</h1>
+                <p style="font-size: 0.88rem; color: var(--text-muted);">
+                    Đăng ký nhanh bằng Google hoặc điền thông tin cá nhân bên dưới
+                </p>
+            </div>
+
+            <!-- Nút Đăng ký / Đăng nhập nhanh bằng Google -->
+            <a th:href="@{/oauth2/authorization/google}" class="btn-google-oauth">
+                <svg width="20" height="20" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                    <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                    <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                    <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                    <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                </svg>
+                <span>Đăng ký nhanh bằng Google</span>
+            </a>
+
+            <div class="auth-divider">hoặc điền thông tin tài khoản</div>
+
+            <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+                <input type="hidden" name="role" value="CUSTOMER">
+
+                <div class="grid-2" style="gap: 14px;">
+                    <div class="form-group">
+                        <label class="form-label" for="fullName">Họ và tên <span style="color: var(--danger);">*</span></label>
+                        <input type="text" id="fullName" th:field="*{fullName}" class="form-control"
+                               placeholder="Nguyễn Văn A" required>
+                        <div class="form-error" th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}"></div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="phone">Số điện thoại <span style="color: var(--danger);">*</span></label>
+                        <input type="text" id="phone" th:field="*{phone}" class="form-control"
+                               placeholder="0901 234 567" required>
+                        <div class="form-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="email">Địa chỉ Email <span style="color: var(--danger);">*</span></label>
+                    <input type="email" id="email" th:field="*{email}" class="form-control"
+                           placeholder="ten.cua.ban@email.com" required>
+                    <div class="form-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="password">Mật khẩu bảo mật (tối thiểu 6 ký tự) <span style="color: var(--danger);">*</span></label>
+                    <input type="password" id="password" th:field="*{password}" class="form-control"
+                           placeholder="••••••••" required minlength="6">
+                    <div class="form-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                </div>
+
+                <!-- Cam kết Điều khoản Pháp lý thương mại thực tế -->
+                <div class="form-group" style="background: var(--surface-subtle); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; margin-top: 6px;">
+                    <label style="display: flex; align-items: flex-start; gap: 10px; cursor: pointer; font-size: 0.85rem; color: var(--text-main); line-height: 1.5;">
+                        <input type="checkbox" th:field="*{agreeTerms}" required style="margin-top: 4px; width: 17px; height: 17px; accent-color: var(--primary); flex-shrink: 0;">
+                        <span>
+                            Tôi xác nhận đã đọc, hiểu rõ và đồng ý với
+                            <a th:href="@{/terms}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: underline;">Điều khoản sử dụng dịch vụ</a>,
+                            <a th:href="@{/privacy}" target="_blank" style="color: var(--primary); font-weight: 700; text-decoration: underline;">Chính sách bảo mật dữ liệu cá nhân (Nghị định 13/2023/NĐ-CP)</a>
+                            cùng
+                            <button type="button" onclick="document.getElementById('quickTermsModal').classList.add('active')"
+                                    style="background: none; border: none; padding: 0; color: var(--secondary); font-weight: 700; text-decoration: underline; cursor: pointer; font-size: 0.85rem;">
+                                Quy chế Thanh toán Tạm giữ (Xem nhanh)
+                            </button>
+                            của VieShift.
+                        </span>
+                    </label>
+                    <div class="form-error" th:if="${#fields.hasErrors('agreeTerms')}" th:errors="*{agreeTerms}"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block btn-lg" style="margin-top: 10px; border-radius: 999px;">
+                    <i class="bi bi-person-check-fill"></i> Hoàn tất Đăng ký Khách hàng
+                </button>
+            </form>
+
+            <div style="text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); font-size: 0.9rem; color: var(--text-muted);">
+                Đã có tài khoản trên VieShift?
+                <a th:href="@{/login}" style="color: var(--primary); font-weight: 700; text-decoration: none;">Đăng nhập ngay</a>
+            </div>
+        </div>
+    </div>
+
+</main>
+
+<!-- Modal Xem nhanh Điều khoản Thương mại & Bảo mật -->
+<div id="quickTermsModal" class="modal-backdrop" onclick="if(event.target===this) this.classList.remove('active')">
+    <div class="modal-dialog" style="max-width: 680px;">
+        <div class="modal-header">
+            <h3 class="modal-title"><i class="bi bi-file-earmark-Lock2" style="color: var(--primary);"></i> Tóm tắt Điều khoản Thương mại &amp; Bảo mật VieShift</h3>
+            <button type="button" class="modal-close" onclick="document.getElementById('quickTermsModal').classList.remove('active')">&times;</button>
+        </div>
+        <div class="modal-body" style="max-height: 65vh; overflow-y: auto; font-size: 0.9rem; line-height: 1.65; color: var(--text-main);">
+            <h4 style="font-size: 1rem; color: var(--secondary); margin-bottom: 6px;">1. Tư cách Pháp lý của Sàn Giao dịch VieShift</h4>
+            <p style="margin-bottom: 14px; color: var(--text-muted);">
+                VieShift vận hành nền tảng công nghệ kết nối nhu cầu dịch vụ gia đình giữa Khách hàng và các Đối tác Thợ độc lập (VieKer) theo quy định của Luật Giao dịch Điện tử và Nghị định 52/2013/NĐ-CP (sửa đổi bởi Nghị định 85/2021/NĐ-CP) về Thương mại điện tử.
+            </p>
+            <h4 style="font-size: 1rem; color: var(--secondary); margin-bottom: 6px;">2. Cơ chế Thanh toán Tạm giữ (Escrow) &amp; Phí Nền tảng</h4>
+            <p style="margin-bottom: 14px; color: var(--text-muted);">
+                Khi Khách hàng tạo đơn đặt dịch vụ, khoản phí dịch vụ sẽ được phong tỏa tạm thời vào Quỹ Tạm Giữ (Escrow) của VieShift. Khoản tiền này chỉ được giải ngân cho Đối tác VieKer sau khi Khách hàng bấm <strong>"Nghiệm thu &amp; Hoàn tất"</strong>. Trường hợp hủy đơn khi chưa có thợ nhận, Khách hàng được hoàn 100% số tiền về Ví ngay lập tức.
+            </p>
+            <h4 style="font-size: 1rem; color: var(--secondary); margin-bottom: 6px;">3. Bảo vệ Dữ liệu Cá nhân (Nghị định 13/2023/NĐ-CP)</h4>
+            <p style="margin-bottom: 14px; color: var(--text-muted);">
+                Thông tin định danh, địa chỉ thi công và số điện thoại của Khách hàng được mã hóa và chỉ cung cấp cho Đối tác VieKer trực tiếp nhận đơn nhằm mục đích thực hiện dịch vụ. VieShift tuyệt đối không bán hoặc chia sẻ dữ liệu cá nhân cho bên thứ ba vì mục đích quảng cáo.
+            </p>
+            <h4 style="font-size: 1rem; color: var(--secondary); margin-bottom: 6px;">4. Giải quyết Khiếu nại &amp; Đền bù</h4>
+            <p style="margin-bottom: 0; color: var(--text-muted);">
+                Mọi khiếu nại về chất lượng thi công hoặc dịch vụ cần được gửi qua tính năng "Gửi Khiếu Nại" trước khi bấm nghiệm thu để Ban Quản Trị tạm giữ tiền bảo đảm và hỗ trợ xử lý thỏa đáng trong vòng 24–48 giờ làm việc.
+            </p>
+        </div>
+        <div class="modal-footer" style="display: flex; justify-content: space-between; align-items: center;">
+            <a th:href="@{/terms}" target="_blank" style="color: var(--primary); font-weight: 700; font-size: 0.88rem; text-decoration: none;">
+                Xem toàn văn Điều khoản &amp; Chính sách <i class="bi bi-box-arrow-up-right"></i>
+            </a>
+            <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('quickTermsModal').classList.remove('active')">
+                Đã hiểu &amp; Đóng
+            </button>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>

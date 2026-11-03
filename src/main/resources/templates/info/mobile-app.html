@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Tải Ứng dụng VieShift - Đặt Thợ Nhanh Chóng & An Toàn')}"></head>
+<body style="background: var(--bg-soft); color: var(--text-main);">
+
+<header th:replace="~{fragments/layout :: navbar('mobile-app')}"></header>
+
+<!-- HERO SECTION: Trải nghiệm di động đẳng cấp -->
+<section style="background: linear-gradient(135deg, #2B2523 0%, #3D3230 45%, #C24D63 100%); color: #FAF7F2; padding: 70px 24px 80px; position: relative; overflow: hidden; border-bottom: 1px solid var(--border);">
+    <div style="position: absolute; right: -80px; top: -80px; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle, rgba(230, 175, 118, 0.22) 0%, rgba(230, 175, 118, 0) 70%); pointer-events: none;"></div>
+    <div style="position: absolute; left: 10%; bottom: -120px; width: 350px; height: 350px; border-radius: 50%; background: radial-gradient(circle, rgba(194, 77, 99, 0.25) 0%, rgba(194, 77, 99, 0) 70%); pointer-events: none;"></div>
+
+    <div class="main-wrapper" style="padding: 0; position: relative; z-index: 2;">
+        <div style="display: grid; grid-template-columns: 1.15fr 0.85fr; gap: 48px; align-items: center;">
+            
+            <!-- Cột trái: Giới thiệu & Tải về -->
+            <div>
+                <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(250, 247, 242, 0.14); padding: 6px 14px; border-radius: 999px; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #E6AF76; margin-bottom: 16px;">
+                    <i class="bi bi-phone"></i> Ứng dụng Di động VieShift Mobile 2.0
+                </div>
+                <h1 style="font-size: 2.6rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.8px; line-height: 1.2; margin-bottom: 18px;">
+                    Đặt thợ gia đình chuẩn 5 sao <br/>
+                    <span style="color: #E6AF76;">chỉ trong 1 chạm</span> trên điện thoại
+                </h1>
+                <p style="font-size: 1.05rem; color: rgba(250, 247, 242, 0.88); line-height: 1.65; margin-bottom: 30px; max-width: 580px;">
+                    Mang cả đội ngũ thợ mộc, điện nước, sửa chữa và vệ sinh tận tâm về ngôi nhà bạn. Định vị thợ theo thời gian thực (Live GPS), trao đổi qua ảnh trực tiếp và giải ngân bảo đảm Escrow an toàn tuyệt đối.
+                </p>
+
+                <!-- Nút tải Store -->
+                <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; margin-bottom: 32px;">
+                    <!-- App Store -->
+                    <a href="javascript:void(0)" onclick="openStoreNotice('App Store (iOS)')" style="display: inline-flex; align-items: center; gap: 12px; background: #1E293B; border: 1.5px solid rgba(255, 255, 255, 0.25); padding: 12px 24px; border-radius: 12px; color: #FFFFFF; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,0.25); transition: all 0.25s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#E6AF76'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255, 255, 255, 0.25)'">
+                        <i class="bi bi-apple" style="font-size: 2rem; color: #FFFFFF;"></i>
+                        <div style="text-align: left; line-height: 1.2;">
+                            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: #94A3B8;">Tải về trên</div>
+                            <strong style="font-size: 1.15rem; font-weight: 700;">App Store</strong>
+                        </div>
+                    </a>
+
+                    <!-- Google Play -->
+                    <a href="javascript:void(0)" onclick="openStoreNotice('Google Play (Android)')" style="display: inline-flex; align-items: center; gap: 12px; background: #1E293B; border: 1.5px solid rgba(255, 255, 255, 0.25); padding: 12px 24px; border-radius: 12px; color: #FFFFFF; text-decoration: none; box-shadow: 0 8px 24px rgba(0,0,0,0.25); transition: all 0.25s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.borderColor='#E6AF76'" onmouseout="this.style.transform='translateY(0)'; this.style.borderColor='rgba(255, 255, 255, 0.25)'">
+                        <i class="bi bi-google-play" style="font-size: 1.85rem; color: #38BDF8;"></i>
+                        <div style="text-align: left; line-height: 1.2;">
+                            <div style="font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.5px; color: #94A3B8;">Khám phá trên</div>
+                            <strong style="font-size: 1.15rem; font-weight: 700;">Google Play</strong>
+                        </div>
+                    </a>
+
+                    <!-- Cài đặt nhanh PWA -->
+                    <button onclick="installPWA()" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(230, 175, 118, 0.18); border: 1.5px dashed #E6AF76; padding: 12px 20px; border-radius: 12px; color: #E6AF76; font-size: 0.92rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='rgba(230, 175, 118, 0.28)'" onmouseout="this.style.background='rgba(230, 175, 118, 0.18)'">
+                        <i class="bi bi-download"></i> Cài đặt PWA tức thì
+                    </button>
+                </div>
+
+                <!-- Box Quét QR Code -->
+                <div style="display: inline-flex; align-items: center; gap: 16px; background: rgba(250, 247, 242, 0.1); border: 1px solid rgba(250, 247, 242, 0.18); padding: 12px 18px; border-radius: 14px;">
+                    <!-- SVG QR Code minh họa phong cách High-Tech -->
+                    <div style="background: #FFFFFF; padding: 6px; border-radius: 8px; display: flex; align-items: center; justify-content: center; width: 68px; height: 68px; box-shadow: 0 4px 10px rgba(0,0,0,0.15);">
+                        <svg viewBox="0 0 100 100" style="width: 100%; height: 100%;">
+                            <!-- QR Pattern Elements -->
+                            <rect width="100" height="100" fill="#FFFFFF"/>
+                            <!-- Top Left Finder -->
+                            <rect x="5" y="5" width="30" height="30" fill="#2B2523" rx="4"/>
+                            <rect x="10" y="10" width="20" height="20" fill="#FFFFFF" rx="2"/>
+                            <rect x="15" y="15" width="10" height="10" fill="#C24D63" rx="1"/>
+                            <!-- Top Right Finder -->
+                            <rect x="65" y="5" width="30" height="30" fill="#2B2523" rx="4"/>
+                            <rect x="70" y="10" width="20" height="20" fill="#FFFFFF" rx="2"/>
+                            <rect x="75" y="15" width="10" height="10" fill="#C24D63" rx="1"/>
+                            <!-- Bottom Left Finder -->
+                            <rect x="5" y="65" width="30" height="30" fill="#2B2523" rx="4"/>
+                            <rect x="10" y="70" width="20" height="20" fill="#FFFFFF" rx="2"/>
+                            <rect x="15" y="75" width="10" height="10" fill="#C24D63" rx="1"/>
+                            <!-- Data bits -->
+                            <rect x="42" y="8" width="6" height="6" fill="#2B2523"/>
+                            <rect x="52" y="12" width="6" height="6" fill="#2B2523"/>
+                            <rect x="44" y="24" width="8" height="6" fill="#2B2523"/>
+                            <rect x="8" y="44" width="8" height="6" fill="#2B2523"/>
+                            <rect x="22" y="48" width="6" height="8" fill="#2B2523"/>
+                            <rect x="42" y="42" width="16" height="16" fill="#C24D63" rx="3"/>
+                            <rect x="64" y="42" width="8" height="6" fill="#2B2523"/>
+                            <rect x="78" y="48" width="12" height="6" fill="#2B2523"/>
+                            <rect x="44" y="66" width="6" height="12" fill="#2B2523"/>
+                            <rect x="56" y="72" width="10" height="6" fill="#2B2523"/>
+                            <rect x="72" y="68" width="8" height="8" fill="#2B2523"/>
+                            <rect x="84" y="82" width="10" height="10" fill="#2B2523"/>
+                            <rect x="44" y="86" width="8" height="6" fill="#2B2523"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.88rem; font-weight: 700; color: #FAF7F2;">
+                            <i class="bi bi-qr-code-scan" style="color: #E6AF76; margin-right: 4px;"></i> Quét mã tải nhanh
+                        </div>
+                        <div style="font-size: 0.76rem; color: rgba(250, 247, 242, 0.72); margin-top: 2px;">
+                            Mở camera điện thoại quét để mở ngay link tải phiên bản iOS &amp; Android mới nhất.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột phải: Phone Mockup sống động -->
+            <div style="display: flex; justify-content: center; position: relative;">
+                <!-- Vỏ điện thoại iPhone phong cách Luxury -->
+                <div style="width: 310px; height: 600px; background: #1E1B1A; border: 8px solid #3E3330; border-radius: 46px; box-shadow: 0 25px 60px rgba(0,0,0,0.45), inset 0 0 0 2px rgba(255,255,255,0.12); position: relative; padding: 14px; overflow: hidden; display: flex; flex-direction: column;">
+                    
+                    <!-- Dynamic Island -->
+                    <div style="width: 100px; height: 22px; background: #000000; border-radius: 20px; margin: 0 auto 12px; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; z-index: 10;">
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: #1C274C; opacity: 0.8;"></div>
+                    </div>
+
+                    <!-- Màn hình ứng dụng (App Screen) -->
+                    <div style="flex: 1; background: #FAF7F2; border-radius: 32px; overflow-y: auto; padding: 16px; color: #2B2523; font-family: system-ui, -apple-system, sans-serif;">
+                        
+                        <!-- Top status bar -->
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                            <div style="display: flex; align-items: center; gap: 6px;">
+                                <div style="width: 28px; height: 28px; border-radius: 8px; background: #C24D63; color: #FFF; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; font-weight: 800;">V</div>
+                                <div>
+                                    <div style="font-size: 0.65rem; color: #64748B;">Vị trí của bạn</div>
+                                    <div style="font-size: 0.75rem; font-weight: 700; color: #1E293B;">Vinhomes Central Park</div>
+                                </div>
+                            </div>
+                            <div style="position: relative;">
+                                <i class="bi bi-bell-fill" style="font-size: 1.1rem; color: #2B2523;"></i>
+                                <span style="position: absolute; top: -2px; right: -2px; width: 6px; height: 6px; background: #C24D63; border-radius: 50%;"></span>
+                            </div>
+                        </div>
+
+                        <!-- Card Đơn đang di chuyển (Live Tracking Map) -->
+                        <div style="background: #FFFFFF; border-radius: 16px; padding: 12px; border: 1px solid #E2E8F0; box-shadow: 0 4px 12px rgba(0,0,0,0.04); margin-bottom: 12px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                                <span style="font-size: 0.68rem; font-weight: 800; text-transform: uppercase; color: #10B981; background: #ECFDF5; padding: 3px 8px; border-radius: 999px;">
+                                    <i class="bi bi-geo-alt-fill"></i> Đang đến (5 phút)
+                                </span>
+                                <span style="font-size: 0.7rem; color: #64748B; font-weight: 600;">#VS-8921</span>
+                            </div>
+
+                            <!-- Map graphic placeholder -->
+                            <div style="height: 90px; background: linear-gradient(135deg, #E2E8F0 0%, #CBD5E1 100%); border-radius: 10px; position: relative; overflow: hidden; margin-bottom: 10px; display: flex; align-items: center; justify-content: center;">
+                                <div style="position: absolute; width: 100%; height: 100%; opacity: 0.4; background-image: radial-gradient(#64748B 1px, transparent 1px); background-size: 12px 12px;"></div>
+                                <div style="position: absolute; width: 80px; height: 2px; background: #C24D63; transform: rotate(-25deg);"></div>
+                                <!-- Customer Pin -->
+                                <div style="position: absolute; top: 22px; right: 30px; background: #2B2523; color: #FFF; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.65rem; box-shadow: 0 2px 6px rgba(0,0,0,0.3);">
+                                    <i class="bi bi-house-door-fill"></i>
+                                </div>
+                                <!-- VieKer Moving Pin -->
+                                <div style="position: absolute; bottom: 20px; left: 35px; background: #C24D63; color: #FFF; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; box-shadow: 0 3px 8px rgba(194,77,99,0.5); animation: pulse 2s infinite;">
+                                    <i class="bi bi-bicycle"></i>
+                                </div>
+                            </div>
+
+                            <!-- Thợ info -->
+                            <div style="display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 8px;">
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background: #C24D63; color: #FFF; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.75rem;">
+                                        VP
+                                    </div>
+                                    <div>
+                                        <div style="font-size: 0.75rem; font-weight: 800; color: #1E293B;">Võ Minh Trí</div>
+                                        <div style="font-size: 0.65rem; color: #64748B;"><i class="bi bi-star-fill" style="color: #F59E0B;"></i> 4.98 (312 việc)</div>
+                                    </div>
+                                </div>
+                                <div style="display: flex; gap: 6px;">
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; background: #EEF2F6; display: flex; align-items: center; justify-content: center; color: #2B2523; font-size: 0.75rem;"><i class="bi bi-telephone-fill"></i></div>
+                                    <div style="width: 28px; height: 28px; border-radius: 50%; background: #EEF2F6; display: flex; align-items: center; justify-content: center; color: #2B2523; font-size: 0.75rem;"><i class="bi bi-chat-dots-fill"></i></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Danh mục phím tắt trên App -->
+                        <div style="font-size: 0.75rem; font-weight: 800; color: #1E293B; margin-bottom: 8px;">Dịch vụ yêu thích</div>
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; text-align: center;">
+                            <div style="background: #FFFFFF; border-radius: 10px; padding: 8px 4px; border: 1px solid #E2E8F0;">
+                                <i class="bi bi-tools" style="color: #C24D63; font-size: 0.95rem;"></i>
+                                <div style="font-size: 0.6rem; font-weight: 600; margin-top: 3px;">Lắp ráp</div>
+                            </div>
+                            <div style="background: #FFFFFF; border-radius: 10px; padding: 8px 4px; border: 1px solid #E2E8F0;">
+                                <i class="bi bi-lightning-charge" style="color: #D97706; font-size: 0.95rem;"></i>
+                                <div style="font-size: 0.6rem; font-weight: 600; margin-top: 3px;">Điện nước</div>
+                            </div>
+                            <div style="background: #FFFFFF; border-radius: 10px; padding: 8px 4px; border: 1px solid #E2E8F0;">
+                                <i class="bi bi-truck" style="color: #0284C7; font-size: 0.95rem;"></i>
+                                <div style="font-size: 0.6rem; font-weight: 600; margin-top: 3px;">Chuyển nhà</div>
+                            </div>
+                            <div style="background: #FFFFFF; border-radius: 10px; padding: 8px 4px; border: 1px solid #E2E8F0;">
+                                <i class="bi bi-stars" style="color: #10B981; font-size: 0.95rem;"></i>
+                                <div style="font-size: 0.6rem; font-weight: 600; margin-top: 3px;">Dọn dẹp</div>
+                            </div>
+                        </div>
+
+                        <!-- Card Escrow Bảo vệ -->
+                        <div style="background: linear-gradient(135deg, #2B2523 0%, #3E3330 100%); color: #FAF7F2; border-radius: 12px; padding: 10px; font-size: 0.68rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="bi bi-shield-lock-fill" style="color: #E6AF76; font-size: 1.2rem;"></i>
+                            <div>
+                                <div style="font-weight: 700; color: #E6AF76;">Ví Escrow bảo vệ 100%</div>
+                                <div style="opacity: 0.85; font-size: 0.62rem;">Chỉ giải ngân khi bạn hài lòng với chất lượng</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- TÍNH NĂNG ĐẶC QUYỀN TRÊN APP (5 Core Features) -->
+<section style="padding: 72px 24px;">
+    <div class="main-wrapper" style="padding: 0;">
+        <div style="text-align: center; max-width: 680px; margin: 0 auto 52px;">
+            <div style="display: inline-block; background: #FCECEE; color: #C24D63; font-size: 0.74rem; font-weight: 800; padding: 4px 14px; border-radius: 999px; text-transform: uppercase; margin-bottom: 10px;">
+                Đột phá Công nghệ
+            </div>
+            <h2 style="font-size: 2.1rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.5px; margin-bottom: 12px;">
+                Tại sao bạn nên dùng VieShift trên Điện thoại?
+            </h2>
+            <p style="font-size: 0.95rem; color: var(--text-light); line-height: 1.6;">
+                Ứng dụng được tinh chỉnh mượt mà với hiệu năng 60 FPS, tối ưu hóa pin và mang lại trải nghiệm tương tác trực quan nhất.
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px;">
+            <!-- 1. Live GPS -->
+            <div class="card" style="padding: 30px; border-radius: 18px; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(194, 77, 99, 0.12); color: #C24D63; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 18px;">
+                    <i class="bi bi-pin-map-fill"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Định vị Live GPS chuẩn xác
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-light); line-height: 1.65; margin: 0;">
+                    Không còn phải gọi điện hỏi thợ đang ở đâu. Bản đồ trực tiếp hiển thị hành trình thợ di chuyển từ khi nhận đơn cho đến lúc gõ cửa nhà bạn.
+                </p>
+            </div>
+
+            <!-- 2. Chat & Multimedia -->
+            <div class="card" style="padding: 30px; border-radius: 18px; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(230, 175, 118, 0.18); color: #D97706; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 18px;">
+                    <i class="bi bi-chat-square-text-fill"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Chat &amp; Gửi ảnh tức thì
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-light); line-height: 1.65; margin: 0;">
+                    Chụp nhanh ảnh vị trí rò rỉ nước, tủ gỗ cần lắp ráp hoặc ổ cắm bị hỏng để thợ chuẩn bị đầy đủ phụ tùng và công cụ chuyên dụng trước khi đến.
+                </p>
+            </div>
+
+            <!-- 3. One-touch Pay -->
+            <div class="card" style="padding: 30px; border-radius: 18px; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(16, 185, 129, 0.12); color: #10B981; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 18px;">
+                    <i class="bi bi-credit-card-2-front-fill"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Thanh toán 1 chạm &amp; Escrow
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-light); line-height: 1.65; margin: 0;">
+                    Hỗ trợ Apple Pay, Google Pay, VNPAY, Thẻ nội địa và Quốc tế. Tiền được tạm giữ an toàn trong ví Escrow, chỉ chuyển cho thợ khi bạn nghiệm thu.
+                </p>
+            </div>
+
+            <!-- 4. Push Notifications -->
+            <div class="card" style="padding: 30px; border-radius: 18px; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(14, 165, 233, 0.12); color: #0284C7; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 18px;">
+                    <i class="bi bi-bell-fill"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Thông báo đẩy thời gian thực
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-light); line-height: 1.65; margin: 0;">
+                    Nhận thông báo ngay khi có thợ phù hợp nhận đơn, khi thợ xuất phát, biên bản nghiệm thu điện tử và các ưu đãi voucher giảm giá độc quyền.
+                </p>
+            </div>
+
+            <!-- 5. Offline PWA Ready -->
+            <div class="card" style="padding: 30px; border-radius: 18px; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(139, 92, 246, 0.12); color: #8B5CF6; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 18px;">
+                    <i class="bi bi-cloud-arrow-down-fill"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Công nghệ Progressive Web App (PWA)
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-light); line-height: 1.65; margin: 0;">
+                    Không cần bộ nhớ máy lớn. Bạn có thể thêm VieShift vào màn hình chính chỉ bằng 1 nút bấm, chạy độc lập toàn màn hình như ứng dụng gốc Native.
+                </p>
+            </div>
+
+            <!-- 6. 14 Days Warranty -->
+            <div class="card" style="padding: 30px; border-radius: 18px; transition: transform 0.25s;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+                <div style="width: 52px; height: 52px; border-radius: 14px; background: rgba(244, 63, 94, 0.12); color: #E11D48; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-bottom: 18px;">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 8px;">
+                    Bảo hành 14 ngày &amp; Hóa đơn VAT
+                </h3>
+                <p style="font-size: 0.88rem; color: var(--text-light); line-height: 1.65; margin: 0;">
+                    Toàn bộ hóa đơn điện tử VAT được xuất tự động lưu trong tài khoản. Nút yêu cầu bảo hành nhanh trong 14 ngày luôn sẵn sàng nếu sự cố tái diễn.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- HƯỚNG DẪN CÀI ĐẶT NHANH (iOS & Android) -->
+<section style="background: #FFFFFF; padding: 72px 24px; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);">
+    <div class="main-wrapper" style="padding: 0;">
+        <div style="text-align: center; max-width: 640px; margin: 0 auto 48px;">
+            <div style="font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-light); margin-bottom: 8px;">
+                Hướng dẫn Nhanh
+            </div>
+            <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); margin-bottom: 12px;">
+                Thêm VieShift vào Màn hình chính trong 10 giây
+            </h2>
+            <p style="font-size: 0.92rem; color: var(--text-light);">
+                Trải nghiệm ứng dụng không cần tải qua chợ ứng dụng cồng kềnh với công nghệ Web App tiên tiến nhất.
+            </p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 36px;">
+            <!-- iOS Safari -->
+            <div style="background: var(--bg-soft); border: 1px solid var(--border); border-radius: 20px; padding: 32px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                    <i class="bi bi-apple" style="font-size: 2rem; color: var(--secondary);"></i>
+                    <div>
+                        <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--secondary); margin: 0;">Dành cho iPhone / iPad (iOS)</h3>
+                        <div style="font-size: 0.82rem; color: var(--text-light);">Trình duyệt Safari mặc định</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; gap: 14px; align-items: flex-start;">
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: #C24D63; color: #FFF; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</span>
+                        <div style="font-size: 0.9rem; line-height: 1.5;">
+                            Mở trang web <strong>vieshift.vn</strong> bằng trình duyệt <strong>Safari</strong> trên iPhone.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 14px; align-items: flex-start;">
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: #C24D63; color: #FFF; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</span>
+                        <div style="font-size: 0.9rem; line-height: 1.5;">
+                            Nhấn vào biểu tượng <strong>Chia sẻ (Share <i class="bi bi-box-arrow-up"></i>)</strong> ở thanh điều hướng phía dưới màn hình.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 14px; align-items: flex-start;">
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: #C24D63; color: #FFF; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</span>
+                        <div style="font-size: 0.9rem; line-height: 1.5;">
+                            Cuộn xuống và chọn <strong>"Thêm vào Màn hình chính" (Add to Home Screen <i class="bi bi-plus-square"></i>)</strong> rồi bấm <strong>Thêm</strong>.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Android Chrome -->
+            <div style="background: var(--bg-soft); border: 1px solid var(--border); border-radius: 20px; padding: 32px;">
+                <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+                    <i class="bi bi-android2" style="font-size: 2rem; color: #10B981;"></i>
+                    <div>
+                        <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--secondary); margin: 0;">Dành cho Android (Samsung, Xiaomi, Oppo...)</h3>
+                        <div style="font-size: 0.82rem; color: var(--text-light);">Trình duyệt Google Chrome</div>
+                    </div>
+                </div>
+
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div style="display: flex; gap: 14px; align-items: flex-start;">
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: #10B981; color: #FFF; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">1</span>
+                        <div style="font-size: 0.9rem; line-height: 1.5;">
+                            Mở <strong>vieshift.vn</strong> bằng trình duyệt <strong>Google Chrome</strong> trên điện thoại.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 14px; align-items: flex-start;">
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: #10B981; color: #FFF; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">2</span>
+                        <div style="font-size: 0.9rem; line-height: 1.5;">
+                            Nhấn vào biểu tượng <strong>Menu ba chấm (<i class="bi bi-three-dots-vertical"></i>)</strong> ở góc trên bên phải màn hình.
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 14px; align-items: flex-start;">
+                        <span style="width: 28px; height: 28px; border-radius: 50%; background: #10B981; color: #FFF; font-weight: 800; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">3</span>
+                        <div style="font-size: 0.9rem; line-height: 1.5;">
+                            Chọn <strong>"Cài đặt ứng dụng"</strong> hoặc <strong>"Thêm vào màn hình chính"</strong> để biểu tượng VieShift xuất hiện ngay màn hình điện thoại.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- THÔNG SỐ KỸ THUẬT & FAQ -->
+<section style="padding: 72px 24px;">
+    <div class="main-wrapper" style="padding: 0;">
+        <div style="display: grid; grid-template-columns: 360px 1fr; gap: 48px; align-items: start;">
+            
+            <!-- Cột trái: Thông số kỹ thuật -->
+            <div class="card" style="padding: 30px; border-radius: 18px;">
+                <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 0.8px; margin-bottom: 12px;">
+                    Thông số Kỹ thuật
+                </div>
+                <h3 style="font-size: 1.3rem; font-weight: 800; color: var(--secondary); margin-bottom: 20px;">
+                    Yêu cầu Thiết bị
+                </h3>
+
+                <div style="display: flex; flex-direction: column; gap: 14px; font-size: 0.88rem;">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+                        <span style="color: var(--text-light);">Phiên bản iOS:</span>
+                        <strong style="color: var(--secondary);">iOS 14.0 trở lên</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+                        <span style="color: var(--text-light);">Phiên bản Android:</span>
+                        <strong style="color: var(--secondary);">Android 9.0 (Pie) trở lên</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+                        <span style="color: var(--text-light);">Dung lượng ứng dụng:</span>
+                        <strong style="color: var(--secondary);">~28.5 MB (Tối ưu)</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+                        <span style="color: var(--text-light);">Mã hóa bảo mật:</span>
+                        <strong style="color: #10B981;">TLS 1.3 / AES-256</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px dashed var(--border); padding-bottom: 10px;">
+                        <span style="color: var(--text-light);">Ngôn ngữ hỗ trợ:</span>
+                        <strong style="color: var(--secondary);">Tiếng Việt, English</strong>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding-bottom: 4px;">
+                        <span style="color: var(--text-light);">Nhà phát triển:</span>
+                        <strong style="color: var(--primary);">VieShift Vietnam JSC</strong>
+                    </div>
+                </div>
+
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center;">
+                    <a th:href="@{/explore}" class="btn-primary" style="display: block; width: 100%; text-decoration: none; padding: 12px; border-radius: 10px; font-weight: 700;">
+                        <i class="bi bi-search"></i> Khám phá dịch vụ ngay
+                    </a>
+                </div>
+            </div>
+
+            <!-- Cột phải: Câu hỏi thường gặp FAQ -->
+            <div>
+                <div style="font-size: 0.78rem; font-weight: 800; text-transform: uppercase; color: var(--primary); letter-spacing: 0.8px; margin-bottom: 12px;">
+                    Hỗ trợ Khách hàng &amp; Thợ
+                </div>
+                <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); margin-bottom: 24px;">
+                    Câu hỏi thường gặp về Ứng dụng
+                </h2>
+
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <!-- FAQ 1 -->
+                    <div class="card" style="padding: 22px 26px; border-radius: 14px;">
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--secondary); margin-bottom: 8px;">
+                            1. Ứng dụng VieShift có miễn phí tải về không?
+                        </h4>
+                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.6; margin: 0;">
+                            Hoàn toàn miễn phí. Người dùng không phải trả bất kỳ khoản phí nào khi tải ứng dụng, đăng ký tài khoản hay tìm kiếm danh mục thợ. Bạn chỉ thanh toán chi phí khi xác nhận đặt đơn công việc cụ thể.
+                        </p>
+                    </div>
+
+                    <!-- FAQ 2 -->
+                    <div class="card" style="padding: 22px 26px; border-radius: 14px;">
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--secondary); margin-bottom: 8px;">
+                            2. Tôi có thể đăng nhập cùng một tài khoản trên Web và Điện thoại được không?
+                        </h4>
+                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.6; margin: 0;">
+                            Có. Dữ liệu tài khoản, lịch sử đơn hàng, số dư ví Escrow và đánh giá của bạn được đồng bộ tự động theo thời gian thực trên mọi thiết bị máy tính, máy tính bảng và điện thoại di động.
+                        </p>
+                    </div>
+
+                    <!-- FAQ 3 -->
+                    <div class="card" style="padding: 22px 26px; border-radius: 14px;">
+                        <h4 style="font-size: 1.05rem; font-weight: 700; color: var(--secondary); margin-bottom: 8px;">
+                            3. Làm thế nào để thợ chuyển sang chế độ nhận đơn (VieKer Partner)?
+                        </h4>
+                        <p style="font-size: 0.9rem; color: var(--text-light); line-height: 1.6; margin: 0;">
+                            Sau khi tải ứng dụng hoặc truy cập vào <a th:href="@{/become-vieker}" style="color: var(--primary); font-weight: 700;">Đăng ký Đối tác VieKer</a>, bạn hoàn thiện hồ sơ định danh KYC (CCCD, Bằng lái xe, Lý lịch tư pháp). Khi Ban Quản Trị phê duyệt, ứng dụng sẽ tự động kích hoạt tính năng "Bật nhận việc quanh đây".
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- MODAL THÔNG BÁO TẢI APP STORE / GOOGLE PLAY -->
+<div id="storeModal" style="display: none; position: fixed; inset: 0; background: rgba(43, 37, 35, 0.7); backdrop-filter: blur(6px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+    <div style="background: #FFFFFF; border-radius: 20px; max-width: 460px; width: 100%; padding: 32px; box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; position: relative;">
+        <button onclick="closeStoreModal()" style="position: absolute; right: 18px; top: 18px; background: none; border: none; font-size: 1.4rem; color: var(--text-light); cursor: pointer;">
+            <i class="bi bi-x-lg"></i>
+        </button>
+
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #FCECEE; color: #C24D63; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin: 0 auto 16px;">
+            <i class="bi bi-rocket-takeoff-fill"></i>
+        </div>
+
+        <h3 id="storeModalTitle" style="font-size: 1.35rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+            Sẵn sàng trên App Store
+        </h3>
+        <p style="font-size: 0.92rem; color: var(--text-light); line-height: 1.6; margin-bottom: 24px;">
+            Bản phân phối Native App đang trong giai đoạn hoàn tất kiểm duyệt phát hành trên kho ứng dụng. Bạn có thể sử dụng ngay phiên bản <strong>Web App PWA</strong> với đầy đủ tính năng tương đương và tốc độ vượt trội ngay bây giờ!
+        </p>
+
+        <div style="display: flex; gap: 12px;">
+            <button onclick="closeStoreModal()" style="flex: 1; padding: 12px; border: 1px solid var(--border); background: var(--bg-soft); color: var(--text-main); border-radius: 10px; font-weight: 600; cursor: pointer;">
+                Đóng
+            </button>
+            <a th:href="@{/explore}" style="flex: 1.4; padding: 12px; background: #C24D63; color: #FFFFFF; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 6px;">
+                Trải nghiệm ngay <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+<script>
+    function openStoreNotice(storeName) {
+        document.getElementById('storeModalTitle').textContent = 'Kênh phát hành ' + storeName;
+        document.getElementById('storeModal').style.display = 'flex';
+    }
+
+    function closeStoreModal() {
+        document.getElementById('storeModal').style.display = 'none';
+    }
+
+    // Đóng khi click ngoài modal
+    window.addEventListener('click', function(e) {
+        const modal = document.getElementById('storeModal');
+        if (e.target === modal) {
+            closeStoreModal();
+        }
+    });
+
+    // PWA Install Prompt Handler
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+
+    function installPWA() {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            deferredPrompt.userChoice.then((choiceResult) => {
+                deferredPrompt = null;
+            });
+        } else {
+            alert('Để cài đặt VieShift: Trên iOS hãy mở Safari chọn Share > "Thêm vào Màn hình chính". Trên Android hãy chọn Menu 3 chấm > "Cài đặt ứng dụng".');
+        }
+    }
+</script>
+
+</body>
+</html>

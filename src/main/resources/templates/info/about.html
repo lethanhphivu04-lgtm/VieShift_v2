@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head th:replace="~{fragments/layout :: htmlHeader('Giới thiệu Nền tảng VieShift — Đặt Thợ Gia Đình Uy Tín')}"></head>
+<body>
+
+<header th:replace="~{fragments/layout :: navbar('about')}"></header>
+
+<!-- Hero Giới thiệu -->
+<section style="background: linear-gradient(135deg, #2B2523 0%, #3E3330 55%, #C24D63 100%); color: #FAF7F2; padding: 72px 24px; position: relative; overflow: hidden;">
+    <div class="main-wrapper" style="position: relative; z-index: 2; padding: 0;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; background: rgba(250, 247, 242, 0.14); padding: 6px 16px; border-radius: 999px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.8px; color: #E6AF76; margin-bottom: 18px;">
+            <i class="bi bi-patch-check-fill"></i> Câu chuyện &amp; Sứ mệnh của chúng tôi
+        </div>
+        <h1 style="font-size: 2.6rem; font-weight: 800; color: #FFFFFF; letter-spacing: -0.8px; margin-bottom: 16px; line-height: 1.2;">
+            Kiến tạo Chuẩn mực Mới cho<br>Dịch vụ Việc làm Gia đình tại Việt Nam
+        </h1>
+        <p style="font-size: 1.05rem; color: rgba(250, 247, 242, 0.85); max-width: 760px; line-height: 1.65; margin: 0 0 28px;">
+            VieShift ra đời với mục tiêu giải quyết triệt để nỗi lo tìm thợ thiếu an tâm của mọi gia đình, đồng thời đem lại thu nhập xứng đáng, tự chủ và được tôn vinh cho hàng chục ngàn người thợ lành nghề độc lập trên toàn quốc.
+        </p>
+        <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <a th:href="@{/explore}" class="btn btn-primary" style="border-radius: 999px; padding: 12px 28px; font-weight: 700;">
+                Khám phá dịch vụ ngay
+            </a>
+            <a th:href="@{/become-vieker}" class="btn btn-outline" style="border-radius: 999px; padding: 12px 28px; font-weight: 700; color: #FAF7F2; border-color: rgba(250, 247, 242, 0.4);">
+                Trở thành Đối tác VieKer
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Các con số biết nói -->
+<section style="background: #F4EFEA; border-bottom: 1px solid var(--border); padding: 40px 24px;">
+    <div class="main-wrapper" style="padding: 0;">
+        <div class="grid-4" style="gap: 24px; text-align: center;">
+            <div class="card" style="padding: 24px 20px; border-radius: 18px;">
+                <div style="font-size: 2.2rem; font-weight: 800; color: var(--primary); letter-spacing: -1px; margin-bottom: 4px;">15.000+</div>
+                <div style="font-size: 0.88rem; font-weight: 700; color: var(--secondary);">Ca dịch vụ hoàn thành</div>
+                <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">Lắp ráp, điện nước, dọn dẹp, chuyển nhà</div>
+            </div>
+            <div class="card" style="padding: 24px 20px; border-radius: 18px;">
+                <div style="font-size: 2.2rem; font-weight: 800; color: #2E7D5B; letter-spacing: -1px; margin-bottom: 4px;">98.6%</div>
+                <div style="font-size: 0.88rem; font-weight: 700; color: var(--secondary);">Tỷ lệ khách hàng hài lòng</div>
+                <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">Cam kết nghiệm thu ưng ý mới thanh toán</div>
+            </div>
+            <div class="card" style="padding: 24px 20px; border-radius: 18px;">
+                <div style="font-size: 2.2rem; font-weight: 800; color: #B86B28; letter-spacing: -1px; margin-bottom: 4px;">2.500+</div>
+                <div style="font-size: 0.88rem; font-weight: 700; color: var(--secondary);">Đối tác VieKer đã KYC</div>
+                <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">Xác thực CCCD, Lý lịch tư pháp, Bằng lái</div>
+            </div>
+            <div class="card" style="padding: 24px 20px; border-radius: 18px;">
+                <div style="font-size: 2.2rem; font-weight: 800; color: #E6AF76; letter-spacing: -1px; margin-bottom: 4px;">4.9 ★</div>
+                <div style="font-size: 0.88rem; font-weight: 700; color: var(--secondary);">Điểm đánh giá trung bình</div>
+                <div style="font-size: 0.78rem; color: var(--text-light); margin-top: 4px;">Từ hơn 12.000 đánh giá thực tế</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Vấn đề & Giải pháp đột phá của VieShift -->
+<main class="main-wrapper" style="padding-top: 64px; padding-bottom: 80px;">
+    
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; margin-bottom: 72px;">
+        <div>
+            <div style="color: var(--primary); font-weight: 800; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+                Vì sao chúng tôi bắt đầu?
+            </div>
+            <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.6px; margin-bottom: 16px;">
+                Tìm thợ sửa chữa trong nhà từng là một trải nghiệm đầy âu lo
+            </h2>
+            <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 14px;">
+                Ai trong chúng ta cũng từng gặp sự cố vòi nước rò rỉ, tủ quần áo mới mua về loay hoay không biết lắp, hay căn nhà cần dọn gấp trước ngày tân gia. Trước đây, việc gọi một người thợ thường đi kèm với nỗi sợ: giá cả bị nói thách, tay nghề không đảm bảo, đến trễ hẹn và quan trọng nhất là không biết người bước vào nhà mình là ai.
+            </p>
+            <p style="font-size: 0.95rem; color: var(--text-muted); line-height: 1.7;">
+                Ở chiều ngược lại, những người thợ giỏi nghề, thật thà lại thường xuyên rơi vào cảnh thiếu việc, bị ép giá hoặc phụ thuộc vào các đầu nậu trung gian cắt phế nặng nề.
+            </p>
+        </div>
+        <div style="position: relative;">
+            <img src="https://images.unsplash.com/photo-1581578731548-c64695cc6952?auto=format&fit=crop&w=800&q=80"
+                 alt="VieShift giải quyết vấn đề tìm thợ gia đình"
+                 style="width: 100%; border-radius: 24px; box-shadow: var(--shadow-lg); border: 4px solid #FFFFFF;">
+        </div>
+    </div>
+
+    <!-- 4 Trụ cột cốt lõi của VieShift -->
+    <div style="text-align: center; max-width: 720px; margin: 0 auto 48px;">
+        <div style="color: var(--primary); font-weight: 800; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px;">
+            Giá trị cốt lõi
+        </div>
+        <h2 style="font-size: 2rem; font-weight: 800; color: var(--secondary); letter-spacing: -0.6px;">
+            4 Bảo chứng vàng làm nên sự khác biệt của VieShift
+        </h2>
+    </div>
+
+    <div class="grid-4" style="gap: 24px; margin-bottom: 72px;">
+        <div class="card" style="padding: 32px 24px; border-radius: 20px;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #FCECEE; color: #C24D63; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-shield-lock-fill"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+                Thanh toán Tạm giữ Escrow
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Khoản tiền của bạn được giữ an toàn tuyệt đối trong ví tạm giữ. Thợ chỉ được giải ngân khi bạn bấm <strong>"Nghiệm thu hài lòng 100%"</strong>.
+            </p>
+        </div>
+
+        <div class="card" style="padding: 32px 24px; border-radius: 20px;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #FAF3E8; color: #B86B28; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-person-check-fill"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+                Thẩm định Thợ 5 Lớp (KYC)
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Không ai có thể nhận việc nếu chưa được Ban Quản Trị duyệt 5 loại giấy tờ: Ảnh chân dung, CCCD 2 mặt gắn chip, Phiếu lý lịch tư pháp và Bằng lái xe.
+            </p>
+        </div>
+
+        <div class="card" style="padding: 32px 24px; border-radius: 20px;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #EBF7EE; color: #2E7D5B; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-calculator-fill"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+                Báo giá Rõ ràng &amp; Tức thì
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Đơn giá được niêm yết minh bạch theo giờ hoặc danh mục dịch vụ. Tuyệt đối không có phụ phí ẩn hay tình trạng tự ý tăng giá tại nhà.
+            </p>
+        </div>
+
+        <div class="card" style="padding: 32px 24px; border-radius: 20px;">
+            <div style="width: 48px; height: 48px; border-radius: 14px; background: #F0ECF9; color: #5E439C; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; margin-bottom: 18px;">
+                <i class="bi bi-heart-pulse-fill"></i>
+            </div>
+            <h3 style="font-size: 1.15rem; font-weight: 800; color: var(--secondary); margin-bottom: 10px;">
+                Tôn vinh Tay nghề Thợ
+            </h3>
+            <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.65; margin: 0;">
+                Thợ nhận 90% giá trị hợp đồng, tự chủ hoàn toàn thời gian và được bảo vệ quyền lợi thông qua cơ chế trọng tài giải quyết khiếu nại công bằng.
+            </p>
+        </div>
+    </div>
+
+    <!-- Banner kêu gọi hành động -->
+    <div style="background: linear-gradient(135deg, #FAF7F2 0%, #FCECEE 100%); border: 1.5px solid #F5C6CD; border-radius: 24px; padding: 48px 40px; text-align: center;">
+        <h3 style="font-size: 1.85rem; font-weight: 800; color: var(--secondary); margin-bottom: 12px;">
+            Sẵn sàng trải nghiệm dịch vụ tiện ích chuẩn mới?
+        </h3>
+        <p style="font-size: 0.96rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 24px; line-height: 1.6;">
+            Cho dù bạn cần một người thợ lành nghề hỗ trợ tổ ấm hôm nay hay muốn đăng ký trở thành Đối tác để tăng thu nhập, VieShift luôn sẵn sàng đồng hành cùng bạn.
+        </p>
+        <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+            <a th:href="@{/customer(tab='create')}" class="btn btn-primary btn-lg" style="border-radius: 999px; padding: 13px 32px; font-weight: 700;">
+                Đặt thợ ngay hôm nay
+            </a>
+            <a th:href="@{/become-vieker}" class="btn btn-secondary btn-lg" style="border-radius: 999px; padding: 13px 32px; font-weight: 700;">
+                Đăng ký làm Đối tác VieKer
+            </a>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+
+</body>
+</html>
